@@ -1,0 +1,18 @@
+<div class="min-h-screen bg-gray-50">
+  <!-- Navbar -->
+  <app-navbar (toggleSidebar)="toggleSidebar()" />
+
+  <div class="flex">
+    <!-- Sidebar -->
+    <app-sidebar [isOpen]="isSidebarOpen()" />
+
+    <!-- Main Content -->
+    <main
+      class="flex-1 p-6 transition-all duration-300"
+      [class.ml-64]="isSidebarOpen()"
+      [class.ml-20]="!isSidebarOpen()"
+    >
+      <router-outlet />
+    </main>
+  </div>
+</div>
