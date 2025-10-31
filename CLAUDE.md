@@ -79,6 +79,16 @@ Todos los commits deben estar en **inglés** y seguir el formato:
    - Cuerpo opcional: explica contexto si es necesario
    - Usa imperativo: "add" no "added" o "adds"
 
+5. **NUNCA incluir a Claude en los commits**:
+   - ❌ NO agregar "Co-Authored-By: Claude" ni menciones similares
+   - ❌ NO incluir "Generated with Claude Code" ni links a herramientas
+   - ✅ Los commits deben aparecer como trabajo del desarrollador únicamente
+
+6. **Commits bajo demanda explícita**:
+   - ⚠️ SOLO crear commits cuando el usuario lo solicite explícitamente
+   - ⚠️ NO hacer commits proactivos o automáticos
+   - ✅ Esperar instrucción directa del usuario para hacer commit
+
 ### Ejemplos
 
 **Buenos commits:**
