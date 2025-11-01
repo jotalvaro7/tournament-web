@@ -20,10 +20,66 @@ Brindar orientación técnica, revisar código, sugerir estructuras de proyecto 
 - Separación clara de capas: `core/`, `shared/`, `features/`, `infrastructure/`.
 - Uso de **monorepos (Nx o Angular CLI workspaces)**.
 - Diseño modular: **Feature Modules**, **Domain Modules**, **UI Libraries**.
-- **Evitar componentes HTML o TypeScript extensos.**
-  - Si un componente crece demasiado, se deben **extraer subcomponentes**, **servicios especializados** o **directivas**.
-  - Buscar una **alta cohesión y bajo acoplamiento** en cada unidad de código.
-  - Promover la **modularización constante** y la **reutilización de piezas UI y lógicas.**
+
+#### 🚨 REGLA CRÍTICA: Evitar Componentes Extensos
+
+**NUNCA permitir componentes HTML o TypeScript extensos (>80 líneas de código efectivo).**
+
+**Cuando un componente crece:**
+1. **Extraer subcomponentes hijo** (patrón padre-hijo)
+2. **Extraer servicios especializados** para lógica compleja
+3. **Extraer directivas** para comportamientos reutilizables
+4. **Extraer helpers/utilities** para funciones puras
+
+**Principios obligatorios:**
+- ✅ **Alta cohesión**: Cada componente tiene una única responsabilidad clara
+- ✅ **Bajo acoplamiento**: Comunicación mediante inputs/outputs explícitos
+- ✅ **Composición sobre código monolítico**: Preferir múltiples componentes pequeños
+- ✅ **Reutilización**: Los subcomponentes deben ser reutilizables en otros contextos
+- ✅ **Testabilidad**: Componentes pequeños son más fáciles de testear
+
+**Ejemplo de modularización:**
+
+```typescript
+// ❌ MAL: Componente monolítico (150 líneas HTML)
+@Component({
+  selector: 'app-sidebar',
+  template: `
+    <!-- 150 líneas con: selector, navegación, loading, etc. -->
+  `
+})
+export class SidebarComponent { }
+
+// ✅ BIEN: Componente modularizado
+@Component({
+  selector: 'app-sidebar',
+  template: `
+    <app-tournament-selector
+      [isOpen]="isOpen()"
+      [tournaments]="tournaments"
+      (createTournament)="onCreate()"
+    />
+    <app-navigation-items
+      [isOpen]="isOpen()"
+      [navItems]="navItems"
+    />
+  `
+})
+export class SidebarComponent { }
+
+// Subcomponentes especializados:
+// - TournamentSelectorComponent (40 líneas)
+// - NavigationItemsComponent (35 líneas)
+```
+
+**Señales de que un componente necesita refactorización:**
+- 🔴 HTML > 80 líneas
+- 🔴 TypeScript > 150 líneas
+- 🔴 Múltiples responsabilidades (selector + navegación + formulario)
+- 🔴 Lógica compleja mezclada con presentación
+- 🔴 Dificultad para testear o reutilizar
+
+**Acción inmediata:** Cuando detectes estas señales, **modulariza de inmediato**.
 
 ---
 
@@ -151,4 +207,3 @@ Improve readability by extracting validation logic into:
 ---
 
 ## 🧩 Estructura sugerida de proyectos Angular 20
-

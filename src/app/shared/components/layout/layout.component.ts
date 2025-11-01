@@ -1,5 +1,5 @@
 import { Component, ChangeDetectionStrategy, signal } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { Router, RouterOutlet } from '@angular/router';
 import { NavbarComponent } from '../navbar/navbar.component';
 import { SidebarComponent } from '../sidebar/sidebar.component';
 
@@ -7,11 +7,12 @@ import { SidebarComponent } from '../sidebar/sidebar.component';
  * Layout Component
  *
  * Main application layout with collapsible sidebar and top navbar.
- * Manages sidebar state using signals for reactive updates.
+ * Manages sidebar state and handles tournament navigation.
  *
  * Features:
  * - Responsive sidebar (collapsible)
  * - Top navigation bar with toggle button
+ * - Tournament selection and creation routing
  * - Content area with router outlet
  * - OnPush change detection for performance
  */
@@ -23,6 +24,12 @@ import { SidebarComponent } from '../sidebar/sidebar.component';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class LayoutComponent {
+  private readonly router: Router;
+
+  constructor(router: Router) {
+    this.router = router;
+  }
+
   /**
    * Signal to control sidebar visibility
    * true = expanded, false = collapsed
@@ -34,5 +41,21 @@ export class LayoutComponent {
    */
   toggleSidebar(): void {
     this.isSidebarOpen.update(isOpen => !isOpen);
+  }
+
+  /**
+   * Handles create tournament event from sidebar
+   * Navigates to create tournament route
+   */
+  onCreateTournament(): void {
+    this.router.navigate(['/tournaments', 'new']);
+  }
+
+  /**
+   * Handles tournament selection from sidebar
+   * Navigates to selected tournament route
+   */
+  onSelectTournament(tournamentId: number): void {
+    this.router.navigate(['/tournaments', tournamentId]);
   }
 }

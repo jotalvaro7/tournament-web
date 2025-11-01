@@ -1,36 +1,31 @@
-import { Component, ChangeDetectionStrategy, input } from '@angular/core';
-import { RouterLink, RouterLinkActive } from '@angular/router';
-
-/**
- * Navigation item interface
- */
-export interface NavItem {
-  label: string;
-  icon: string; // Font Awesome class (e.g., 'fas fa-trophy')
-  route: string;
-}
+import { Component, ChangeDetectionStrategy, input, inject, OnInit, output } from '@angular/core';
+import { TournamentService } from '@app/features/tournaments/application/services';
+import { TournamentSelectorComponent } from './tournament-selector/tournament-selector.component';
+import { NavigationItemsComponent, NavItem } from './navigation-items/navigation-items.component';
 
 /**
  * Sidebar Component
  *
  * Collapsible navigation sidebar with animated transitions.
- * Displays navigation items with icons and labels.
+ * Displays navigation items and tournament dropdown selector.
  *
  * Features:
  * - Collapsible (expanded/collapsed states)
  * - Smooth transitions with Tailwind
- * - Active route highlighting
- * - Icon-only mode when collapsed
+ * - Tournament dropdown selector (only visible if tournaments exist)
+ * - Create tournament button
  * - OnPush change detection for performance
  */
 @Component({
   selector: 'app-sidebar',
   standalone: true,
-  imports: [RouterLink, RouterLinkActive],
+  imports: [TournamentSelectorComponent, NavigationItemsComponent],
   templateUrl: './sidebar.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class SidebarComponent {
+export class SidebarComponent implements OnInit {
+  private readonly tournamentService = inject(TournamentService);
+
   /**
    * Controls sidebar visibility state
    * true = expanded, false = collapsed
@@ -38,7 +33,27 @@ export class SidebarComponent {
   isOpen = input.required<boolean>();
 
   /**
-   * Navigation items (placeholder - will be populated later)
+   * Event emitted when user wants to create a new tournament
+   */
+  createTournament = output<void>();
+
+  /**
+   * Event emitted when user selects a tournament from dropdown
+   */
+  selectTournament = output<number>();
+
+  /**
+   * Tournaments signal from service
+   */
+  readonly tournaments = this.tournamentService.tournaments;
+
+  /**
+   * Loading state signal from service
+   */
+  readonly isLoading = this.tournamentService.isLoading;
+
+  /**
+   * Navigation items
    */
   navItems: NavItem[] = [
     {
@@ -47,4 +62,28 @@ export class SidebarComponent {
       route: '/tournaments'
     }
   ];
+
+  ngOnInit(): void {
+    // Load tournaments on init
+    this.tournamentService.loadTournaments();
+  }
+
+  /**
+   * Handles tournament selection from dropdown
+   */
+  onTournamentSelect(event: Event): void {
+    const select = event.target as HTMLSelectElement;
+    const tournamentId = Number(select.value);
+
+    if (tournamentId) {
+      this.selectTournament.emit(tournamentId);
+    }
+  }
+
+  /**
+   * Handles create tournament button click
+   */
+  onCreateClick(): void {
+    this.createTournament.emit();
+  }
 }

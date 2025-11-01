@@ -1,0 +1,20 @@
+<!-- Navigation Items -->
+<nav class="space-y-2 my-5">
+  @for (item of navItems(); track item.route) {
+  <a [routerLink]="item.route" routerLinkActive="bg-blue-50 text-blue-600" #rla="routerLinkActive"
+    class="flex items-center gap-3 px-4 py-3 rounded-lg transition-colors hover:bg-gray-50 group"
+    [class.justify-center]="!isOpen()" [class.justify-start]="isOpen()">
+    <!-- Icon -->
+    <i [class]="item.icon" class="text-xl flex-shrink-0 transition-colors" [class.text-blue-600]="rla.isActive"
+      [class.text-gray-600]="!rla.isActive" [class.group-hover:text-blue-600]="!rla.isActive"></i>
+
+    <!-- Label (hidden when collapsed) -->
+    @if (isOpen()) {
+    <span class="font-medium transition-colors" [class.text-blue-600]="rla.isActive"
+      [class.text-gray-700]="!rla.isActive" [class.group-hover:text-blue-600]="!rla.isActive">
+      {{ item.label }}
+    </span>
+    }
+  </a>
+  }
+</nav>

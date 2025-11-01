@@ -1,5 +1,5 @@
 import { Injectable, inject, signal } from '@angular/core';
-import { Observable, tap } from 'rxjs';
+import { Observable, tap, firstValueFrom } from 'rxjs';
 import { TournamentApiService } from '../../infrastructure/tournament-api.service';
 import { Tournament, TournamentRequestDto } from '../../domain/models';
 import { AlertService } from '@app/core/services';
@@ -113,8 +113,8 @@ export class TournamentService {
       return;
     }
 
-    this.api.delete(tournament.id)
-      .pipe(
+    await firstValueFrom(
+      this.api.delete(tournament.id).pipe(
         tap({
           next: () => {
             this.alert.success(`Tournament "${tournament.name}" deleted successfully!`);
@@ -122,7 +122,7 @@ export class TournamentService {
           }
         })
       )
-      .subscribe();
+    );
   }
 
   /**
@@ -141,8 +141,8 @@ export class TournamentService {
       return;
     }
 
-    this.api.start(tournament.id)
-      .pipe(
+    await firstValueFrom(
+      this.api.start(tournament.id).pipe(
         tap({
           next: (updated) => {
             this.alert.success(`Tournament "${updated.name}" started successfully!`);
@@ -150,7 +150,7 @@ export class TournamentService {
           }
         })
       )
-      .subscribe();
+    );
   }
 
   /**
@@ -169,8 +169,8 @@ export class TournamentService {
       return;
     }
 
-    this.api.end(tournament.id)
-      .pipe(
+    await firstValueFrom(
+      this.api.end(tournament.id).pipe(
         tap({
           next: (updated) => {
             this.alert.success(`Tournament "${updated.name}" completed successfully!`);
@@ -178,7 +178,7 @@ export class TournamentService {
           }
         })
       )
-      .subscribe();
+    );
   }
 
   /**
@@ -197,8 +197,8 @@ export class TournamentService {
       return;
     }
 
-    this.api.cancel(tournament.id)
-      .pipe(
+    await firstValueFrom(
+      this.api.cancel(tournament.id).pipe(
         tap({
           next: (updated) => {
             this.alert.success(`Tournament "${updated.name}" cancelled successfully!`);
@@ -206,6 +206,6 @@ export class TournamentService {
           }
         })
       )
-      .subscribe();
+    );
   }
 }

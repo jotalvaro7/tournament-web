@@ -1,39 +1,19 @@
 <aside
-  class="fixed left-0 top-16 h-[calc(100vh-4rem)] bg-white border-r border-gray-200 transition-all duration-300 z-40"
+  class="fixed left-0 top-16 h-[calc(100vh-4rem)] bg-white border-r border-gray-200 transition-all duration-300 z-40 overflow-y-auto"
   [class.w-64]="isOpen()"
   [class.w-20]="!isOpen()"
 >
-  <nav class="p-4 space-y-2">
-    @for (item of navItems; track item.route) {
-      <a
-        [routerLink]="item.route"
-        routerLinkActive="bg-blue-50 text-blue-600"
-        #rla="routerLinkActive"
-        class="flex items-center gap-3 px-4 py-3 rounded-lg transition-colors hover:bg-gray-50 group"
-        [class.justify-center]="!isOpen()"
-        [class.justify-start]="isOpen()"
-      >
-        <!-- Icon -->
-        <i
-          [class]="item.icon"
-          class="text-xl flex-shrink-0 transition-colors"
-          [class.text-blue-600]="rla.isActive"
-          [class.text-gray-600]="!rla.isActive"
-          [class.group-hover:text-blue-600]="!rla.isActive"
-        ></i>
+  <div class="p-4 space-y-4">
+    <!-- Tournament Selector -->
+    <app-tournament-selector
+      [isOpen]="isOpen()"
+      [tournaments]="tournaments"
+      [isLoading]="isLoading"
+      (createTournament)="onCreateClick()"
+      (selectTournament)="onTournamentSelect($event)"
+    />
 
-        <!-- Label (hidden when collapsed) -->
-        @if (isOpen()) {
-          <span
-            class="font-medium transition-colors"
-            [class.text-blue-600]="rla.isActive"
-            [class.text-gray-700]="!rla.isActive"
-            [class.group-hover:text-blue-600]="!rla.isActive"
-          >
-            {{ item.label }}
-          </span>
-        }
-      </a>
-    }
-  </nav>
+    <!-- Navigation Items -->
+    <app-navigation-items [isOpen]="isOpen()" [navItems]="navItems" />
+  </div>
 </aside>

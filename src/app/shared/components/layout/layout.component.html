@@ -4,7 +4,11 @@
 
   <div class="flex">
     <!-- Sidebar -->
-    <app-sidebar [isOpen]="isSidebarOpen()" />
+    <app-sidebar
+      [isOpen]="isSidebarOpen()"
+      (createTournament)="onCreateTournament()"
+      (selectTournament)="onSelectTournament($event)"
+    />
 
     <!-- Main Content -->
     <main

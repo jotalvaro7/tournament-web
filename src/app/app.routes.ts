@@ -15,6 +15,11 @@ export const routes: Routes = [
         path: 'tournaments',
         loadComponent: () =>
           import('./features/tournaments/tournaments.component').then(m => m.TournamentsComponent)
+      },
+      {
+        path: 'tournaments/:id',
+        loadComponent: () =>
+          import('./features/tournaments/tournaments.component').then(m => m.TournamentsComponent)
       }
     ]
   }

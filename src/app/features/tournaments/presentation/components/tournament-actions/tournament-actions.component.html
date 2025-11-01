@@ -1,0 +1,54 @@
+<!-- Actions Section -->
+<div class="bg-white rounded-lg shadow-md p-6 my-5">
+  <div class="flex items-center justify-between">
+    <h2 class="text-lg font-semibold text-gray-800">
+      <i class="fas fa-cog text-gray-600"></i> Actions
+    </h2>
+
+    <!-- Compact Action Buttons -->
+    <div class="flex items-center gap-2">
+      <!-- Edit Button -->
+      <button type="button" (click)="edit.emit()"
+        class="p-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors" title="Edit tournament">
+        <i class="fas fa-edit"></i>
+      </button>
+
+      <!-- Start Button -->
+      <button type="button" (click)="start.emit()"
+        class="p-2.5 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors" title="Start tournament">
+        <i class="fas fa-play"></i>
+      </button>
+
+      <!-- End Button -->
+      <button type="button" (click)="end.emit()"
+        class="p-2.5 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors" title="End tournament">
+        <i class="fas fa-stop"></i>
+      </button>
+
+      <!-- Cancel Button -->
+      <button type="button" (click)="cancel.emit()"
+        class="p-2.5 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors"
+        title="Cancel tournament">
+        <i class="fas fa-ban"></i>
+      </button>
+
+      <!-- Separator -->
+      <div class="w-px h-6 bg-gray-300"></div>
+
+      <!-- Delete Button -->
+      <button type="button" (click)="delete.emit()"
+        class="p-2.5 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors" title="Delete tournament">
+        <i class="fas fa-trash"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- Help Text -->
+  <div class="mt-4 p-3 bg-blue-50 rounded-lg border border-blue-200">
+    <p class="text-xs text-blue-800">
+      <i class="fas fa-info-circle"></i>
+      <strong>Note:</strong> The backend will validate if the action is allowed based on the tournament's current
+      status.
+    </p>
+  </div>
+</div>
