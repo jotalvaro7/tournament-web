@@ -1,0 +1,19 @@
+<aside
+  class="fixed left-0 top-16 h-[calc(100vh-4rem)] bg-white border-r border-gray-200 transition-all duration-300 z-40 overflow-y-auto"
+  [class.w-64]="isOpen()"
+  [class.w-20]="!isOpen()"
+>
+  <div class="p-4 space-y-4">
+    <!-- Tournament Selector -->
+    <app-tournament-selector
+      [isOpen]="isOpen()"
+      [tournaments]="tournaments"
+      [isLoading]="isLoading"
+      (createTournament)="onCreateClick()"
+      (selectTournament)="onTournamentSelect($event)"
+    />
+
+    <!-- Navigation Items -->
+    <app-navigation-items [isOpen]="isOpen()" [navItems]="navItems()" />
+  </div>
+</aside>
