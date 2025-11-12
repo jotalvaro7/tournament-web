@@ -1,0 +1,112 @@
+<!-- Loading State -->
+@if (isLoading()) {
+<div class="flex items-center justify-center py-12">
+  <div class="text-center">
+    <i class="fas fa-spinner fa-spin text-4xl text-blue-600 mb-4"></i>
+    <p class="text-gray-600">Loading teams...</p>
+  </div>
+</div>
+}
+
+<!-- Teams View -->
+@if (!isLoading()) {
+<div class="space-y-6">
+  <!-- Header -->
+  <div class="bg-white rounded-lg shadow-md p-6">
+    <div class="flex items-center justify-between mb-4">
+      <div>
+        <h1 class="text-3xl font-bold text-gray-800 mb-2">
+          <i class="fas fa-users text-blue-600"></i> Teams
+        </h1>
+        <p class="text-gray-600">
+          Manage teams for this tournament
+        </p>
+      </div>
+
+      <!-- Add Team Button -->
+      <button type="button" (click)="onAddTeam()"
+        class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium">
+        <i class="fas fa-plus"></i> Add Team
+      </button>
+    </div>
+
+    <!-- Team Count -->
+    <div class="pt-4 border-t border-gray-200">
+      <p class="text-sm text-gray-500">
+        <span class="font-semibold text-gray-800">{{ teams().length }}</span> team(s) registered
+      </p>
+    </div>
+  </div>
+
+  <!-- Team Form (inline create/edit) -->
+  @if (showForm()) {
+  <div class="bg-white rounded-lg shadow-md p-6">
+    <h2 class="text-xl font-bold text-gray-800 mb-4">
+      <i class="fas" [class.fa-plus]="!editingTeam()" [class.fa-edit]="editingTeam()"></i>
+      {{ editingTeam() ? 'Edit Team' : 'Add New Team' }}
+    </h2>
+    <app-team-form [team]="editingTeam()" (save)="onSaveTeam($event)" (cancel)="onCancelForm()" />
+  </div>
+  }
+
+  <!-- Ultra-Compact Teams List -->
+  @if (teams().length > 0 && !showForm()) {
+  <div class="bg-white rounded-lg shadow-md overflow-hidden">
+    <div class="divide-y divide-gray-100">
+      @for (team of teams(); track team.id; let idx = $index) {
+      <div
+        class="flex items-center gap-2 px-3 py-2 hover:bg-blue-50 cursor-pointer transition-colors group"
+        (click)="openTeamDetails(team)"
+      >
+        <!-- Position Badge -->
+        <div class="flex-shrink-0 w-6 h-6 bg-gray-100 rounded-full flex items-center justify-center text-xs font-bold text-gray-600">
+          {{ idx + 1 }}
+        </div>
+
+        <!-- Team Icon -->
+        <div class="flex-shrink-0 w-6 h-6 bg-blue-600 rounded-full flex items-center justify-center">
+          <i class="fas fa-shield-alt text-white text-[10px]"></i>
+        </div>
+
+        <!-- Team Info (Flex-grow) -->
+        <div class="flex-1 min-w-0">
+          <div class="flex items-baseline gap-2">
+            <h3 class="font-semibold text-gray-900 text-sm truncate">{{ team.name }}</h3>
+            <span class="text-xs text-gray-400 truncate">· {{ team.coach }}</span>
+          </div>
+        </div>
+
+        <!-- Chevron -->
+        <div class="flex-shrink-0">
+          <i class="fas fa-chevron-right text-gray-300 text-xs group-hover:text-blue-600 transition-colors"></i>
+        </div>
+      </div>
+      }
+    </div>
+  </div>
+  }
+
+  <!-- Team Details Modal -->
+  <app-team-details-modal
+    [team]="selectedTeamForModal()"
+    (close)="closeTeamDetails()"
+    (edit)="editFromModal($event)"
+    (delete)="deleteFromModal($event)"
+  />
+
+  <!-- Empty State -->
+  @if (teams().length === 0 && !showForm()) {
+  <div class="bg-white rounded-lg shadow-md p-12 text-center">
+    <i class="fas fa-users text-6xl text-gray-300 mb-4"></i>
+    <h2 class="text-2xl font-bold text-gray-800 mb-2">No Teams Yet</h2>
+    <p class="text-gray-600 mb-6">
+      Start by adding the first team to this tournament.
+    </p>
+    <button type="button" (click)="onAddTeam()"
+      class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium">
+      <i class="fas fa-plus"></i> Add First Team
+    </button>
+  </div>
+  }
+</div>
+}

@@ -13,13 +13,24 @@ export const routes: Routes = [
       },
       {
         path: 'tournaments',
-        loadComponent: () =>
-          import('./features/tournaments/tournaments.component').then(m => m.TournamentsComponent)
-      },
-      {
-        path: 'tournaments/:id',
-        loadComponent: () =>
-          import('./features/tournaments/tournaments.component').then(m => m.TournamentsComponent)
+        children: [
+          {
+            path: '',
+            loadComponent: () =>
+              import('./features/tournaments/tournaments.component').then(m => m.TournamentsComponent)
+          },
+          {
+            path: ':id',
+            loadComponent: () =>
+              import('./features/tournaments/tournaments.component').then(m => m.TournamentsComponent)
+          },
+          {
+            path: ':id/teams',
+            loadComponent: () =>
+              import('./features/teams/presentation/components/team-list/team-list.component')
+                .then(m => m.TeamListComponent)
+          }
+        ]
       }
     ]
   }
