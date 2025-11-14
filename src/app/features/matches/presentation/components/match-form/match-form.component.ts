@@ -205,4 +205,26 @@ export class MatchFormComponent implements OnInit {
         return 'Guardar';
     }
   }
+
+  /**
+   * Get home team name
+   */
+  getHomeTeamName(): string {
+    const currentMatch = this.match();
+    if (!currentMatch) return '';
+
+    const team = this.teams().find(t => t.id === currentMatch.homeTeamId);
+    return team?.name ?? 'Equipo Local';
+  }
+
+  /**
+   * Get away team name
+   */
+  getAwayTeamName(): string {
+    const currentMatch = this.match();
+    if (!currentMatch) return '';
+
+    const team = this.teams().find(t => t.id === currentMatch.awayTeamId);
+    return team?.name ?? 'Equipo Visitante';
+  }
 }

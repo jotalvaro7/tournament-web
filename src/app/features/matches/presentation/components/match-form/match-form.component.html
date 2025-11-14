@@ -25,12 +25,10 @@
         <div class="grid grid-cols-2 gap-6">
           <!-- Home Team Score -->
           <div>
-            <label
-              for="homeTeamScore"
-              class="block text-sm font-bold text-gray-700 mb-2"
-            >
+            <p class="text-lg flex justify-center text-black font-bold mb-2">{{ getHomeTeamName() }}</p>
+            <label for="homeTeamScore" class="block text-sm font-bold text-gray-700 mb-2">
               <i class="fas fa-futbol text-indigo-500 mr-2"></i>
-              Goles Equipo Local
+                Goles:
             </label>
             <input
               id="homeTeamScore"
@@ -50,12 +48,10 @@
 
           <!-- Away Team Score -->
           <div>
-            <label
-              for="awayTeamScore"
-              class="block text-sm font-bold text-gray-700 mb-2"
-            >
+            <p class="text-lg flex justify-center text-black font-bold mb-2">{{ getAwayTeamName() }}</p>
+            <label for="awayTeamScore" class="block text-sm font-bold text-gray-700 mb-2">
               <i class="fas fa-futbol text-indigo-500 mr-2"></i>
-              Goles Equipo Visitante
+              Goles:
             </label>
             <input
               id="awayTeamScore"
