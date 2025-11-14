@@ -1,0 +1,50 @@
+<!-- Ultra Minimalist List Item - Click to open modal -->
+<div
+  class="bg-white hover:shadow-lg transition-all duration-200 cursor-pointer relative border-b border-gray-100 hover:-translate-y-1"
+  (click)="onCardClick()"
+>
+  <!-- Status indicator (subtle left border) -->
+  <div
+    [class]="getStatusBorderColor()"
+    class="absolute left-0 top-0 bottom-0 w-1 rounded-l"
+  ></div>
+
+  <div class="pl-3 pr-2 py-3">
+    <!-- Row 1: Teams and Score -->
+    <div class="flex items-center justify-between gap-4 mb-1">
+      <!-- Home Team with Icon -->
+      <div class="flex items-center gap-2 min-w-[100px] flex-1">
+        <div class="w-7 h-7 rounded-full bg-gradient-to-br from-indigo-100 to-purple-100 flex items-center justify-center flex-shrink-0">
+          <i class="fas fa-shield-alt text-xs text-indigo-600"></i>
+        </div>
+        <span class="text-sm text-gray-700 truncate">{{ homeTeamName() }}</span>
+      </div>
+
+      <!-- Score / VS (Center) -->
+      <div class="flex items-center gap-2 flex-shrink-0">
+        @if (match().isFinished() && match().hasResult()) {
+          <span class="text-xl font-bold text-gray-900">{{ match().homeTeamScore }}</span>
+          <span class="text-gray-300">-</span>
+          <span class="text-xl font-bold text-gray-900">{{ match().awayTeamScore }}</span>
+        } @else {
+          <span class="text-xs text-gray-600 px-2 py-0.5">VS</span>
+        }
+      </div>
+
+      <!-- Away Team with Icon -->
+      <div class="flex items-center gap-2 min-w-[100px] flex-1 justify-end">
+        <span class="text-sm text-gray-700 truncate text-right">{{ awayTeamName() }}</span>
+        <div class="w-7 h-7 rounded-full bg-gradient-to-br from-pink-100 to-rose-100 flex items-center justify-center flex-shrink-0">
+          <i class="fas fa-shield-alt text-xs text-pink-600"></i>
+        </div>
+      </div>
+    </div>
+
+    <!-- Row 2: Date and Field (Centered) -->
+    <div class="flex items-center justify-center gap-3 text-xs text-gray-400">
+      <span>{{ match().getFormattedDate() }}</span>
+      <span>•</span>
+      <span class="max-w-[200px] truncate">{{ match().field }}</span>
+    </div>
+  </div>
+</div>

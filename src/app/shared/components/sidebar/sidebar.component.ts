@@ -18,7 +18,7 @@ import { NavigationItemsComponent, NavItem } from './navigation-items/navigation
  *
  * Navigation behavior:
  * - No tournament selected: navItems is empty
- * - Tournament selected: shows Teams navigation item
+ * - Tournament selected: shows Teams and Matches navigation items
  */
 @Component({
   selector: 'app-sidebar',
@@ -65,7 +65,7 @@ export class SidebarComponent implements OnInit {
   /**
    * Dynamic navigation items based on selected tournament
    * Empty when no tournament is selected
-   * Shows Teams item when tournament is selected
+   * Shows Teams and Matches items when tournament is selected
    */
   readonly navItems = computed<NavItem[]>(() => {
     const tournamentId = this.selectedTournamentId();
@@ -79,8 +79,13 @@ export class SidebarComponent implements OnInit {
         label: 'Teams',
         icon: 'fas fa-users',
         route: `/tournaments/${tournamentId}/teams`
+      },
+      {
+        label: 'Matches',
+        icon: 'fas fa-calendar-check',
+        route: `/tournaments/${tournamentId}/matches`
       }
-      // Future: Add more items (Matches, Statistics, etc.)
+      // Future: Add more items (Statistics, Rankings, etc.)
     ];
   });
 

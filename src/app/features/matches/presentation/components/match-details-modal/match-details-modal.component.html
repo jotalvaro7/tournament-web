@@ -1,0 +1,148 @@
+<div
+  class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
+  (click)="onClose()"
+>
+  <div
+    class="bg-white rounded-xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto"
+    (click)="$event.stopPropagation()"
+  >
+    <!-- Header -->
+    <div class="border-b border-gray-200 p-6 relative">
+      <button
+        (click)="onClose()"
+        class="absolute top-6 right-6 text-gray-400 hover:text-gray-600 transition-colors"
+      >
+        <i class="fas fa-times text-xl"></i>
+      </button>
+
+      <div class="flex items-center gap-3">
+        <h2 class="text-xl font-semibold text-gray-900">Detalles del Partido</h2>
+        <span
+          [class]="match().getStatusColor()"
+          class="px-3 py-1 rounded-full text-xs font-medium"
+        >
+          {{ match().getStatusLabel() }}
+        </span>
+      </div>
+    </div>
+
+    <!-- Match Content -->
+    <div class="p-6">
+      <!-- Teams Display -->
+      <div class="flex items-center justify-between mb-6 bg-gray-50 rounded-lg p-6">
+        <!-- Home Team -->
+        <div class="flex-1 text-center">
+          <p class="text-sm text-gray-500 mb-2">Local</p>
+          <div class="flex items-center justify-center gap-2 mb-3">
+            <h3 class="text-lg font-semibold text-gray-900">
+              {{ homeTeamName() }}
+            </h3>
+          </div>
+          @if (match().hasResult()) {
+            <div class="text-5xl font-bold text-gray-900">
+              {{ match().homeTeamScore }}
+            </div>
+          }
+        </div>
+
+        <!-- VS / Result -->
+        <div class="px-6">
+          <div class="text-center">
+            <div class="text-gray-400 font-medium text-lg mb-2">vs</div>
+            @if (match().getWinner(); as winner) {
+              @if (winner === 'draw') {
+                <span class="text-xs text-gray-500">Empate</span>
+              } @else if (winner === 'home') {
+                <i class="fas fa-trophy text-yellow-500"></i>
+              } @else if (winner === 'away') {
+                <i class="fas fa-trophy text-yellow-500"></i>
+              }
+            }
+          </div>
+        </div>
+
+        <!-- Away Team -->
+        <div class="flex-1 text-center">
+          <p class="text-sm text-gray-500 mb-2">Visitante</p>
+          <div class="flex items-center justify-center gap-2 mb-3">
+            <h3 class="text-lg font-semibold text-gray-900">
+              {{ awayTeamName() }}
+            </h3>
+          </div>
+          @if (match().hasResult()) {
+            <div class="text-5xl font-bold text-gray-900">
+              {{ match().awayTeamScore }}
+            </div>
+          }
+        </div>
+      </div>
+
+      <!-- Match Information -->
+      <div class="space-y-3 mb-6">
+        <div class="flex items-center py-3 border-b border-gray-100">
+          <i class="far fa-calendar-alt text-gray-400 w-5"></i>
+          <div class="ml-3 flex-1">
+            <p class="text-sm text-gray-500">Fecha y Hora</p>
+            <p class="text-gray-900 font-medium">
+              {{ match().getFormattedDate() }}
+            </p>
+          </div>
+        </div>
+
+        <div class="flex items-center py-3 border-b border-gray-100">
+          <i class="fas fa-map-marker-alt text-gray-400 w-5"></i>
+          <div class="ml-3 flex-1">
+            <p class="text-sm text-gray-500">Cancha</p>
+            <p class="text-gray-900 font-medium">{{ match().field }}</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="flex flex-wrap gap-2 pt-4 border-t border-gray-200">
+        <!-- Finish / Edit Result Button -->
+        <button
+          (click)="onFinish()"
+          [class]="match().isFinished()
+            ? 'flex-1 bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2.5 rounded-lg font-medium text-sm transition-colors'
+            : 'flex-1 bg-green-600 hover:bg-green-700 text-white px-4 py-2.5 rounded-lg font-medium text-sm transition-colors'"
+        >
+          @if (match().isFinished()) {
+            <i class="fas fa-edit mr-2"></i>
+            Editar Resultado
+          } @else {
+            <i class="fas fa-flag-checkered mr-2"></i>
+            Finalizar
+          }
+        </button>
+
+        <button
+          (click)="onEdit()"
+          class="px-4 py-2.5 border border-gray-300 hover:bg-gray-50 text-gray-700 rounded-lg font-medium text-sm transition-colors"
+          title="Editar información del partido"
+        >
+          <i class="fas fa-edit mr-2"></i>
+          Editar
+        </button>
+
+        @if (match().canBePostponed()) {
+          <button
+            (click)="onPostpone()"
+            class="px-4 py-2.5 border border-gray-300 hover:bg-gray-50 text-gray-700 rounded-lg font-medium text-sm transition-colors"
+          >
+            <i class="fas fa-pause-circle mr-2"></i>
+            Posponer
+          </button>
+        }
+
+        <button
+          (click)="onDelete()"
+          class="px-4 py-2.5 border border-red-300 hover:bg-red-50 text-red-600 rounded-lg font-medium text-sm transition-colors"
+        >
+          <i class="fas fa-trash mr-2"></i>
+          Eliminar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
