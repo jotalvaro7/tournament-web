@@ -21,10 +21,12 @@ import { MatchPaginationComponent } from '../match-pagination/match-pagination.c
  * - Grid layout with match cards
  * - Create/Edit match functionality
  * - Set/update match results
- * - Filter by status (all, scheduled, finished, postponed)
+ * - Filter by status, specific date, or date range
+ * - Lazy loading: NO automatic data fetch on init
+ * - User MUST apply filters to load matches (prevents unnecessary API calls)
  * - Modal for match details
- * - Empty state with illustration
- * - Loading states
+ * - Initial state, empty state, and loading states
+ * - Pagination support
  * - Responsive design
  * - OnPush for performance
  */
@@ -53,6 +55,7 @@ export class MatchListComponent implements OnInit {
   readonly formMode = signal<'create' | 'edit' | 'result'>('create');
   readonly selectedMatch = signal<Match | null>(null);
   readonly currentFilters = signal<MatchFilterParams>({});
+  readonly hasSearched = signal<boolean>(false);
 
   // Service state
   readonly matches = this.matchService.matches;
@@ -67,17 +70,10 @@ export class MatchListComponent implements OnInit {
       if (id) {
         const tournamentId = Number(id);
         this.tournamentId.set(tournamentId);
-        this.loadData(tournamentId);
+        // Only load teams, not matches - user must apply filters first
+        this.teamService.loadTeamsByTournament(tournamentId);
       }
     });
-  }
-
-  /**
-   * Load matches and teams
-   */
-  private loadData(tournamentId: number, filters?: MatchFilterParams): void {
-    this.matchService.loadMatches(tournamentId, filters);
-    this.teamService.loadTeamsByTournament(tournamentId);
   }
 
   /**
@@ -88,7 +84,8 @@ export class MatchListComponent implements OnInit {
     if (!tournamentId) return;
 
     this.currentFilters.set(filters);
-    this.loadData(tournamentId, filters);
+    this.hasSearched.set(true);
+    this.matchService.loadMatches(tournamentId, filters);
   }
 
   /**
@@ -100,7 +97,7 @@ export class MatchListComponent implements OnInit {
 
     const filters = { ...this.currentFilters(), page };
     this.currentFilters.set(filters);
-    this.loadData(tournamentId, filters);
+    this.matchService.loadMatches(tournamentId, filters);
   }
 
   /**
