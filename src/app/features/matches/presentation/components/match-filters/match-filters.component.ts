@@ -23,7 +23,7 @@ export class MatchFiltersComponent {
     specificDate?: string;
     dateFrom?: string;
     dateTo?: string;
-  }>();
+  } | null>();
 
   // Filter state
   readonly status = signal<MatchStatus | ''>('');
@@ -71,11 +71,11 @@ export class MatchFiltersComponent {
       this.dateFrom.set('');
       this.dateTo.set('');
     }
-    this.onFilterChange();
+    // Don't emit filter change on toggle - only when user selects actual dates
   }
 
   /**
-   * Clear all filters
+   * Clear all filters and reset to initial state
    */
   clearFilters(): void {
     this.status.set('');
@@ -83,6 +83,7 @@ export class MatchFiltersComponent {
     this.dateFrom.set('');
     this.dateTo.set('');
     this.useDateRange.set(false);
-    this.filterChange.emit({});
+    // Emit null to signal parent to reset to initial state
+    this.filterChange.emit(null);
   }
 }

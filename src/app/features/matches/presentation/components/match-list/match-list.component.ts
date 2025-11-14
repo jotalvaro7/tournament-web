@@ -79,9 +79,16 @@ export class MatchListComponent implements OnInit {
   /**
    * Handle filter change
    */
-  onFilterChange(filters: { status?: MatchStatus; specificDate?: string; dateFrom?: string; dateTo?: string }): void {
+  onFilterChange(filters: { status?: MatchStatus; specificDate?: string; dateFrom?: string; dateTo?: string } | null): void {
     const tournamentId = this.tournamentId();
     if (!tournamentId) return;
+
+    // If filters is null, user cleared filters - reset to initial state
+    if (filters === null) {
+      this.hasSearched.set(false);
+      this.currentFilters.set({});
+      return;
+    }
 
     this.currentFilters.set(filters);
     this.hasSearched.set(true);

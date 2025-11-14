@@ -5,7 +5,7 @@
       <i class="fas fa-filter text-gray-400 text-sm"></i>
       <select
         [value]="status()"
-        (change)="status.set($any($event.target).value); onFilterChange()"
+        (change)="status.set($any($event.target).value)"
         class="px-3 py-1.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
       >
         @for (option of statusOptions; track option.value) {
@@ -45,7 +45,7 @@
       <input
         type="date"
         [value]="specificDate()"
-        (change)="specificDate.set($any($event.target).value); onFilterChange()"
+        (change)="specificDate.set($any($event.target).value)"
         class="px-3 py-1.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
       />
     }
@@ -56,7 +56,7 @@
         <input
           type="date"
           [value]="dateFrom()"
-          (change)="dateFrom.set($any($event.target).value); onFilterChange()"
+          (change)="dateFrom.set($any($event.target).value)"
           placeholder="Desde"
           class="px-3 py-1.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
         />
@@ -64,18 +64,27 @@
         <input
           type="date"
           [value]="dateTo()"
-          (change)="dateTo.set($any($event.target).value); onFilterChange()"
+          (change)="dateTo.set($any($event.target).value)"
           placeholder="Hasta"
           class="px-3 py-1.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
         />
       </div>
     }
 
+    <!-- Search Button -->
+    <button
+      (click)="onFilterChange()"
+      class="px-4 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-lg transition-colors flex items-center gap-2"
+    >
+      <i class="fas fa-search"></i>
+      Buscar
+    </button>
+
     <!-- Clear Filters -->
     @if (status() || specificDate() || dateFrom() || dateTo()) {
       <button
         (click)="clearFilters()"
-        class="ml-auto px-3 py-1.5 text-xs text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors flex items-center gap-1"
+        class="px-3 py-1.5 text-xs text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors flex items-center gap-1"
       >
         <i class="fas fa-times"></i>
         Limpiar
