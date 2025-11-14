@@ -1,0 +1,239 @@
+<div
+  class="fixed inset-0 bg-black bg-opacity-60 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-fadeIn"
+  (click)="onClose()"
+>
+  <div
+    class="bg-white rounded-3xl shadow-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto transform transition-all animate-scaleIn"
+    (click)="$event.stopPropagation()"
+  >
+    <!-- Header -->
+    <div
+      class="bg-gradient-to-r from-indigo-600 to-purple-600 p-6 rounded-t-3xl relative"
+    >
+      <button
+        (click)="onClose()"
+        class="absolute top-4 right-4 w-10 h-10 bg-white bg-opacity-20 hover:bg-opacity-30 rounded-full flex items-center justify-center text-white transition-all"
+      >
+        <i class="fas fa-times text-xl"></i>
+      </button>
+
+      <div class="text-center text-white">
+        <span
+          [class]="match().getStatusColor()"
+          class="inline-flex items-center px-4 py-2 rounded-full text-sm font-bold mb-4"
+        >
+          <i class="fas fa-circle text-xs mr-2"></i>
+          {{ match().getStatusLabel() }}
+        </span>
+        <h2 class="text-3xl font-black">Detalles del Partido</h2>
+      </div>
+    </div>
+
+    <!-- Match Content -->
+    <div class="p-8">
+      <!-- Teams Display -->
+      <div class="flex items-center justify-between mb-8">
+        <!-- Home Team -->
+        <div class="flex-1 text-center">
+          <div
+            class="w-24 h-24 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-3xl flex items-center justify-center mx-auto mb-4 shadow-xl transform hover:scale-105 transition-transform"
+          >
+            <i class="fas fa-shield-alt text-white text-4xl"></i>
+          </div>
+          <h3 class="text-xl font-bold text-gray-800 mb-2">
+            {{ homeTeamName() }}
+          </h3>
+          @if (match().hasResult()) {
+            <div
+              class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl shadow-lg"
+            >
+              <span class="text-white text-4xl font-black">
+                {{ match().homeTeamScore }}
+              </span>
+            </div>
+          }
+        </div>
+
+        <!-- VS / Result -->
+        <div class="px-8">
+          @if (match().isFinished() && match().hasResult()) {
+            <div class="text-center">
+              <div class="text-gray-400 font-bold text-2xl mb-2">VS</div>
+              @if (match().getWinner(); as winner) {
+                @if (winner === 'draw') {
+                  <div
+                    class="px-4 py-2 bg-yellow-100 text-yellow-800 rounded-full text-sm font-bold"
+                  >
+                    <i class="fas fa-handshake mr-1"></i>
+                    Empate
+                  </div>
+                } @else if (winner === 'home') {
+                  <div
+                    class="px-4 py-2 bg-green-100 text-green-800 rounded-full text-sm font-bold"
+                  >
+                    <i class="fas fa-trophy mr-1"></i>
+                    Local
+                  </div>
+                } @else {
+                  <div
+                    class="px-4 py-2 bg-green-100 text-green-800 rounded-full text-sm font-bold"
+                  >
+                    <i class="fas fa-trophy mr-1"></i>
+                    Visitante
+                  </div>
+                }
+              }
+            </div>
+          } @else {
+            <div
+              class="w-20 h-20 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-full flex items-center justify-center shadow-xl"
+            >
+              <span class="text-white font-black text-2xl">VS</span>
+            </div>
+          }
+        </div>
+
+        <!-- Away Team -->
+        <div class="flex-1 text-center">
+          <div
+            class="w-24 h-24 bg-gradient-to-br from-pink-500 to-red-600 rounded-3xl flex items-center justify-center mx-auto mb-4 shadow-xl transform hover:scale-105 transition-transform"
+          >
+            <i class="fas fa-shield-alt text-white text-4xl"></i>
+          </div>
+          <h3 class="text-xl font-bold text-gray-800 mb-2">
+            {{ awayTeamName() }}
+          </h3>
+          @if (match().hasResult()) {
+            <div
+              class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl shadow-lg"
+            >
+              <span class="text-white text-4xl font-black">
+                {{ match().awayTeamScore }}
+              </span>
+            </div>
+          }
+        </div>
+      </div>
+
+      <!-- Match Information -->
+      <div class="space-y-4 bg-gray-50 rounded-2xl p-6">
+        <div class="flex items-center">
+          <div
+            class="w-12 h-12 bg-indigo-100 rounded-xl flex items-center justify-center mr-4"
+          >
+            <i class="far fa-calendar-alt text-indigo-600 text-xl"></i>
+          </div>
+          <div class="flex-1">
+            <p class="text-sm text-gray-500 font-semibold">Fecha y Hora</p>
+            <p class="text-gray-800 font-bold">
+              {{ match().getFormattedDate() }}
+            </p>
+          </div>
+        </div>
+
+        <div class="flex items-center">
+          <div
+            class="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center mr-4"
+          >
+            <i class="fas fa-map-marker-alt text-purple-600 text-xl"></i>
+          </div>
+          <div class="flex-1">
+            <p class="text-sm text-gray-500 font-semibold">Ubicación</p>
+            <p class="text-gray-800 font-bold">{{ match().field }}</p>
+          </div>
+        </div>
+
+        <div class="flex items-center">
+          <div
+            class="w-12 h-12 bg-pink-100 rounded-xl flex items-center justify-center mr-4"
+          >
+            <i class="fas fa-info-circle text-pink-600 text-xl"></i>
+          </div>
+          <div class="flex-1">
+            <p class="text-sm text-gray-500 font-semibold">Estado</p>
+            <p class="text-gray-800 font-bold">
+              {{ match().getStatusLabel() }}
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="grid grid-cols-2 gap-4 mt-8">
+        <!-- Finish / Edit Result Button (always visible) -->
+        <button
+          (click)="onFinish()"
+          [class]="match().isFinished()
+            ? 'col-span-2 bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white px-6 py-4 rounded-xl font-bold text-lg shadow-lg hover:shadow-xl transition-all'
+            : 'col-span-2 bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white px-6 py-4 rounded-xl font-bold text-lg shadow-lg hover:shadow-xl transition-all'"
+        >
+          @if (match().isFinished()) {
+            <i class="fas fa-edit mr-2"></i>
+            Editar Resultado
+          } @else {
+            <i class="fas fa-flag-checkered mr-2"></i>
+            Finalizar Partido
+          }
+        </button>
+
+        <button
+          (click)="onEdit()"
+          class="bg-blue-100 hover:bg-blue-200 text-blue-800 px-6 py-3 rounded-xl font-bold transition-all"
+          title="Editar información del partido (fecha, equipos, cancha)"
+        >
+          <i class="fas fa-edit mr-2"></i>
+          Editar Info
+        </button>
+
+        @if (match().canBePostponed()) {
+          <button
+            (click)="onPostpone()"
+            class="bg-yellow-100 hover:bg-yellow-200 text-yellow-800 px-6 py-3 rounded-xl font-bold transition-all"
+          >
+            <i class="fas fa-pause-circle mr-2"></i>
+            Posponer
+          </button>
+        }
+
+        <button
+          (click)="onDelete()"
+          class="bg-red-100 hover:bg-red-200 text-red-800 px-6 py-3 rounded-xl font-bold transition-all"
+          [class.col-span-2]="!match().canBePostponed()"
+        >
+          <i class="fas fa-trash mr-2"></i>
+          Eliminar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes scaleIn {
+    from {
+      transform: scale(0.9);
+      opacity: 0;
+    }
+    to {
+      transform: scale(1);
+      opacity: 1;
+    }
+  }
+
+  .animate-fadeIn {
+    animation: fadeIn 0.2s ease-out;
+  }
+
+  .animate-scaleIn {
+    animation: scaleIn 0.3s ease-out;
+  }
+</style>

@@ -29,6 +29,12 @@ export const routes: Routes = [
             loadComponent: () =>
               import('./features/teams/presentation/components/team-list/team-list.component')
                 .then(m => m.TeamListComponent)
+          },
+          {
+            path: ':id/matches',
+            loadComponent: () =>
+              import('./features/matches/presentation/components/match-list/match-list.component')
+                .then(m => m.MatchListComponent)
           }
         ]
       }
