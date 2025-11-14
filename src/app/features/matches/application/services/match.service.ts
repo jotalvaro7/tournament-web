@@ -43,21 +43,6 @@ export class MatchService {
   readonly selectedMatch = this.selectedMatchSignal.asReadonly();
   readonly pagination = this.paginationSignal.asReadonly();
 
-  // Computed signals
-  readonly scheduledMatches = computed(() =>
-    this.matchesSignal().filter(m => m.isScheduled())
-  );
-
-  readonly finishedMatches = computed(() =>
-    this.matchesSignal().filter(m => m.isFinished())
-  );
-
-  readonly postponedMatches = computed(() =>
-    this.matchesSignal().filter(m => m.isPostponed())
-  );
-
-  readonly hasMatches = computed(() => this.matchesSignal().length > 0);
-
   /**
    * Load matches for a tournament with optional filters
    */
