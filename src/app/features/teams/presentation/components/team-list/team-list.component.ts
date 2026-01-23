@@ -1,5 +1,5 @@
 import { Component, ChangeDetectionStrategy, signal, inject, OnInit, OnDestroy } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { TeamService } from '../../../application/services';
 import { Team, TeamRequestDto } from '../../../domain/models';
 import { TeamFormComponent } from '../team-form/team-form.component';
@@ -57,6 +57,7 @@ import { TeamDetailsModalComponent } from '../team-details-modal/team-details-mo
 })
 export class TeamListComponent implements OnInit, OnDestroy {
   private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
   private readonly teamService = inject(TeamService);
 
   /**
@@ -198,5 +199,16 @@ export class TeamListComponent implements OnInit, OnDestroy {
   deleteFromModal(team: Team): void {
     this.closeTeamDetails();
     this.onRemoveTeam(team);
+  }
+
+  /**
+   * Navigates to players view from modal
+   */
+  viewPlayersFromModal(team: Team): void {
+    this.closeTeamDetails();
+    const tournamentId = this.tournamentId();
+    if (tournamentId) {
+      this.router.navigate(['/tournaments', tournamentId, 'teams', team.id, 'players']);
+    }
   }
 }
