@@ -49,6 +49,11 @@ export class TeamDetailsModalComponent {
   delete = output<Team>();
 
   /**
+   * Event emitted when user clicks View Players button
+   */
+  viewPlayers = output<Team>();
+
+  /**
    * Helper class for UI utilities
    */
   readonly helper = TeamHelper;
@@ -84,6 +89,16 @@ export class TeamDetailsModalComponent {
     const team = this.team();
     if (team) {
       this.delete.emit(team);
+    }
+  }
+
+  /**
+   * Handles view players button click
+   */
+  onViewPlayers(): void {
+    const team = this.team();
+    if (team) {
+      this.viewPlayers.emit(team);
     }
   }
 }

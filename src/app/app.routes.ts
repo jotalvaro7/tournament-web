@@ -31,6 +31,12 @@ export const routes: Routes = [
                 .then(m => m.TeamListComponent)
           },
           {
+            path: ':id/teams/:teamId/players',
+            loadComponent: () =>
+              import('./features/players/presentation/components/player-list/player-list.component')
+                .then(m => m.PlayerListComponent)
+          },
+          {
             path: ':id/matches',
             loadComponent: () =>
               import('./features/matches/presentation/components/match-list/match-list.component')
