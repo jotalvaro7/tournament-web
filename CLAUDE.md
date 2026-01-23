@@ -83,6 +83,205 @@ export class SidebarComponent { }
 
 ---
 
+## 🔒 Separación de Responsabilidades: Frontend vs Backend
+
+### Principio Fundamental
+
+**El Frontend NO debe replicar validaciones de negocio del Backend.**
+
+El backend es la **única fuente de verdad** para reglas de negocio. El frontend se enfoca en **experiencia de usuario** y **presentación**.
+
+### Responsabilidades del Backend 🔒
+
+El backend es responsable de **TODAS** las validaciones de negocio:
+
+✅ **Validaciones de datos:**
+- Unicidad (nombres duplicados, etc.)
+- Integridad referencial (FK válidas)
+- Rangos y formatos específicos del negocio
+- Reglas de dominio complejas
+
+✅ **Validaciones de estado:**
+- Transiciones de estado válidas
+- Operaciones permitidas según estado
+- Permisos y autorización
+
+✅ **Validaciones de relaciones:**
+- Equipos pertenecen al torneo
+- Usuarios tienen acceso al recurso
+- Entidades relacionadas existen
+
+✅ **Reglas de negocio:**
+- Equipos diferentes en un partido
+- Fechas válidas según contexto
+- Límites según plan/configuración
+
+**El backend SIEMPRE retorna errores descriptivos** cuando una operación es inválida.
+
+### Responsabilidades del Frontend 🎨
+
+El frontend se enfoca en **UX, presentación y validaciones básicas**:
+
+✅ **Validaciones de formulario (HTML/Angular):**
+```typescript
+// ✅ BIEN: Validaciones básicas de formulario
+this.fb.group({
+  name: ['', [Validators.required, Validators.minLength(3)]],
+  email: ['', [Validators.required, Validators.email]],
+  age: [0, [Validators.required, Validators.min(0)]]
+})
+```
+
+✅ **Mejoras de UX (prevenir estados inválidos obvios):**
+```typescript
+// ✅ BIEN: Ocultar equipos ya seleccionados en el selector
+@for (team of teams(); track team.id) {
+  @if (team.id !== form.get('homeTeamId')?.value) {
+    <option [value]="team.id">{{ team.name }}</option>
+  }
+}
+```
+
+✅ **Helpers de UI (no validaciones):**
+```typescript
+// ✅ BIEN: Métodos para presentación visual
+getStatusColor(): string {
+  return this.status === 'ACTIVE' ? 'bg-green-100' : 'bg-gray-100';
+}
+
+canShowButton(): boolean {
+  return this.status !== 'COMPLETED'; // Solo para UI
+}
+```
+
+✅ **Manejo de errores del backend:**
+```typescript
+// ✅ BIEN: Confiar en el error interceptor
+this.api.createMatch(data).subscribe({
+  next: (match) => this.showSuccess(),
+  error: (err) => {
+    // El error interceptor ya mostró el mensaje
+    // Solo manejo de estado local si es necesario
+  }
+});
+```
+
+❌ **NO hacer en el Frontend:**
+
+```typescript
+// ❌ MAL: Replicar validaciones de negocio
+private validateMatch(): void {
+  if (this.homeTeamId === this.awayTeamId) {
+    throw new Error('Teams must be different'); // Backend lo valida
+  }
+  if (!this.teamBelongsToTournament(this.homeTeamId)) {
+    throw new Error('Invalid team'); // Backend lo valida
+  }
+}
+
+// ❌ MAL: Validar permisos o estado
+canDelete(): boolean {
+  // Nunca validar reglas de negocio complejas en frontend
+  return this.status === 'CREATED' && this.hasNoMatches;
+}
+```
+
+### Arquitectura de Validación
+
+```
+┌─────────────────────────────────────────────────────────┐
+│                       FRONTEND                          │
+├─────────────────────────────────────────────────────────┤
+│                                                         │
+│  Component (Presentation)                               │
+│  ├─ Formularios con Validators básicos                  │
+│  ├─ Mejoras de UX (ocultar opciones inválidas)          │
+│  └─ Mostrar errores del backend                         │
+│                                                         │
+│  Service (Application - Facade)                         │
+│  ├─ Orquesta llamadas API                               │
+│  ├─ Maneja estado reactivo (signals)                    │
+│  ├─ NO valida reglas de negocio                         │
+│  └─ Confía en error interceptor                         │
+│                                                         │
+│  Model (Domain)                                         │
+│  ├─ Representa datos (readonly)                         │
+│  ├─ Helpers de UI (formateo, colores)                   │
+│  ├─ NO valida reglas de negocio                         │
+│  └─ Documentado: "Backend handles validations"          │
+│                                                         │
+│  ApiService (Infrastructure)                            │
+│  └─ HTTP calls sin lógica de validación                 │
+│                                                         │
+└─────────────────────────────────────────────────────────┘
+                          ▼
+                    HTTP Request
+                          ▼
+┌─────────────────────────────────────────────────────────┐
+│                       BACKEND                           │
+├─────────────────────────────────────────────────────────┤
+│  ✅ Valida TODAS las reglas de negocio                  │
+│  ✅ Retorna errores descriptivos (400/409/422)          │
+│  ✅ Única fuente de verdad                              │
+└─────────────────────────────────────────────────────────┘
+                          ▼
+                    Error Response
+                          ▼
+┌─────────────────────────────────────────────────────────┐
+│                  ERROR INTERCEPTOR                      │
+├─────────────────────────────────────────────────────────┤
+│  ✅ Captura errores HTTP                                │
+│  ✅ Muestra SweetAlert con mensaje del backend          │
+│  ✅ No duplica lógica de validación                     │
+└─────────────────────────────────────────────────────────┘
+```
+
+### Ejemplo Práctico: Match Model
+
+```typescript
+// ✅ BIEN: Model sin validaciones de negocio
+/**
+ * Match Domain Model
+ *
+ * Pure data model with UI helper methods.
+ *
+ * Important: Business validations are handled by the backend.
+ * The backend will return appropriate errors if operations are invalid.
+ * Error interceptor automatically displays these errors to the user.
+ */
+export class Match {
+  constructor(
+    public readonly id: number,
+    public readonly homeTeamId: number,
+    public readonly awayTeamId: number,
+    // ... más campos
+  ) {} // Sin validaciones en constructor
+
+  // ✅ BIEN: Helper para UI (no validación)
+  canShowPostponeButton(): boolean {
+    return this.status !== 'FINISHED'; // Solo para ocultar botón
+  }
+
+  // ✅ BIEN: Formateo para UI
+  getStatusColor(): string {
+    return this.status === 'FINISHED'
+      ? 'bg-green-100'
+      : 'bg-blue-100';
+  }
+}
+```
+
+### Ventajas de esta Arquitectura
+
+✅ **Single Source of Truth**: Backend es autoridad única
+✅ **Menos duplicación**: No repetir lógica en frontend/backend
+✅ **Fácil mantenimiento**: Cambios de reglas solo en backend
+✅ **Consistencia**: Mismas reglas en web, mobile, API
+✅ **Seguridad**: Frontend no puede omitir validaciones
+✅ **UX mejorada**: Validaciones básicas instantáneas + validaciones complejas en servidor
+
+---
+
 ## 🧠 Patrones de Diseño y Buenas Prácticas
 - Aplicación de patrones: **Facade**, **Strategy**, **Observer**, **State**, **Repository**, **Adapter**.
 - Código limpio (Clean Code): principios **SOLID**, **DRY**, **KISS**, **YAGNI**.
