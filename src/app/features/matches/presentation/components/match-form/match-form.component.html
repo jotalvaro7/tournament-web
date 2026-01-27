@@ -1,13 +1,11 @@
 @if (formSignal(); as form) {
-  <div class="bg-white rounded-2xl shadow-xl p-8">
+  <div class="card p-8">
     <!-- Header -->
-    <div class="mb-6">
-      <h2
-        class="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600"
-      >
+    <div class="mb-8">
+      <h2 class="text-2xl font-bold text-gray-900">
         {{ getFormTitle() }}
       </h2>
-      <p class="text-gray-600 mt-2">
+      <p class="text-gray-500 mt-2">
         @if (mode() === 'result') {
           Ingresa los goles de cada equipo
         } @else if (mode() === 'edit') {
@@ -22,48 +20,46 @@
     <form [formGroup]="form" (ngSubmit)="onSubmit()" class="space-y-6">
       @if (mode() === 'result') {
         <!-- Result Form -->
-        <div class="grid grid-cols-2 gap-6">
+        <div class="grid grid-cols-2 gap-8">
           <!-- Home Team Score -->
-          <div>
-            <p class="text-lg flex justify-center text-black font-bold mb-2">{{ getHomeTeamName() }}</p>
-            <label for="homeTeamScore" class="block text-sm font-bold text-gray-700 mb-2">
-              <i class="fas fa-futbol text-indigo-500 mr-2"></i>
-                Goles:
-            </label>
+          <div class="text-center">
+            <div class="w-16 h-16 mx-auto rounded-2xl flex items-center justify-center bg-gray-900 shadow-lg mb-4">
+              <i class="fas fa-shield-alt text-white text-xl"></i>
+            </div>
+            <p class="text-lg text-gray-900 font-bold mb-4">{{ getHomeTeamName() }}</p>
             <input
               id="homeTeamScore"
               type="number"
               formControlName="homeTeamScore"
               min="0"
-              [class.border-red-500]="hasError('homeTeamScore')"
-              class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-indigo-100 focus:border-indigo-500 transition-all text-center text-3xl font-bold"
+              class="input text-center text-5xl font-bold h-24"
+              [class.input-error]="hasError('homeTeamScore')"
               placeholder="0"
             />
             @if (hasError('homeTeamScore')) {
-              <p class="text-red-500 text-sm mt-1">
+              <p class="error-text">
                 {{ getErrorMessage('homeTeamScore') }}
               </p>
             }
           </div>
 
           <!-- Away Team Score -->
-          <div>
-            <p class="text-lg flex justify-center text-black font-bold mb-2">{{ getAwayTeamName() }}</p>
-            <label for="awayTeamScore" class="block text-sm font-bold text-gray-700 mb-2">
-              <i class="fas fa-futbol text-indigo-500 mr-2"></i>
-              Goles:
-            </label>
+          <div class="text-center">
+            <div class="w-16 h-16 mx-auto rounded-2xl flex items-center justify-center bg-gray-100 mb-4">
+              <i class="fas fa-shield-alt text-gray-500 text-xl"></i>
+            </div>
+            <p class="text-lg text-gray-900 font-bold mb-4">{{ getAwayTeamName() }}</p>
             <input
               id="awayTeamScore"
               type="number"
               formControlName="awayTeamScore"
               min="0"
-              [class.border-red-500]="hasError('awayTeamScore')"
-              class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-indigo-100 focus:border-indigo-500 transition-all text-center text-3xl font-bold"
+              class="input text-center text-5xl font-bold h-24"
+              [class.input-error]="hasError('awayTeamScore')"
               placeholder="0"
             />
             @if (hasError('awayTeamScore')) {
-              <p class="text-red-500 text-sm mt-1">
+              <p class="error-text">
                 {{ getErrorMessage('awayTeamScore') }}
               </p>
             }
@@ -74,18 +70,15 @@
         <div class="space-y-6">
           <!-- Home Team -->
           <div>
-            <label
-              for="homeTeamId"
-              class="block text-sm font-bold text-gray-700 mb-2"
-            >
-              <i class="fas fa-shield-alt text-indigo-500 mr-2"></i>
+            <label for="homeTeamId" class="label">
+              <i class="fas fa-shield-alt text-gray-500 mr-2"></i>
               Equipo Local
             </label>
             <select
               id="homeTeamId"
               formControlName="homeTeamId"
-              [class.border-red-500]="hasError('homeTeamId')"
-              class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-indigo-100 focus:border-indigo-500 transition-all"
+              class="select"
+              [class.input-error]="hasError('homeTeamId')"
             >
               <option value="">Selecciona un equipo</option>
               @for (team of teams(); track team.id) {
@@ -93,7 +86,7 @@
               }
             </select>
             @if (hasError('homeTeamId')) {
-              <p class="text-red-500 text-sm mt-1">
+              <p class="error-text">
                 {{ getErrorMessage('homeTeamId') }}
               </p>
             }
@@ -101,18 +94,15 @@
 
           <!-- Away Team -->
           <div>
-            <label
-              for="awayTeamId"
-              class="block text-sm font-bold text-gray-700 mb-2"
-            >
-              <i class="fas fa-shield-alt text-pink-500 mr-2"></i>
+            <label for="awayTeamId" class="label">
+              <i class="fas fa-shield-alt text-gray-400 mr-2"></i>
               Equipo Visitante
             </label>
             <select
               id="awayTeamId"
               formControlName="awayTeamId"
-              [class.border-red-500]="hasError('awayTeamId')"
-              class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-indigo-100 focus:border-indigo-500 transition-all"
+              class="select"
+              [class.input-error]="hasError('awayTeamId')"
             >
               <option value="">Selecciona un equipo</option>
               @for (team of teams(); track team.id) {
@@ -122,7 +112,7 @@
               }
             </select>
             @if (hasError('awayTeamId')) {
-              <p class="text-red-500 text-sm mt-1">
+              <p class="error-text">
                 {{ getErrorMessage('awayTeamId') }}
               </p>
             }
@@ -130,22 +120,19 @@
 
           <!-- Match Date -->
           <div>
-            <label
-              for="matchDate"
-              class="block text-sm font-bold text-gray-700 mb-2"
-            >
-              <i class="far fa-calendar-alt text-indigo-500 mr-2"></i>
+            <label for="matchDate" class="label">
+              <i class="far fa-calendar-alt text-gray-500 mr-2"></i>
               Fecha y Hora
             </label>
             <input
               id="matchDate"
               type="datetime-local"
               formControlName="matchDate"
-              [class.border-red-500]="hasError('matchDate')"
-              class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-indigo-100 focus:border-indigo-500 transition-all"
+              class="input"
+              [class.input-error]="hasError('matchDate')"
             />
             @if (hasError('matchDate')) {
-              <p class="text-red-500 text-sm mt-1">
+              <p class="error-text">
                 {{ getErrorMessage('matchDate') }}
               </p>
             }
@@ -153,23 +140,20 @@
 
           <!-- Field -->
           <div>
-            <label
-              for="field"
-              class="block text-sm font-bold text-gray-700 mb-2"
-            >
-              <i class="fas fa-map-marker-alt text-indigo-500 mr-2"></i>
+            <label for="field" class="label">
+              <i class="fas fa-map-marker-alt text-gray-500 mr-2"></i>
               Cancha / Estadio
             </label>
             <input
               id="field"
               type="text"
               formControlName="field"
-              [class.border-red-500]="hasError('field')"
-              class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-indigo-100 focus:border-indigo-500 transition-all"
+              class="input"
+              [class.input-error]="hasError('field')"
               placeholder="Ej: Estadio Metropolitano"
             />
             @if (hasError('field')) {
-              <p class="text-red-500 text-sm mt-1">
+              <p class="error-text">
                 {{ getErrorMessage('field') }}
               </p>
             }
@@ -178,18 +162,18 @@
       }
 
       <!-- Action Buttons -->
-      <div class="flex gap-3 pt-4 border-t border-gray-200">
+      <div class="flex gap-4 pt-6 border-t border-gray-200">
         <button
           type="button"
           (click)="onCancel()"
-          class="flex-1 px-6 py-3 bg-gray-200 hover:bg-gray-300 text-gray-800 rounded-xl font-bold transition-all duration-200"
+          class="btn-secondary flex-1"
         >
           Cancelar
         </button>
         <button
           type="submit"
           [disabled]="form.invalid"
-          class="flex-1 px-6 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 disabled:from-gray-400 disabled:to-gray-400 text-white rounded-xl font-bold transition-all duration-200 shadow-lg hover:shadow-xl disabled:cursor-not-allowed"
+          class="btn-primary flex-1"
         >
           <i class="fas fa-check mr-2"></i>
           {{ getSubmitButtonText() }}

@@ -6,21 +6,15 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
  */
 export interface NavItem {
   label: string;
-  icon: string; // Font Awesome class (e.g., 'fas fa-trophy')
+  icon: string;
   route: string;
 }
 
 /**
- * Navigation Items Component
+ * Navigation Items Component (Header variant)
  *
- * Displays list of navigation links with icons.
- * Handles active state styling and collapsed/expanded views.
- *
- * Responsibilities:
- * - Render navigation items
- * - Show icons in collapsed mode
- * - Show icons + labels in expanded mode
- * - Apply active styling based on current route
+ * Displays horizontal navigation links with icons.
+ * Used inside the header bar.
  *
  * This component is purely presentational.
  */
@@ -32,13 +26,6 @@ export interface NavItem {
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class NavigationItemsComponent {
-  /**
-   * Controls expanded/collapsed view
-   */
-  readonly isOpen = input.required<boolean>();
-
-  /**
-   * Navigation items to display
-   */
+  /** Navigation items to display */
   readonly navItems = input.required<NavItem[]>();
 }

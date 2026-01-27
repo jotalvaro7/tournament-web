@@ -1,30 +1,38 @@
-<div class="bg-white rounded-lg shadow-md p-6">
-  <h2 class="text-2xl font-bold text-gray-800 mb-6">
-    @if (tournament()) {
-    <i class="fas fa-edit text-blue-600"></i> Edit Tournament
-    } @else {
-    <i class="fas fa-plus text-blue-600"></i> Create Tournament
-    }
+<div class="card p-8">
+  <h2 class="text-2xl font-bold mb-8 flex items-center gap-4">
+    <div class="w-12 h-12 rounded-2xl flex items-center justify-center bg-gray-900 shadow-lg">
+      @if (tournament()) {
+      <i class="fas fa-edit text-white"></i>
+      } @else {
+      <i class="fas fa-plus text-white"></i>
+      }
+    </div>
+    <span class="text-gray-900">
+      @if (tournament()) {
+        Edit Tournament
+      } @else {
+        Create Tournament
+      }
+    </span>
   </h2>
 
-  <form [formGroup]="form" (ngSubmit)="onSubmit()" class="space-y-4">
+  <form [formGroup]="form" (ngSubmit)="onSubmit()" class="space-y-6">
     <!-- Name Field -->
     <div>
-      <label for="name" class="block text-sm font-medium text-gray-700 mb-1">
+      <label for="name" class="label">
         Tournament Name <span class="text-red-500">*</span>
       </label>
       <input id="name" type="text" formControlName="name"
-        class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 transition-colors"
-        [class.border-gray-300]="!hasError('name')" [class.border-red-500]="hasError('name')"
-        [class.focus:ring-blue-500]="!hasError('name')" [class.focus:ring-red-500]="hasError('name')"
+        class="input"
+        [class.input-error]="hasError('name')"
         placeholder="Enter tournament name (3-100 characters)" />
       @if (hasError('name')) {
-      <p class="mt-1 text-sm text-red-600">
-        <i class="fas fa-exclamation-circle"></i> {{ getErrorMessage('name') }}
+      <p class="error-text">
+        <i class="fas fa-exclamation-circle mr-1"></i> {{ getErrorMessage('name') }}
       </p>
       }
       @if (!hasError('name') && form.get('name')?.value) {
-      <p class="mt-1 text-xs text-gray-500">
+      <p class="mt-2 text-xs text-gray-400">
         {{ form.get('name')?.value.length }}/100 characters
       </p>
       }
@@ -32,33 +40,29 @@
 
     <!-- Description Field -->
     <div>
-      <label for="description" class="block text-sm font-medium text-gray-700 mb-1">
+      <label for="description" class="label">
         Description <span class="text-red-500">*</span>
       </label>
       <textarea id="description" formControlName="description" rows="4"
-        class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 transition-colors resize-none"
-        [class.border-gray-300]="!hasError('description')" [class.border-red-500]="hasError('description')"
-        [class.focus:ring-blue-500]="!hasError('description')" [class.focus:ring-red-500]="hasError('description')"
+        class="input resize-none"
+        [class.input-error]="hasError('description')"
         placeholder="Enter tournament description (10-500 characters)"></textarea>
       @if (hasError('description')) {
-      <p class="mt-1 text-sm text-red-600">
-        <i class="fas fa-exclamation-circle"></i> {{ getErrorMessage('description') }}
+      <p class="error-text">
+        <i class="fas fa-exclamation-circle mr-1"></i> {{ getErrorMessage('description') }}
       </p>
       }
       @if (!hasError('description') && form.get('description')?.value) {
-      <p class="mt-1 text-xs text-gray-500">
+      <p class="mt-2 text-xs text-gray-400">
         {{ form.get('description')?.value.length }}/500 characters
       </p>
       }
     </div>
 
     <!-- Action Buttons -->
-    <div class="flex gap-3 pt-4 border-t border-gray-200">
-      <button type="submit" [disabled]="form.invalid" class="flex-1 px-6 py-2 rounded-lg font-medium transition-colors"
-        [class.bg-blue-600]="form.valid" [class.hover:bg-blue-700]="form.valid" [class.text-white]="form.valid"
-        [class.bg-gray-300]="form.invalid" [class.text-gray-500]="form.invalid"
-        [class.cursor-not-allowed]="form.invalid">
-        <i class="fas fa-save"></i>
+    <div class="flex gap-4 pt-6 border-t border-gray-200">
+      <button type="submit" [disabled]="form.invalid" class="btn-primary flex-1">
+        <i class="fas fa-save mr-2"></i>
         @if (tournament()) {
         Update Tournament
         } @else {
@@ -66,9 +70,8 @@
         }
       </button>
 
-      <button type="button" (click)="onCancel()"
-        class="px-6 py-2 border border-gray-300 rounded-lg font-medium text-gray-700 hover:bg-gray-50 transition-colors">
-        <i class="fas fa-times"></i> Cancel
+      <button type="button" (click)="onCancel()" class="btn-secondary">
+        <i class="fas fa-times mr-2"></i> Cancel
       </button>
     </div>
   </form>

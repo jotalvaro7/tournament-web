@@ -3,3 +3,308 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* ========================================
+   CLEAN BLACK & WHITE THEME
+   ======================================== */
+
+@layer base {
+  body {
+    @apply bg-gray-50 min-h-screen text-gray-900;
+  }
+}
+
+@layer components {
+  /* =====================================
+     CARDS
+     ===================================== */
+  .card {
+    @apply bg-white rounded-2xl border border-gray-200 shadow-sm transition-all duration-300;
+  }
+
+  .card:hover {
+    @apply shadow-md;
+  }
+
+  /* =====================================
+     BUTTONS
+     ===================================== */
+  .btn-primary {
+    @apply px-6 py-3 rounded-xl font-semibold text-white bg-gray-900 overflow-hidden
+           transition-all duration-300 hover:bg-gray-800 hover:shadow-lg
+           disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+
+  .btn-secondary {
+    @apply px-6 py-3 rounded-xl font-semibold text-gray-700 bg-white border-2 border-gray-200
+           transition-all duration-300 hover:border-gray-400 hover:bg-gray-50
+           disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+
+  .btn-danger {
+    @apply px-6 py-3 rounded-xl font-semibold text-white bg-red-600 overflow-hidden
+           transition-all duration-300 hover:bg-red-700 hover:shadow-lg
+           disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+
+  .btn-success {
+    @apply px-6 py-3 rounded-xl font-semibold text-white bg-emerald-600 overflow-hidden
+           transition-all duration-300 hover:bg-emerald-700 hover:shadow-lg
+           disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+
+  .btn-icon {
+    @apply p-3 rounded-xl transition-all duration-300 text-gray-500 hover:bg-gray-100 hover:text-gray-900;
+  }
+
+  /* =====================================
+     INPUTS
+     ===================================== */
+  .input {
+    @apply w-full px-4 py-3 rounded-xl transition-all duration-300
+           bg-white border-2 border-gray-200 text-gray-900;
+  }
+
+  .input::placeholder {
+    @apply text-gray-400;
+  }
+
+  .input:focus {
+    @apply outline-none border-gray-900 ring-2 ring-gray-900/10;
+  }
+
+  .input-error {
+    @apply border-red-400 !important;
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+  }
+
+  .select {
+    @apply input appearance-none cursor-pointer pr-10;
+    background-image: url('data:image/svg+xml;charset=UTF-8,%3csvg%20xmlns%3d%22http%3a%2f%2fwww.w3.org%2f2000%2fsvg%22%20viewBox%3d%220%200%2020%2020%22%20fill%3d%22%236b7280%22%3e%3cpath%20fill-rule%3d%22evenodd%22%20d%3d%22M5.293%207.293a1%201%200%20011.414%200L10%2010.586l3.293-3.293a1%201%200%20111.414%201.414l-4%204a1%201%200%2001-1.414%200l-4-4a1%201%200%20010-1.414z%22%20clip-rule%3d%22evenodd%22%2f%3e%3c%2fsvg%3e');
+    background-repeat: no-repeat;
+    background-position: right 0.75rem center;
+    background-size: 1.25rem 1.25rem;
+  }
+
+  .select option {
+    @apply bg-white text-gray-900;
+  }
+
+  .label {
+    @apply block text-sm font-medium mb-2 text-gray-700;
+  }
+
+  .error-text {
+    @apply text-sm mt-1 text-red-500;
+  }
+
+  /* =====================================
+     GRADIENT TEXT (replaced with bold black)
+     ===================================== */
+  .gradient-text {
+    @apply text-gray-900 font-bold;
+  }
+
+  /* =====================================
+     MODAL
+     ===================================== */
+  .modal-overlay {
+    @apply fixed inset-0 flex items-center justify-center z-50 p-4;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(4px);
+  }
+
+  .modal-content {
+    @apply bg-white rounded-2xl shadow-2xl max-h-[90vh] overflow-hidden;
+    animation: modalSlideIn 0.3s ease-out;
+  }
+
+  @keyframes modalSlideIn {
+    from {
+      opacity: 0;
+      transform: scale(0.95) translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1) translateY(0);
+    }
+  }
+
+  .modal-header {
+    @apply px-6 py-5 border-b border-gray-200 bg-gray-50;
+  }
+
+  .modal-body {
+    @apply p-6 overflow-y-auto;
+  }
+
+  .modal-footer {
+    @apply px-6 py-4 flex justify-end gap-3 border-t border-gray-200 bg-gray-50;
+  }
+
+  /* =====================================
+     BADGES
+     ===================================== */
+  .badge {
+    @apply inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold;
+  }
+
+  .badge-primary {
+    @apply bg-gray-100 text-gray-700 border border-gray-200;
+  }
+
+  .badge-success {
+    @apply bg-emerald-50 text-emerald-700 border border-emerald-200;
+  }
+
+  .badge-warning {
+    @apply bg-amber-50 text-amber-700 border border-amber-200;
+  }
+
+  .badge-danger {
+    @apply bg-red-50 text-red-700 border border-red-200;
+  }
+
+  /* =====================================
+     LIST ITEMS
+     ===================================== */
+  .list-item {
+    @apply flex items-center gap-4 p-4 rounded-xl transition-all duration-300 cursor-pointer
+           bg-white border border-transparent;
+  }
+
+  .list-item:hover {
+    @apply bg-gray-50 border-gray-200;
+  }
+
+  /* =====================================
+     NAVIGATION
+     ===================================== */
+  .nav-item {
+    @apply flex items-center gap-2 px-4 py-2 rounded-xl transition-all duration-300 text-gray-500;
+  }
+
+  .nav-item:hover {
+    @apply bg-gray-100 text-gray-900;
+  }
+
+  .nav-item-active {
+    @apply bg-gray-100 text-gray-900 font-semibold;
+  }
+
+  /* =====================================
+     STATS CARD
+     ===================================== */
+  .stats-card {
+    @apply bg-gray-50 rounded-xl p-6 text-center border border-gray-100;
+  }
+
+  .stats-value {
+    @apply text-4xl font-bold text-gray-900;
+  }
+
+  .stats-label {
+    @apply text-sm mt-2 text-gray-500;
+  }
+
+  /* =====================================
+     LOADING SPINNER
+     ===================================== */
+  .spinner {
+    @apply w-12 h-12 rounded-full;
+    border: 3px solid #e5e7eb;
+    border-top-color: #111827;
+    animation: spin 1s linear infinite;
+  }
+
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+
+  /* =====================================
+     SCROLLBAR
+     ===================================== */
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-gray-100;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-gray-300 rounded;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-gray-400;
+  }
+
+  /* =====================================
+     EMPTY STATE
+     ===================================== */
+  .empty-state {
+    @apply flex flex-col items-center justify-center py-16 text-center;
+  }
+
+  .empty-state-icon {
+    @apply text-6xl mb-6 text-gray-300;
+  }
+
+  .empty-state-title {
+    @apply text-2xl font-bold mb-3 text-gray-900;
+  }
+
+  .empty-state-description {
+    @apply mb-8 text-gray-500;
+  }
+
+  /* =====================================
+     TABLE
+     ===================================== */
+  .table-header {
+    @apply text-xs font-semibold uppercase tracking-wider px-4 py-3
+           bg-gray-50 text-gray-500;
+  }
+
+  .table-row {
+    @apply transition-all duration-300 border-b border-gray-100;
+  }
+
+  .table-row:hover {
+    @apply bg-gray-50;
+  }
+
+  .table-cell {
+    @apply px-4 py-4 text-sm text-gray-700;
+  }
+
+  /* =====================================
+     ICON CIRCLE
+     ===================================== */
+  .icon-circle {
+    @apply w-12 h-12 rounded-full flex items-center justify-center bg-gray-100;
+  }
+
+  .icon-circle i {
+    @apply text-gray-600;
+  }
+
+  /* =====================================
+     DIVIDER
+     ===================================== */
+  .divider {
+    @apply my-6 border-t border-gray-200;
+  }
+
+  /* =====================================
+     PAGE TITLE
+     ===================================== */
+  .page-title {
+    @apply text-3xl font-bold text-gray-900;
+  }
+
+  .page-subtitle {
+    @apply mt-2 text-gray-500;
+  }
+}

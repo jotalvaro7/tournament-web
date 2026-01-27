@@ -34,7 +34,7 @@ export class TournamentHelper {
       case TournamentStatus.IN_PROGRESS:
         return 'text-blue-700 bg-blue-100';
       case TournamentStatus.COMPLETED:
-        return 'text-green-700 bg-green-100';
+        return 'text-emerald-700 bg-emerald-100';
       case TournamentStatus.CANCELLED:
         return 'text-red-700 bg-red-100';
     }

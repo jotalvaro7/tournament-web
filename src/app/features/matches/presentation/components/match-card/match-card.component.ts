@@ -65,11 +65,11 @@ export class MatchCardComponent {
     const status = this.match().status;
     switch (status) {
       case 'SCHEDULED':
-        return 'bg-blue-400';
+        return 'bg-gray-400';
       case 'FINISHED':
-        return 'bg-green-400';
+        return 'bg-emerald-500';
       case 'POSTPONED':
-        return 'bg-yellow-400';
+        return 'bg-amber-500';
       default:
         return 'bg-gray-300';
     }
