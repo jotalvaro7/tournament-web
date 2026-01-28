@@ -1,5 +1,5 @@
 import { Component, ChangeDetectionStrategy, inject, OnInit, OnDestroy, signal } from '@angular/core';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { TournamentFormModalComponent } from './presentation/components/tournament-form-modal/tournament-form-modal.component';
 import { TournamentManageComponent } from './presentation/components/tournament-manage/tournament-manage.component';
@@ -9,7 +9,7 @@ import { TournamentRequestDto } from './domain/models';
 @Component({
   selector: 'app-tournaments',
   standalone: true,
-  imports: [RouterLink, TournamentFormModalComponent, TournamentManageComponent],
+  imports: [TournamentFormModalComponent, TournamentManageComponent],
   templateUrl: './tournaments.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush
 })

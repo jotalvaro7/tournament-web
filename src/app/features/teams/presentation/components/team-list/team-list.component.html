@@ -1,94 +1,83 @@
-<!-- Loading State -->
 @if (isLoading()) {
-<div class="flex items-center justify-center py-20">
-  <div class="text-center">
-    <div class="spinner mx-auto mb-6"></div>
-    <p class="text-gray-500">Loading teams...</p>
+  <div class="flex items-center justify-center py-20">
+    <div class="text-center">
+      <div class="spinner mx-auto mb-6"></div>
+      <p class="text-gray-500">Loading teams...</p>
+    </div>
   </div>
-</div>
 }
 
-<!-- Teams View -->
 @if (!isLoading()) {
-<div class="space-y-6 animate-fade-in">
-  <!-- Header -->
-  <div class="card px-6 py-4">
-    <div class="flex items-center justify-between">
-      <div class="flex items-center gap-3">
-        <div class="w-8 h-8 rounded-lg flex items-center justify-center bg-gray-900">
-          <i class="fas fa-users text-white text-sm"></i>
+  <div class="space-y-6 animate-fade-in">
+    <div class="card px-6 py-4">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <div class="w-8 h-8 rounded-lg flex items-center justify-center bg-gray-900">
+            <i class="fas fa-users text-white text-sm"></i>
+          </div>
+          <div>
+            <h1 class="text-lg font-bold text-gray-900">Teams</h1>
+            <p class="text-xs text-gray-500">{{ teams().length }} registered</p>
+          </div>
         </div>
-        <div>
-          <h1 class="text-lg font-bold text-gray-900">Teams</h1>
-          <p class="text-xs text-gray-500">{{ teams().length }} registered</p>
-        </div>
+        <button type="button" (click)="onAddTeam()" class="btn-primary">
+          <i class="fas fa-plus mr-2"></i> Add Team
+        </button>
       </div>
-      <button type="button" (click)="onAddTeam()" class="btn-primary">
-        <i class="fas fa-plus mr-2"></i> Add Team
-      </button>
     </div>
-  </div>
 
-  <!-- Team Form (inline create/edit) -->
-  @if (showForm()) {
-  <div class="card px-6 py-5 animate-slide-in">
-    <h2 class="text-base font-bold text-gray-900 mb-4 flex items-center gap-2">
-      <div class="w-7 h-7 rounded-lg flex items-center justify-center bg-gray-900">
-        <i class="fas text-white text-xs" [class.fa-plus]="!editingTeam()" [class.fa-edit]="editingTeam()"></i>
+    @if (teams().length > 0) {
+      <div class="card overflow-hidden">
+        <table class="w-full">
+          <thead>
+            <tr>
+              <th class="table-header text-left">#</th>
+              <th class="table-header text-left">Team</th>
+              <th class="table-header text-left">Coach</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (team of teams(); track team.id; let idx = $index) {
+              <tr class="table-row cursor-pointer" (click)="openTeamDetails(team)">
+                <td class="table-cell font-medium text-gray-500 w-12">{{ idx + 1 }}</td>
+                <td class="table-cell font-semibold text-gray-900">{{ team.name }}</td>
+                <td class="table-cell text-gray-600">{{ team.coach }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
       </div>
-      {{ editingTeam() ? 'Edit Team' : 'Add New Team' }}
-    </h2>
-    <app-team-form [team]="editingTeam()" (save)="onSaveTeam($event)" (cancel)="onCancelForm()" />
-  </div>
-  }
+    }
 
-  <!-- Teams List -->
-  @if (teams().length > 0 && !showForm()) {
-  <div class="card overflow-hidden">
-    <table class="w-full">
-      <thead>
-        <tr>
-          <th class="table-header text-left">#</th>
-          <th class="table-header text-left">Team</th>
-          <th class="table-header text-left">Coach</th>
-        </tr>
-      </thead>
-      <tbody>
-        @for (team of teams(); track team.id; let idx = $index) {
-          <tr class="table-row cursor-pointer" (click)="openTeamDetails(team)">
-            <td class="table-cell font-medium text-gray-500 w-12">{{ idx + 1 }}</td>
-            <td class="table-cell font-semibold text-gray-900">{{ team.name }}</td>
-            <td class="table-cell text-gray-600">{{ team.coach }}</td>
-          </tr>
-        }
-      </tbody>
-    </table>
-  </div>
-  }
+    @if (teams().length === 0) {
+      <div class="card p-16">
+        <div class="empty-state">
+          <i class="fas fa-users empty-state-icon"></i>
+          <h2 class="empty-state-title">No Teams Yet</h2>
+          <p class="empty-state-description">
+            Start by adding the first team to this tournament.
+          </p>
+          <button type="button" (click)="onAddTeam()" class="btn-primary">
+            <i class="fas fa-plus mr-2"></i> Add First Team
+          </button>
+        </div>
+      </div>
+    }
 
-  <!-- Team Details Modal -->
-  <app-team-details-modal
-    [team]="selectedTeamForModal()"
-    (close)="closeTeamDetails()"
-    (edit)="editFromModal($event)"
-    (delete)="deleteFromModal($event)"
-    (viewPlayers)="viewPlayersFromModal($event)"
+    <app-team-details-modal
+      [team]="selectedTeamForModal()"
+      (close)="closeTeamDetails()"
+      (edit)="editFromModal($event)"
+      (delete)="deleteFromModal($event)"
+      (viewPlayers)="viewPlayersFromModal($event)"
+    />
+  </div>
+}
+
+@if (showFormModal()) {
+  <app-team-form-modal
+    [team]="editingTeam()"
+    (save)="onSaveTeam($event)"
+    (close)="onCloseFormModal()"
   />
-
-  <!-- Empty State -->
-  @if (teams().length === 0 && !showForm()) {
-  <div class="card p-16">
-    <div class="empty-state">
-      <i class="fas fa-users empty-state-icon"></i>
-      <h2 class="empty-state-title">No Teams Yet</h2>
-      <p class="empty-state-description">
-        Start by adding the first team to this tournament.
-      </p>
-      <button type="button" (click)="onAddTeam()" class="btn-primary">
-        <i class="fas fa-plus mr-2"></i> Add First Team
-      </button>
-    </div>
-  </div>
-  }
-</div>
 }
