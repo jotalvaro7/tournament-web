@@ -1,26 +1,15 @@
 import { Component, ChangeDetectionStrategy, inject, OnInit, OnDestroy, signal } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { Subscription } from 'rxjs';
-import { TournamentFormComponent } from './presentation/components/tournament-form/tournament-form.component';
+import { TournamentFormModalComponent } from './presentation/components/tournament-form-modal/tournament-form-modal.component';
 import { TournamentManageComponent } from './presentation/components/tournament-manage/tournament-manage.component';
 import { TournamentService } from './application/services';
 import { TournamentRequestDto } from './domain/models';
 
-/**
- * Tournaments Component
- *
- * Main container component for tournament management.
- * Handles routing for:
- * - /tournaments (default view)
- * - /tournaments/new (create new tournament)
- * - /tournaments/:id (manage existing tournament)
- *
- * Reacts to route parameter changes to switch between modes.
- */
 @Component({
   selector: 'app-tournaments',
   standalone: true,
-  imports: [RouterLink, TournamentFormComponent, TournamentManageComponent],
+  imports: [RouterLink, TournamentFormModalComponent, TournamentManageComponent],
   templateUrl: './tournaments.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
@@ -30,20 +19,19 @@ export class TournamentsComponent implements OnInit, OnDestroy {
   private readonly tournamentService = inject(TournamentService);
   private paramSubscription?: Subscription;
 
-  /**
-   * Current mode: 'list' | 'new' | 'manage'
-   */
-  readonly mode = signal<'list' | 'new' | 'manage'>('list');
+  readonly mode = signal<'list' | 'manage'>('list');
+  readonly showCreateModal = signal(false);
 
   ngOnInit(): void {
-    // Subscribe to route parameter changes
     this.paramSubscription = this.route.paramMap.subscribe(params => {
       const id = params.get('id');
 
       if (id === 'new') {
-        this.mode.set('new');
+        this.mode.set('list');
+        this.showCreateModal.set(true);
       } else if (id) {
         this.mode.set('manage');
+        this.showCreateModal.set(false);
       } else {
         this.mode.set('list');
       }
@@ -54,22 +42,23 @@ export class TournamentsComponent implements OnInit, OnDestroy {
     this.paramSubscription?.unsubscribe();
   }
 
-  /**
-   * Handles save from create form
-   */
+  openCreateModal(): void {
+    this.showCreateModal.set(true);
+  }
+
   onCreateSave(request: TournamentRequestDto): void {
     this.tournamentService.create(request).subscribe({
       next: (tournament) => {
-        // Navigate to the newly created tournament
+        this.showCreateModal.set(false);
         this.router.navigate(['/tournaments', tournament.id]);
       }
     });
   }
 
-  /**
-   * Handles cancel from create form
-   */
-  onCreateCancel(): void {
-    this.router.navigate(['/tournaments']);
+  onCreateClose(): void {
+    this.showCreateModal.set(false);
+    if (this.route.snapshot.paramMap.get('id') === 'new') {
+      this.router.navigate(['/tournaments']);
+    }
   }
 }

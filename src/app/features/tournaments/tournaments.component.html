@@ -1,4 +1,3 @@
-<!-- Default List View -->
 @if (mode() === 'list') {
   <div class="card p-16 animate-fade-in">
     <div class="empty-state">
@@ -7,29 +6,22 @@
       <p class="empty-state-description max-w-md mx-auto">
         Select a tournament from the header to manage it, or create a new one to get started.
       </p>
-      <button
-        routerLink="/tournaments/new"
-        class="btn-primary"
-      >
+      <button (click)="openCreateModal()" class="btn-primary">
         <i class="fas fa-plus mr-2"></i> Create Your First Tournament
       </button>
     </div>
   </div>
 }
 
-<!-- Create New Tournament View -->
-@if (mode() === 'new') {
-  <div class="animate-slide-in">
-    <app-tournament-form
-      (save)="onCreateSave($event)"
-      (cancel)="onCreateCancel()"
-    />
-  </div>
-}
-
-<!-- Manage Existing Tournament View -->
 @if (mode() === 'manage') {
   <div class="animate-fade-in">
     <app-tournament-manage />
   </div>
+}
+
+@if (showCreateModal()) {
+  <app-tournament-form-modal
+    (save)="onCreateSave($event)"
+    (close)="onCreateClose()"
+  />
 }
