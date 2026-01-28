@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
 import { Router, RouterOutlet } from '@angular/router';
 import { NavbarComponent } from '../navbar/navbar.component';
 
@@ -22,11 +22,7 @@ import { NavbarComponent } from '../navbar/navbar.component';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class LayoutComponent {
-  private readonly router: Router;
-
-  constructor(router: Router) {
-    this.router = router;
-  }
+  private readonly router = inject(Router);
 
   /**
    * Handles create tournament event from navbar

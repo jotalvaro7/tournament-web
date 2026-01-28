@@ -1,5 +1,4 @@
-import { Component, input, output, OnInit, ChangeDetectionStrategy, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, input, output, OnInit, ChangeDetectionStrategy, signal, inject } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Match, MatchRequest, FinishMatchRequest } from '../../../domain/models';
 import { Team } from '@app/features/teams/domain/models';
@@ -23,7 +22,7 @@ import { Team } from '@app/features/teams/domain/models';
 @Component({
   selector: 'app-match-form',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [ReactiveFormsModule],
   templateUrl: './match-form.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
@@ -49,7 +48,7 @@ export class MatchFormComponent implements OnInit {
   /** Form group */
   readonly formSignal = signal<FormGroup | null>(null);
 
-  constructor(private fb: FormBuilder) {}
+  private readonly fb = inject(FormBuilder);
 
   ngOnInit(): void {
     this.initializeForm();
