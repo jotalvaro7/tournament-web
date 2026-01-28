@@ -1,6 +1,5 @@
 <div class="animate-fade-in">
   <div class="max-w-7xl mx-auto">
-    <!-- Header -->
     <div class="card px-6 py-4 mb-6">
       <div class="flex items-center justify-between">
         <div class="flex items-center gap-3">
@@ -18,34 +17,8 @@
       </div>
     </div>
 
-    <!-- Filters -->
-    <app-match-filters
-      (filterChange)="onFilterChange($event)"
-    />
+    <app-match-filters (filterChange)="onFilterChange($event)" />
 
-    <!-- Form Modal -->
-    @if (showForm()) {
-      <div
-        class="modal-overlay"
-        (click)="closeForm()"
-      >
-        <div
-          class="max-w-2xl w-full max-h-[90vh] overflow-y-auto"
-          (click)="$event.stopPropagation()"
-        >
-          <app-match-form
-            [match]="selectedMatch()"
-            [teams]="teams()"
-            [mode]="formMode()"
-            (matchSubmit)="onMatchSubmit($event)"
-            (resultSubmit)="onResultSubmit($event)"
-            (cancel)="closeForm()"
-          />
-        </div>
-      </div>
-    }
-
-    <!-- Details Modal -->
     @if (matchService.selectedMatch(); as selectedMatch) {
       <app-match-details-modal
         [match]="selectedMatch"
@@ -59,44 +32,34 @@
       />
     }
 
-    <!-- Loading State -->
     @if (isLoading()) {
       <div class="flex justify-center items-center py-20">
         <div class="text-center">
           <div class="spinner mx-auto mb-6"></div>
-          <p class="text-gray-500 font-medium">Cargando partidos...</p>
+          <p class="text-gray-500 font-medium">Loading matches...</p>
         </div>
       </div>
-    }
-
-    <!-- Initial State - No search performed yet -->
-    @else if (!hasSearched() && !isLoading()) {
+    } @else if (!hasSearched()) {
       <div class="card p-16">
         <div class="empty-state">
           <i class="fas fa-filter empty-state-icon"></i>
-          <h3 class="empty-state-title">Selecciona un filtro</h3>
+          <h3 class="empty-state-title">Select a filter</h3>
           <p class="empty-state-description">
-            Utiliza los filtros para buscar partidos por estado, fecha específica o rango de fechas.
+            Use filters to search matches by status, specific date, or date range.
           </p>
         </div>
       </div>
-    }
-
-    <!-- Empty State - Search performed but no results -->
-    @else if (matches().length === 0 && !isLoading() && hasSearched()) {
+    } @else if (matches().length === 0) {
       <div class="card p-16">
         <div class="empty-state">
           <i class="fas fa-calendar-times empty-state-icon"></i>
-          <h3 class="empty-state-title">No hay partidos</h3>
+          <h3 class="empty-state-title">No matches found</h3>
           <p class="empty-state-description">
-            No se encontraron partidos con los filtros seleccionados.
+            No matches found with the selected filters.
           </p>
         </div>
       </div>
-    }
-
-    <!-- Matches List -->
-    @else {
+    } @else {
       <div class="card overflow-hidden mb-6">
         <table class="w-full">
           <thead>
@@ -121,7 +84,6 @@
         </table>
       </div>
 
-      <!-- Pagination -->
       <app-match-pagination
         [currentPage]="pagination().page"
         [totalPages]="pagination().totalPages"
@@ -133,3 +95,21 @@
     }
   </div>
 </div>
+
+@if (showFormModal()) {
+  <app-match-form-modal
+    [match]="selectedMatch()"
+    [teams]="teams()"
+    (save)="onMatchSubmit($event)"
+    (close)="closeFormModal()"
+  />
+}
+
+@if (showResultModal() && selectedMatch(); as match) {
+  <app-match-result-modal
+    [match]="match"
+    [teams]="teams()"
+    (save)="onResultSubmit($event)"
+    (close)="closeResultModal()"
+  />
+}

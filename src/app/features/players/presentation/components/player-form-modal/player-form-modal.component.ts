@@ -78,6 +78,6 @@ export class PlayerFormModalComponent {
 
   hasError(field: 'name' | 'lastName' | 'identificationNumber'): boolean {
     const fieldState = this.playerForm[field]();
-    return fieldState.touched() && !fieldState.valid();
+    return fieldState.touched() && fieldState.invalid();
   }
 }

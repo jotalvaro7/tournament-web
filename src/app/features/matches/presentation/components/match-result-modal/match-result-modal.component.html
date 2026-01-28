@@ -1,0 +1,64 @@
+<div class="modal-overlay" (click)="onOverlayClick($event)">
+  <div class="modal-content max-w-md w-full" (click)="$event.stopPropagation()">
+    <div class="modal-header rounded-t-2xl">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl flex items-center justify-center bg-gray-900">
+            <i class="fas fa-flag-checkered text-white"></i>
+          </div>
+          <h2 class="text-xl font-bold text-gray-900">Set Result</h2>
+        </div>
+        <button (click)="onClose()" class="btn-icon">
+          <i class="fas fa-times text-lg"></i>
+        </button>
+      </div>
+    </div>
+
+    <div class="modal-body">
+      <form (ngSubmit)="onSubmit()" class="space-y-6">
+        <div class="grid grid-cols-2 gap-6">
+          <div class="text-center">
+            <div class="w-14 h-14 mx-auto rounded-xl flex items-center justify-center bg-gray-900 mb-3">
+              <i class="fas fa-shield-alt text-white text-lg"></i>
+            </div>
+            <p class="text-sm font-bold text-gray-900 mb-3">{{ homeTeamName() }}</p>
+            <input
+              type="number"
+              [formField]="resultForm.homeTeamScore"
+              class="input text-center text-4xl font-bold h-20"
+              [class.input-error]="hasError('homeTeamScore')"
+            />
+            @if (hasError('homeTeamScore')) {
+              <p class="error-text text-xs mt-1">{{ getErrorMessage('homeTeamScore') }}</p>
+            }
+          </div>
+
+          <div class="text-center">
+            <div class="w-14 h-14 mx-auto rounded-xl flex items-center justify-center bg-gray-100 mb-3">
+              <i class="fas fa-shield-alt text-gray-500 text-lg"></i>
+            </div>
+            <p class="text-sm font-bold text-gray-900 mb-3">{{ awayTeamName() }}</p>
+            <input
+              type="number"
+              [formField]="resultForm.awayTeamScore"
+              class="input text-center text-4xl font-bold h-20"
+              [class.input-error]="hasError('awayTeamScore')"
+            />
+            @if (hasError('awayTeamScore')) {
+              <p class="error-text text-xs mt-1">{{ getErrorMessage('awayTeamScore') }}</p>
+            }
+          </div>
+        </div>
+
+        <div class="flex gap-3 pt-4 border-t border-gray-200">
+          <button type="submit" class="btn-success flex-1">
+            <i class="fas fa-check mr-2"></i> Save Result
+          </button>
+          <button type="button" (click)="onClose()" class="btn-secondary">
+            <i class="fas fa-times mr-2"></i> Cancel
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

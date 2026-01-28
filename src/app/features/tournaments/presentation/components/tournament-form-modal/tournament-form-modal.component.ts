@@ -69,6 +69,6 @@ export class TournamentFormModalComponent {
 
   hasError(field: 'name' | 'description'): boolean {
     const fieldState = this.tournamentForm[field]();
-    return fieldState.touched() && !fieldState.valid();
+    return fieldState.touched() && fieldState.invalid();
   }
 }
