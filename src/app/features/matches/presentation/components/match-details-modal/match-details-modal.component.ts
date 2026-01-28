@@ -1,5 +1,5 @@
 import { Component, input, output, ChangeDetectionStrategy } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { Match } from '../../../domain/models';
 
 /**
@@ -19,7 +19,7 @@ import { Match } from '../../../domain/models';
 @Component({
   selector: 'app-match-details-modal',
   standalone: true,
-  imports: [CommonModule],
+  imports: [],
   templateUrl: './match-details-modal.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush
 })

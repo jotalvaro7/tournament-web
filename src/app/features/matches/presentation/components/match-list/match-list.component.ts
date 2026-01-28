@@ -1,5 +1,5 @@
 import { Component, OnInit, inject, signal, ChangeDetectionStrategy } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { ActivatedRoute } from '@angular/router';
 import { MatchService } from '../../../application/services';
 import { TeamService } from '@app/features/teams/application/services';
@@ -34,13 +34,12 @@ import { MatchPaginationComponent } from '../match-pagination/match-pagination.c
   selector: 'app-match-list',
   standalone: true,
   imports: [
-    CommonModule,
     MatchCardComponent,
     MatchFormComponent,
     MatchDetailsModalComponent,
     MatchFiltersComponent,
     MatchPaginationComponent
-  ],
+],
   templateUrl: './match-list.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush
 })

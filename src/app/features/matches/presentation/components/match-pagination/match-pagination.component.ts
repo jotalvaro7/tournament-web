@@ -1,5 +1,5 @@
 import { Component, input, output, computed, ChangeDetectionStrategy } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 
 /**
  * Match Pagination Component
@@ -10,7 +10,7 @@ import { CommonModule } from '@angular/common';
 @Component({
   selector: 'app-match-pagination',
   standalone: true,
-  imports: [CommonModule],
+  imports: [],
   templateUrl: './match-pagination.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
