@@ -1,20 +1,21 @@
 <div class="animate-fade-in">
   <div class="max-w-7xl mx-auto">
     <!-- Header -->
-    <div class="flex justify-between items-center mb-8">
-      <h1 class="page-title flex items-center gap-3">
-        <div class="icon-circle">
-          <i class="fas fa-futbol text-xl"></i>
+    <div class="card px-6 py-4 mb-6">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <div class="w-8 h-8 rounded-lg flex items-center justify-center bg-gray-900">
+            <i class="fas fa-futbol text-white text-sm"></i>
+          </div>
+          <div>
+            <h1 class="text-lg font-bold text-gray-900">Matches</h1>
+            <p class="text-xs text-gray-500">{{ matches().length }} shown</p>
+          </div>
         </div>
-        Partidos
-      </h1>
-      <button
-        (click)="onCreateMatch()"
-        class="btn-primary"
-      >
-        <i class="fas fa-plus-circle mr-2"></i>
-        Crear Partido
-      </button>
+        <button (click)="onCreateMatch()" class="btn-primary">
+          <i class="fas fa-plus mr-2"></i> Add Match
+        </button>
+      </div>
     </div>
 
     <!-- Filters -->
@@ -97,18 +98,27 @@
     <!-- Matches List -->
     @else {
       <div class="card overflow-hidden mb-6">
-        @for (match of matches(); track match.id) {
-          <app-match-card
-            [match]="match"
-            [homeTeamName]="getTeamName(match.homeTeamId)"
-            [awayTeamName]="getTeamName(match.awayTeamId)"
-            (cardClick)="onMatchClick($event)"
-            (editClick)="onEditMatch($event)"
-            (deleteClick)="onDeleteMatch($event)"
-            (finishClick)="onFinishMatch($event)"
-            (postponeClick)="onPostponeMatch($event)"
-          />
-        }
+        <table class="w-full">
+          <thead>
+            <tr>
+              <th class="table-header text-left">Home</th>
+              <th class="table-header text-center">Score</th>
+              <th class="table-header text-left">Away</th>
+              <th class="table-header text-left hidden md:table-cell">Date</th>
+              <th class="table-header text-left hidden sm:table-cell">Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (match of matches(); track match.id) {
+              <app-match-card
+                [match]="match"
+                [homeTeamName]="getTeamName(match.homeTeamId)"
+                [awayTeamName]="getTeamName(match.awayTeamId)"
+                (cardClick)="onMatchClick($event)"
+              />
+            }
+          </tbody>
+        </table>
       </div>
 
       <!-- Pagination -->

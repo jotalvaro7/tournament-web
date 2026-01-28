@@ -28,36 +28,31 @@
     </div>
 
     <!-- Match Content -->
-    <div class="modal-body">
+    <div class="modal-body max-h-[calc(90vh-80px)]">
       <!-- Teams Display -->
-      <div class="flex items-center justify-between mb-8 p-6 rounded-2xl bg-gray-50 border border-gray-100">
+      <div class="flex items-center justify-between mb-6 p-4 rounded-xl bg-gray-50 border border-gray-100">
         <!-- Home Team -->
         <div class="flex-1 text-center">
-          <div class="w-16 h-16 mx-auto rounded-2xl flex items-center justify-center bg-gray-900 shadow-lg mb-4">
-            <i class="fas fa-shield-alt text-white text-xl"></i>
-          </div>
-          <p class="text-sm text-gray-500 mb-1">Local</p>
-          <h3 class="text-lg font-bold text-gray-900 mb-3">
+          <p class="text-xs text-gray-500 mb-1">Local</p>
+          <h3 class="text-base font-bold text-gray-900 mb-2">
             {{ homeTeamName() }}
           </h3>
           @if (match().hasResult()) {
-            <div class="text-6xl font-bold text-gray-900">
+            <div class="text-4xl font-bold text-gray-900">
               {{ match().homeTeamScore }}
             </div>
           }
         </div>
 
         <!-- VS / Result -->
-        <div class="px-8">
+        <div class="px-4">
           <div class="text-center">
-            <div class="text-gray-300 font-bold text-2xl mb-2">VS</div>
+            <div class="text-gray-300 font-bold text-xl">VS</div>
             @if (match().getWinner(); as winner) {
               @if (winner === 'draw') {
-                <span class="badge badge-warning">Empate</span>
-              } @else if (winner === 'home') {
-                <i class="fas fa-trophy text-3xl text-amber-500"></i>
-              } @else if (winner === 'away') {
-                <i class="fas fa-trophy text-3xl text-amber-500"></i>
+                <span class="badge badge-warning mt-1">Empate</span>
+              } @else {
+                <i class="fas fa-trophy text-2xl text-amber-500 mt-1"></i>
               }
             }
           </div>
@@ -65,15 +60,12 @@
 
         <!-- Away Team -->
         <div class="flex-1 text-center">
-          <div class="w-16 h-16 mx-auto rounded-2xl flex items-center justify-center bg-gray-100 mb-4">
-            <i class="fas fa-shield-alt text-gray-500 text-xl"></i>
-          </div>
-          <p class="text-sm text-gray-500 mb-1">Visitante</p>
-          <h3 class="text-lg font-bold text-gray-900 mb-3">
+          <p class="text-xs text-gray-500 mb-1">Visitante</p>
+          <h3 class="text-base font-bold text-gray-900 mb-2">
             {{ awayTeamName() }}
           </h3>
           @if (match().hasResult()) {
-            <div class="text-6xl font-bold text-gray-900">
+            <div class="text-4xl font-bold text-gray-900">
               {{ match().awayTeamScore }}
             </div>
           }
@@ -81,26 +73,19 @@
       </div>
 
       <!-- Match Information -->
-      <div class="space-y-4 mb-6">
-        <div class="flex items-center p-4 rounded-xl bg-gray-50 border border-gray-100">
-          <div class="w-10 h-10 rounded-xl flex items-center justify-center bg-gray-200 mr-4">
-            <i class="far fa-calendar-alt text-gray-600"></i>
-          </div>
-          <div class="flex-1">
-            <p class="text-sm text-gray-500">Fecha y Hora</p>
-            <p class="text-gray-900 font-medium">
-              {{ match().getFormattedDate() }}
-            </p>
+      <div class="space-y-3 mb-6">
+        <div class="flex items-center p-3 rounded-lg bg-gray-50 border border-gray-100">
+          <i class="far fa-calendar-alt text-gray-500 mr-3"></i>
+          <div>
+            <p class="text-xs text-gray-500">Fecha y Hora</p>
+            <p class="text-sm text-gray-900 font-medium">{{ match().getFormattedDate() }}</p>
           </div>
         </div>
-
-        <div class="flex items-center p-4 rounded-xl bg-gray-50 border border-gray-100">
-          <div class="w-10 h-10 rounded-xl flex items-center justify-center bg-gray-200 mr-4">
-            <i class="fas fa-map-marker-alt text-gray-600"></i>
-          </div>
-          <div class="flex-1">
-            <p class="text-sm text-gray-500">Cancha</p>
-            <p class="text-gray-900 font-medium">{{ match().field }}</p>
+        <div class="flex items-center p-3 rounded-lg bg-gray-50 border border-gray-100">
+          <i class="fas fa-map-marker-alt text-gray-500 mr-3"></i>
+          <div>
+            <p class="text-xs text-gray-500">Cancha</p>
+            <p class="text-sm text-gray-900 font-medium">{{ match().field }}</p>
           </div>
         </div>
       </div>

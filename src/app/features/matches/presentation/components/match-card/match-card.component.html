@@ -1,47 +1,18 @@
-<!-- Match Card - Clean B&W Style -->
-<div
-  class="list-item group"
-  (click)="onCardClick()"
->
-  <!-- Status indicator (left border) -->
-  <div
-    [class]="getStatusBorderColor()"
-    class="absolute left-0 top-0 bottom-0 w-1 rounded-l"
-  ></div>
-
-  <!-- Home Team -->
-  <div class="flex items-center gap-3 flex-1 min-w-0">
-    <div class="w-10 h-10 rounded-xl flex items-center justify-center bg-gray-900 shadow-sm">
-      <i class="fas fa-shield-alt text-white text-sm"></i>
-    </div>
-    <span class="text-sm font-medium text-gray-900 truncate">{{ homeTeamName() }}</span>
-  </div>
-
-  <!-- Score / VS (Center) -->
-  <div class="flex items-center gap-3 flex-shrink-0 px-4">
+<!-- Match Row - Table row rendered inside parent <tbody> -->
+<tr class="table-row cursor-pointer" (click)="onCardClick()">
+  <td class="table-cell font-semibold text-gray-900">{{ homeTeamName() }}</td>
+  <td class="table-cell text-center font-bold text-gray-900">
     @if (match().isFinished() && match().hasResult()) {
-      <span class="text-2xl font-bold text-gray-900">{{ match().homeTeamScore }}</span>
-      <span class="text-gray-300">-</span>
-      <span class="text-2xl font-bold text-gray-900">{{ match().awayTeamScore }}</span>
+      {{ match().homeTeamScore }} - {{ match().awayTeamScore }}
     } @else {
-      <span class="text-xs font-medium px-3 py-1 rounded-full bg-gray-100 text-gray-500">VS</span>
+      <span class="text-xs text-gray-400 font-medium">VS</span>
     }
-  </div>
-
-  <!-- Away Team -->
-  <div class="flex items-center gap-3 flex-1 min-w-0 justify-end">
-    <span class="text-sm font-medium text-gray-900 truncate text-right">{{ awayTeamName() }}</span>
-    <div class="w-10 h-10 rounded-xl flex items-center justify-center bg-gray-100">
-      <i class="fas fa-shield-alt text-gray-500 text-sm"></i>
-    </div>
-  </div>
-
-  <!-- Date and Field -->
-  <div class="hidden lg:flex flex-col items-end gap-1 ml-4 min-w-[150px]">
-    <span class="text-xs text-gray-500">{{ match().getFormattedDate() }}</span>
-    <span class="text-xs text-gray-400 truncate max-w-[150px]">{{ match().field }}</span>
-  </div>
-
-  <!-- Chevron -->
-  <i class="fas fa-chevron-right text-gray-300 group-hover:text-gray-600 transition-colors ml-2"></i>
-</div>
+  </td>
+  <td class="table-cell font-semibold text-gray-900">{{ awayTeamName() }}</td>
+  <td class="table-cell text-gray-500 text-sm hidden md:table-cell">{{ match().getFormattedDate() }}</td>
+  <td class="table-cell hidden sm:table-cell">
+    <span class="text-xs font-medium px-2 py-1 rounded-full" [ngClass]="getStatusClasses()">
+      {{ match().getStatusLabel() }}
+    </span>
+  </td>
+</tr>
