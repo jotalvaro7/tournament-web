@@ -108,7 +108,7 @@ export class Match {
   getStatusColor(): string {
     switch (this.status) {
       case MatchStatus.SCHEDULED:
-        return 'bg-blue-50 text-blue-700 border-l-4 border-blue-400';
+        return 'bg-gray-100 text-gray-700 border-l-4 border-gray-400';
       case MatchStatus.FINISHED:
         return 'bg-emerald-50 text-emerald-700 border-l-4 border-emerald-400';
       case MatchStatus.POSTPONED:

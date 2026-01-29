@@ -1,5 +1,4 @@
 import { Component, output, signal, ChangeDetectionStrategy } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatchStatus } from '../../../domain/models';
 
@@ -12,7 +11,7 @@ import { MatchStatus } from '../../../domain/models';
 @Component({
   selector: 'app-match-filters',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [FormsModule],
   templateUrl: './match-filters.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush
 })

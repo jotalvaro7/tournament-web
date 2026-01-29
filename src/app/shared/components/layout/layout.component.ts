@@ -1,50 +1,31 @@
-import { Component, ChangeDetectionStrategy, signal } from '@angular/core';
+import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
 import { Router, RouterOutlet } from '@angular/router';
 import { NavbarComponent } from '../navbar/navbar.component';
-import { SidebarComponent } from '../sidebar/sidebar.component';
 
 /**
  * Layout Component
  *
- * Main application layout with collapsible sidebar and top navbar.
- * Manages sidebar state and handles tournament navigation.
+ * Main application layout with top header and full-width content area.
+ * Manages tournament navigation.
  *
  * Features:
- * - Responsive sidebar (collapsible)
- * - Top navigation bar with toggle button
+ * - Top navigation header with tournament selector
+ * - Full-width content area with max-width constraint
  * - Tournament selection and creation routing
- * - Content area with router outlet
  * - OnPush change detection for performance
  */
 @Component({
   selector: 'app-layout',
   standalone: true,
-  imports: [RouterOutlet, NavbarComponent, SidebarComponent],
+  imports: [RouterOutlet, NavbarComponent],
   templateUrl: './layout.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class LayoutComponent {
-  private readonly router: Router;
-
-  constructor(router: Router) {
-    this.router = router;
-  }
+  private readonly router = inject(Router);
 
   /**
-   * Signal to control sidebar visibility
-   * true = expanded, false = collapsed
-   */
-  isSidebarOpen = signal(true);
-
-  /**
-   * Toggles sidebar open/close state
-   */
-  toggleSidebar(): void {
-    this.isSidebarOpen.update(isOpen => !isOpen);
-  }
-
-  /**
-   * Handles create tournament event from sidebar
+   * Handles create tournament event from navbar
    * Navigates to create tournament route
    */
   onCreateTournament(): void {
@@ -52,7 +33,7 @@ export class LayoutComponent {
   }
 
   /**
-   * Handles tournament selection from sidebar
+   * Handles tournament selection from navbar
    * Navigates to selected tournament route
    */
   onSelectTournament(tournamentId: number): void {

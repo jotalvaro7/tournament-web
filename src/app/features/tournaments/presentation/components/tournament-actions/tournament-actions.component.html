@@ -1,54 +1,56 @@
 <!-- Actions Section -->
-<div class="bg-white rounded-lg shadow-md p-6 my-5">
-  <div class="flex items-center justify-between">
-    <h2 class="text-lg font-semibold text-gray-800">
-      <i class="fas fa-cog text-gray-600"></i> Actions
+<div class="card p-6">
+  <div class="flex items-center justify-between mb-6">
+    <h2 class="text-lg font-semibold text-gray-900 flex items-center gap-3">
+      <div class="w-10 h-10 rounded-xl flex items-center justify-center bg-gray-100">
+        <i class="fas fa-cog text-gray-600"></i>
+      </div>
+      Actions
     </h2>
 
     <!-- Compact Action Buttons -->
-    <div class="flex items-center gap-2">
+    <div class="flex items-center gap-3">
       <!-- Edit Button -->
       <button type="button" (click)="edit.emit()"
-        class="p-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors" title="Edit tournament">
+        class="btn-icon" title="Edit tournament">
         <i class="fas fa-edit"></i>
       </button>
 
       <!-- Start Button -->
       <button type="button" (click)="start.emit()"
-        class="p-2.5 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors" title="Start tournament">
+        class="w-12 h-12 rounded-xl flex items-center justify-center bg-emerald-600 text-white hover:bg-emerald-700 transition-all" title="Start tournament">
         <i class="fas fa-play"></i>
       </button>
 
       <!-- End Button -->
       <button type="button" (click)="end.emit()"
-        class="p-2.5 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors" title="End tournament">
+        class="w-12 h-12 rounded-xl flex items-center justify-center bg-gray-900 text-white hover:bg-gray-800 transition-all" title="End tournament">
         <i class="fas fa-stop"></i>
       </button>
 
       <!-- Cancel Button -->
       <button type="button" (click)="cancel.emit()"
-        class="p-2.5 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors"
+        class="w-12 h-12 rounded-xl flex items-center justify-center bg-amber-500 text-white hover:bg-amber-600 transition-all"
         title="Cancel tournament">
         <i class="fas fa-ban"></i>
       </button>
 
       <!-- Separator -->
-      <div class="w-px h-6 bg-gray-300"></div>
+      <div class="w-px h-8 bg-gray-200"></div>
 
       <!-- Delete Button -->
       <button type="button" (click)="delete.emit()"
-        class="p-2.5 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors" title="Delete tournament">
+        class="w-12 h-12 rounded-xl flex items-center justify-center bg-red-600 text-white hover:bg-red-700 transition-all" title="Delete tournament">
         <i class="fas fa-trash"></i>
       </button>
     </div>
   </div>
 
   <!-- Help Text -->
-  <div class="mt-4 p-3 bg-blue-50 rounded-lg border border-blue-200">
-    <p class="text-xs text-blue-800">
-      <i class="fas fa-info-circle"></i>
-      <strong>Note:</strong> The backend will validate if the action is allowed based on the tournament's current
-      status.
+  <div class="p-4 rounded-xl bg-gray-50 border border-gray-200">
+    <p class="text-sm text-gray-600 flex items-center gap-2">
+      <i class="fas fa-info-circle text-gray-400"></i>
+      <span><strong class="text-gray-900">Note:</strong> The backend will validate if the action is allowed based on the tournament's current status.</span>
     </p>
   </div>
 </div>

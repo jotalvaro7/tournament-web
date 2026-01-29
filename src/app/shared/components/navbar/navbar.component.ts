@@ -1,34 +1,89 @@
-import { Component, ChangeDetectionStrategy, output } from '@angular/core';
+import { Component, ChangeDetectionStrategy, inject, OnInit, output, signal, computed } from '@angular/core';
+import { RouterLink } from '@angular/router';
+import { TournamentService } from '@app/features/tournaments/application/services';
+import { TournamentSelectorComponent } from './tournament-selector/tournament-selector.component';
+import { NavigationItemsComponent, NavItem } from './navigation-items/navigation-items.component';
 
 /**
  * Navbar Component
  *
- * Top navigation bar with sidebar toggle button.
- * Emits toggleSidebar event when menu button is clicked.
+ * Top navigation header with tournament selector and navigation links.
+ * Replaces the former sidebar + navbar split layout.
  *
  * Features:
- * - Toggle button for sidebar
- * - Application title/logo area
- * - User profile section (placeholder for future implementation)
+ * - Logo/title on the left
+ * - Tournament dropdown selector
+ * - Contextual navigation (Teams, Matches) when a tournament is selected
+ * - Create tournament button
+ * - User profile area (placeholder)
  * - OnPush change detection for performance
  */
 @Component({
   selector: 'app-navbar',
   standalone: true,
-  imports: [],
+  imports: [RouterLink, TournamentSelectorComponent, NavigationItemsComponent],
   templateUrl: './navbar.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class NavbarComponent {
-  /**
-   * Event emitted when sidebar toggle button is clicked
-   */
-  toggleSidebar = output<void>();
+export class NavbarComponent implements OnInit {
+  private readonly tournamentService = inject(TournamentService);
 
-  /**
-   * Handles menu button click
-   */
-  onToggleClick(): void {
-    this.toggleSidebar.emit();
+  /** Event emitted when user wants to create a new tournament */
+  createTournament = output<void>();
+
+  /** Event emitted when user selects a tournament from dropdown */
+  selectTournament = output<number>();
+
+  /** Tournaments signal from service */
+  readonly tournaments = this.tournamentService.tournaments;
+
+  /** Loading state signal from service */
+  readonly isLoading = this.tournamentService.isLoading;
+
+  /** Currently selected tournament ID */
+  private readonly selectedTournamentId = signal<number | null>(null);
+
+  /** Dynamic navigation items based on selected tournament */
+  readonly navItems = computed<NavItem[]>(() => {
+    const tournamentId = this.selectedTournamentId();
+
+    if (!tournamentId) {
+      return [];
+    }
+
+    return [
+      {
+        label: 'Teams',
+        icon: 'fas fa-users',
+        route: `/tournaments/${tournamentId}/teams`
+      },
+      {
+        label: 'Matches',
+        icon: 'fas fa-calendar-check',
+        route: `/tournaments/${tournamentId}/matches`
+      }
+    ];
+  });
+
+  ngOnInit(): void {
+    this.tournamentService.loadTournaments();
+  }
+
+  /** Handles tournament selection from dropdown */
+  onTournamentSelect(event: Event): void {
+    const select = event.target as HTMLSelectElement;
+    const tournamentId = Number(select.value);
+
+    if (tournamentId) {
+      this.selectedTournamentId.set(tournamentId);
+      this.selectTournament.emit(tournamentId);
+    } else {
+      this.selectedTournamentId.set(null);
+    }
+  }
+
+  /** Handles create tournament button click */
+  onCreateClick(): void {
+    this.createTournament.emit();
   }
 }

@@ -1,0 +1,30 @@
+<!-- Tournament Selector - Horizontal header variant -->
+<div class="flex items-center gap-2">
+  @if (tournaments()().length > 0) {
+    <select
+      (change)="selectTournament.emit($event)"
+      class="select text-sm py-2"
+    >
+      <option value="">Select tournament...</option>
+      @for (tournament of tournaments()(); track tournament.id) {
+        <option [value]="tournament.id">
+          {{ tournament.name }}
+        </option>
+      }
+    </select>
+  }
+
+  <button
+    type="button"
+    (click)="createTournament.emit()"
+    class="flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 transition-all duration-300"
+    title="Create new tournament"
+  >
+    <i class="fas fa-plus text-xs"></i>
+    <span>New</span>
+  </button>
+
+  @if (isLoading()()) {
+    <div class="spinner w-5 h-5"></div>
+  }
+</div>

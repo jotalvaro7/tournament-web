@@ -1,12 +1,12 @@
-<div class="bg-white rounded-lg shadow-sm p-4 mb-6">
-  <div class="flex flex-wrap items-center gap-3">
+<div class="card p-5 mb-6">
+  <div class="flex flex-wrap items-center gap-4">
     <!-- Status Filter -->
-    <div class="flex items-center gap-2">
-      <i class="fas fa-filter text-gray-400 text-sm"></i>
+    <div class="flex items-center gap-3">
+      <i class="fas fa-filter text-gray-400"></i>
       <select
         [value]="status()"
         (change)="status.set($any($event.target).value)"
-        class="px-3 py-1.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+        class="select text-sm"
       >
         @for (option of statusOptions; track option.value) {
           <option [value]="option.value">{{ option.label }}</option>
@@ -15,25 +15,23 @@
     </div>
 
     <!-- Date Type Toggle -->
-    <div class="flex items-center gap-1 bg-gray-100 rounded-lg p-1">
+    <div class="flex items-center gap-1 p-1 rounded-xl bg-gray-100">
       <button
         (click)="toggleDateRange(false)"
-        [class.bg-white]="!useDateRange()"
-        [class.shadow-sm]="!useDateRange()"
-        [class.text-gray-900]="!useDateRange()"
-        [class.text-gray-600]="useDateRange()"
-        class="px-3 py-1 rounded text-xs font-medium transition-all"
+        class="px-4 py-2 rounded-lg text-xs font-medium transition-all duration-300"
+        [class.bg-gray-900]="!useDateRange()"
+        [class.text-white]="!useDateRange()"
+        [class.text-gray-500]="useDateRange()"
       >
         <i class="fas fa-calendar-day mr-1"></i>
         Fecha
       </button>
       <button
         (click)="toggleDateRange(true)"
-        [class.bg-white]="useDateRange()"
-        [class.shadow-sm]="useDateRange()"
-        [class.text-gray-900]="useDateRange()"
-        [class.text-gray-600]="!useDateRange()"
-        class="px-3 py-1 rounded text-xs font-medium transition-all"
+        class="px-4 py-2 rounded-lg text-xs font-medium transition-all duration-300"
+        [class.bg-gray-900]="useDateRange()"
+        [class.text-white]="useDateRange()"
+        [class.text-gray-500]="!useDateRange()"
       >
         <i class="fas fa-calendar-week mr-1"></i>
         Rango
@@ -46,7 +44,7 @@
         type="date"
         [value]="specificDate()"
         (change)="specificDate.set($any($event.target).value)"
-        class="px-3 py-1.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+        class="input text-sm"
       />
     }
 
@@ -58,15 +56,15 @@
           [value]="dateFrom()"
           (change)="dateFrom.set($any($event.target).value)"
           placeholder="Desde"
-          class="px-3 py-1.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+          class="input text-sm"
         />
-        <span class="text-gray-400">-</span>
+        <span class="text-gray-300">&mdash;</span>
         <input
           type="date"
           [value]="dateTo()"
           (change)="dateTo.set($any($event.target).value)"
           placeholder="Hasta"
-          class="px-3 py-1.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+          class="input text-sm"
         />
       </div>
     }
@@ -74,9 +72,9 @@
     <!-- Search Button -->
     <button
       (click)="onFilterChange()"
-      class="px-4 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-lg transition-colors flex items-center gap-2"
+      class="btn-primary"
     >
-      <i class="fas fa-search"></i>
+      <i class="fas fa-search mr-2"></i>
       Buscar
     </button>
 
@@ -84,10 +82,9 @@
     @if (status() || specificDate() || dateFrom() || dateTo()) {
       <button
         (click)="clearFilters()"
-        class="px-3 py-1.5 text-xs text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors flex items-center gap-1"
+        class="btn-icon"
       >
         <i class="fas fa-times"></i>
-        Limpiar
       </button>
     }
   </div>
