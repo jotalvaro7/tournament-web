@@ -49,7 +49,8 @@ export class MatchResultModalComponent {
     });
   }
 
-  onSubmit(): void {
+  onSubmit(event: Event): void {
+    event.preventDefault();
     this.resultForm.homeTeamScore().markAsTouched();
     this.resultForm.awayTeamScore().markAsTouched();
 

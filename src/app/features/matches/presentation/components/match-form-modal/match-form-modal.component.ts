@@ -61,7 +61,8 @@ export class MatchFormModalComponent {
     return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
   }
 
-  onSubmit(): void {
+  onSubmit(event: Event): void {
+    event.preventDefault();
     this.matchForm.homeTeamId().markAsTouched();
     this.matchForm.awayTeamId().markAsTouched();
     this.matchForm.matchDate().markAsTouched();

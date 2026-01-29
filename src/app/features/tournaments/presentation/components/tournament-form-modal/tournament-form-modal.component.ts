@@ -41,7 +41,8 @@ export class TournamentFormModalComponent {
     });
   }
 
-  onSubmit(): void {
+  onSubmit(event: Event): void {
+    event.preventDefault();
     this.tournamentForm.name().markAsTouched();
     this.tournamentForm.description().markAsTouched();
 

@@ -41,7 +41,8 @@ export class TeamFormModalComponent {
     });
   }
 
-  onSubmit(): void {
+  onSubmit(event: Event): void {
+    event.preventDefault();
     this.teamForm.name().markAsTouched();
     this.teamForm.coach().markAsTouched();
 

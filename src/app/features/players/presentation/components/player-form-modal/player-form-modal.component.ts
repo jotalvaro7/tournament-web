@@ -49,7 +49,8 @@ export class PlayerFormModalComponent {
     });
   }
 
-  onSubmit(): void {
+  onSubmit(event: Event): void {
+    event.preventDefault();
     this.playerForm.name().markAsTouched();
     this.playerForm.lastName().markAsTouched();
     this.playerForm.identificationNumber().markAsTouched();
