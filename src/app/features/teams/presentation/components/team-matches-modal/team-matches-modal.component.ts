@@ -16,6 +16,7 @@ export class TeamMatchesModalComponent {
   teams = input<Team[]>([]);
   isLoading = input<boolean>(false);
   close = output<void>();
+  viewMatch = output<MatchResponse>();
 
   readonly hasMatches = computed(() => this.matches().length > 0);
 
@@ -25,6 +26,10 @@ export class TeamMatchesModalComponent {
 
   onBackdropClick(): void {
     this.close.emit();
+  }
+
+  onMatchClick(match: MatchResponse): void {
+    this.viewMatch.emit(match);
   }
 
   getOpponentName(match: MatchResponse): string {
