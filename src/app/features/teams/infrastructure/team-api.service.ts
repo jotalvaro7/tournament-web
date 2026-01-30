@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, map } from 'rxjs';
 import { environment } from '@environments/environment';
 import { Team, TeamRequestDto, TeamResponseDto } from '../domain/models';
+import { MatchResponse } from '@app/features/matches/domain/models';
 
 /**
  * Team API Service (Infrastructure Layer - Adapter)
@@ -68,6 +69,15 @@ export class TeamApiService {
    */
   delete(tournamentId: number, teamId: number): Observable<void> {
     return this.http.delete<void>(`${this.baseUrl}/tournaments/${tournamentId}/teams/${teamId}`);
+  }
+
+  /**
+   * Gets all matches played by a team
+   */
+  getMatchesByTeam(tournamentId: number, teamId: number): Observable<MatchResponse[]> {
+    return this.http.get<MatchResponse[]>(
+      `${this.baseUrl}/tournaments/${tournamentId}/teams/${teamId}/matches`
+    );
   }
 
   /**

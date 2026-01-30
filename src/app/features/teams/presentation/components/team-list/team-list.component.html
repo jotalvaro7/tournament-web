@@ -70,6 +70,7 @@
       (edit)="editFromModal($event)"
       (delete)="deleteFromModal($event)"
       (viewPlayers)="viewPlayersFromModal($event)"
+      (viewMatches)="viewMatchesFromModal($event)"
     />
   </div>
 }
@@ -79,5 +80,45 @@
     [team]="editingTeam()"
     (save)="onSaveTeam($event)"
     (close)="onCloseFormModal()"
+  />
+}
+
+<app-team-matches-modal
+  [team]="selectedTeamForMatches()"
+  [matches]="teamMatches()"
+  [teams]="teams()"
+  [isLoading]="isLoadingMatches()"
+  (close)="closeMatchesModal()"
+  (viewMatch)="viewMatchDetails($event)"
+/>
+
+@if (selectedMatchForDetails()) {
+  <app-match-details-modal
+    [match]="selectedMatchForDetails()!"
+    [homeTeamName]="getTeamName(selectedMatchForDetails()!.homeTeamId)"
+    [awayTeamName]="getTeamName(selectedMatchForDetails()!.awayTeamId)"
+    (close)="closeMatchDetails()"
+    (edit)="onEditMatch($event)"
+    (delete)="onDeleteMatch($event)"
+    (finish)="onFinishMatch($event)"
+    (postpone)="onPostponeMatch($event)"
+  />
+}
+
+@if (editingMatch()) {
+  <app-match-form-modal
+    [match]="editingMatch()"
+    [teams]="teams()"
+    (save)="onSaveMatch($event)"
+    (close)="onCloseMatchForm()"
+  />
+}
+
+@if (matchForResult()) {
+  <app-match-result-modal
+    [match]="matchForResult()!"
+    [teams]="teams()"
+    (save)="onSaveResult($event)"
+    (close)="onCloseResultModal()"
   />
 }

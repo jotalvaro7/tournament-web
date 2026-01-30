@@ -1,0 +1,90 @@
+@if (team()) {
+<div class="modal-overlay" (click)="onBackdropClick()">
+  <div class="modal-content max-w-2xl w-full" (click)="$event.stopPropagation()">
+    <div class="modal-header rounded-t-2xl">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <div class="w-12 h-12 rounded-xl flex items-center justify-center bg-gray-900">
+            <i class="fas fa-history text-white text-lg"></i>
+          </div>
+          <div>
+            <h2 class="text-xl font-bold text-gray-900">Match History</h2>
+            <p class="text-sm text-gray-500">{{ team()!.name }}</p>
+          </div>
+        </div>
+        <button type="button" (click)="onClose()" class="btn-icon">
+          <i class="fas fa-times text-lg"></i>
+        </button>
+      </div>
+    </div>
+
+    <div class="modal-body max-h-[60vh] overflow-y-auto">
+      @if (isLoading()) {
+        <div class="flex items-center justify-center py-12">
+          <div class="animate-spin rounded-full h-10 w-10 border-b-2 border-gray-900"></div>
+        </div>
+      } @else if (!hasMatches()) {
+        <div class="text-center py-12">
+          <div class="w-16 h-16 mx-auto rounded-full bg-gray-100 flex items-center justify-center mb-4">
+            <i class="fas fa-calendar-times text-gray-400 text-2xl"></i>
+          </div>
+          <p class="text-gray-500">No matches found for this team</p>
+        </div>
+      } @else {
+        <div class="space-y-3">
+          @for (match of matches(); track match.id) {
+            <div class="p-4 rounded-xl border border-gray-200 hover:border-gray-300 hover:bg-gray-50 transition-colors cursor-pointer"
+                 (click)="onMatchClick(match)">
+              <div class="flex items-center justify-between">
+                <div>
+                  <div class="flex items-center gap-2 flex-wrap">
+                    <span class="font-semibold" [class.text-gray-900]="isHomeMatch(match)" [class.text-gray-500]="!isHomeMatch(match)">
+                      {{ getHomeTeamName(match) }}
+                    </span>
+                    <span class="font-bold text-gray-900">
+                      {{ match.homeTeamScore ?? '-' }} - {{ match.awayTeamScore ?? '-' }}
+                    </span>
+                    <span class="font-semibold" [class.text-gray-900]="!isHomeMatch(match)" [class.text-gray-500]="isHomeMatch(match)">
+                      {{ getAwayTeamName(match) }}
+                    </span>
+                    @if (getMatchResult(match)) {
+                      <span class="text-xs px-2 py-0.5 rounded font-medium" [class]="getResultColor(match)">
+                        {{ getMatchResult(match) === 'win' ? 'Win' : getMatchResult(match) === 'draw' ? 'Draw' : 'Loss' }}
+                      </span>
+                    }
+                  </div>
+                  <div class="flex items-center gap-3 mt-2 text-sm text-gray-500">
+                    <span class="flex items-center gap-1">
+                      <i class="far fa-calendar-alt"></i>
+                      {{ match.matchDate | date:'MMM d, yyyy - HH:mm' }}
+                    </span>
+                    <span class="flex items-center gap-1">
+                      <i class="fas fa-map-marker-alt"></i>
+                      {{ match.field }}
+                    </span>
+                  </div>
+                </div>
+                <span class="text-xs px-2 py-1 rounded-full" [class]="getStatusColor(match.status)">
+                  {{ getStatusLabel(match.status) }}
+                </span>
+              </div>
+            </div>
+          }
+        </div>
+      }
+    </div>
+
+    <div class="modal-footer rounded-b-2xl">
+      <div class="flex items-center justify-between w-full">
+        <span class="text-sm text-gray-500">
+          {{ matches().length }} match{{ matches().length !== 1 ? 'es' : '' }}
+        </span>
+        <button type="button" (click)="onClose()" class="btn-secondary">
+          <i class="fas fa-times mr-2"></i>
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+}
