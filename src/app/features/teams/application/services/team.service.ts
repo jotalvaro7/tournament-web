@@ -2,6 +2,7 @@ import { Injectable, inject, signal } from '@angular/core';
 import { Observable, tap, firstValueFrom } from 'rxjs';
 import { TeamApiService } from '../../infrastructure/team-api.service';
 import { Team, TeamRequestDto } from '../../domain/models';
+import { MatchResponse } from '@app/features/matches/domain/models';
 import { AlertService } from '@app/core/services';
 
 /**
@@ -41,6 +42,16 @@ export class TeamService {
    * Signal indicating if data is being loaded
    */
   readonly isLoading = signal(false);
+
+  /**
+   * Signal holding the match history for a selected team
+   */
+  readonly teamMatches = signal<MatchResponse[]>([]);
+
+  /**
+   * Signal indicating if team matches are being loaded
+   */
+  readonly isLoadingMatches = signal(false);
 
   /**
    * Loads all teams for a specific tournament from API and updates signal
@@ -131,5 +142,32 @@ export class TeamService {
    */
   clearTeams(): void {
     this.teams.set([]);
+  }
+
+  /**
+   * Loads all matches played by a specific team
+   */
+  loadMatchesByTeam(tournamentId: number, teamId: number): void {
+    this.isLoadingMatches.set(true);
+    this.api.getMatchesByTeam(tournamentId, teamId)
+      .pipe(
+        tap({
+          next: (matches) => {
+            this.teamMatches.set(matches);
+            this.isLoadingMatches.set(false);
+          },
+          error: () => {
+            this.isLoadingMatches.set(false);
+          }
+        })
+      )
+      .subscribe();
+  }
+
+  /**
+   * Clears the team matches signal
+   */
+  clearTeamMatches(): void {
+    this.teamMatches.set([]);
   }
 }

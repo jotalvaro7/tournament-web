@@ -4,11 +4,12 @@ import { TeamService } from '../../../application/services';
 import { Team, TeamRequestDto } from '../../../domain/models';
 import { TeamFormModalComponent } from '../team-form-modal/team-form-modal.component';
 import { TeamDetailsModalComponent } from '../team-details-modal/team-details-modal.component';
+import { TeamMatchesModalComponent } from '../team-matches-modal/team-matches-modal.component';
 
 @Component({
   selector: 'app-team-list',
   standalone: true,
-  imports: [TeamFormModalComponent, TeamDetailsModalComponent],
+  imports: [TeamFormModalComponent, TeamDetailsModalComponent, TeamMatchesModalComponent],
   templateUrl: './team-list.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
@@ -23,6 +24,9 @@ export class TeamListComponent implements OnInit, OnDestroy {
   readonly showFormModal = signal(false);
   readonly editingTeam = signal<Team | null>(null);
   readonly selectedTeamForModal = signal<Team | null>(null);
+  readonly selectedTeamForMatches = signal<Team | null>(null);
+  readonly teamMatches = this.teamService.teamMatches;
+  readonly isLoadingMatches = this.teamService.isLoadingMatches;
 
   ngOnInit(): void {
     const id = this.route.snapshot.paramMap.get('id');
@@ -104,5 +108,19 @@ export class TeamListComponent implements OnInit, OnDestroy {
     if (tournamentId) {
       this.router.navigate(['/tournaments', tournamentId, 'teams', team.id, 'players']);
     }
+  }
+
+  viewMatchesFromModal(team: Team): void {
+    this.closeTeamDetails();
+    const tournamentId = this.tournamentId();
+    if (tournamentId) {
+      this.selectedTeamForMatches.set(team);
+      this.teamService.loadMatchesByTeam(tournamentId, team.id);
+    }
+  }
+
+  closeMatchesModal(): void {
+    this.selectedTeamForMatches.set(null);
+    this.teamService.clearTeamMatches();
   }
 }

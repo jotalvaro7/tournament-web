@@ -54,6 +54,11 @@ export class TeamDetailsModalComponent {
   viewPlayers = output<Team>();
 
   /**
+   * Event emitted when user clicks View Matches button
+   */
+  viewMatches = output<Team>();
+
+  /**
    * Helper class for UI utilities
    */
   readonly helper = TeamHelper;
@@ -99,6 +104,16 @@ export class TeamDetailsModalComponent {
     const team = this.team();
     if (team) {
       this.viewPlayers.emit(team);
+    }
+  }
+
+  /**
+   * Handles view matches button click
+   */
+  onViewMatches(): void {
+    const team = this.team();
+    if (team) {
+      this.viewMatches.emit(team);
     }
   }
 }

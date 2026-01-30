@@ -97,6 +97,14 @@
       <div class="flex gap-3">
         <button
           type="button"
+          (click)="onViewMatches()"
+          class="btn-secondary"
+        >
+          <i class="fas fa-history mr-2"></i>
+          Matches
+        </button>
+        <button
+          type="button"
           (click)="onViewPlayers()"
           class="btn-success"
         >

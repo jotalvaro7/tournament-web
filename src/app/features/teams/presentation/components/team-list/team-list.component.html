@@ -70,6 +70,7 @@
       (edit)="editFromModal($event)"
       (delete)="deleteFromModal($event)"
       (viewPlayers)="viewPlayersFromModal($event)"
+      (viewMatches)="viewMatchesFromModal($event)"
     />
   </div>
 }
@@ -81,3 +82,11 @@
     (close)="onCloseFormModal()"
   />
 }
+
+<app-team-matches-modal
+  [team]="selectedTeamForMatches()"
+  [matches]="teamMatches()"
+  [teams]="teams()"
+  [isLoading]="isLoadingMatches()"
+  (close)="closeMatchesModal()"
+/>
