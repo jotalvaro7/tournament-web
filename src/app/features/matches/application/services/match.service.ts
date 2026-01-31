@@ -1,4 +1,5 @@
 import { Injectable, inject, signal, computed } from '@angular/core';
+import { finalize } from 'rxjs';
 import { MatchApiService } from '../../infrastructure/match-api.service';
 import { Match, MatchRequest, MatchResponse, FinishMatchRequest, MatchFilterParams, PageResponseMatch } from '../../domain/models';
 import { AlertService } from '@app/core/services/alert.service';
@@ -49,23 +50,21 @@ export class MatchService {
   loadMatches(tournamentId: number, filters?: MatchFilterParams): void {
     this.loadingSignal.set(true);
 
-    this.matchApi.getMatchesByTournament(tournamentId, filters).subscribe({
-      next: (response) => {
-        const matches = response.content.map(r => this.mapToDomain(r));
-        this.matchesSignal.set(matches);
+    this.matchApi.getMatchesByTournament(tournamentId, filters)
+      .pipe(finalize(() => this.loadingSignal.set(false)))
+      .subscribe({
+        next: (response) => {
+          const matches = response.content.map(r => this.mapToDomain(r));
+          this.matchesSignal.set(matches);
 
-        // Update pagination info
-        const { content, ...paginationInfo } = response;
-        this.paginationSignal.set(paginationInfo);
-
-        this.loadingSignal.set(false);
-      },
-      error: (error) => {
-        console.error('Error loading matches:', error);
-        this.loadingSignal.set(false);
-        this.alertService.error('No se pudieron cargar los partidos. Por favor, intenta de nuevo.');
-      }
-    });
+          const { content, ...paginationInfo } = response;
+          this.paginationSignal.set(paginationInfo);
+        },
+        error: (error) => {
+          console.error('Error loading matches:', error);
+          this.alertService.error('No se pudieron cargar los partidos. Por favor, intenta de nuevo.');
+        }
+      });
   }
 
   /**
@@ -74,22 +73,20 @@ export class MatchService {
   createMatch(tournamentId: number, request: MatchRequest): void {
     this.loadingSignal.set(true);
 
-    this.matchApi.createMatch(tournamentId, request).subscribe({
-      next: (response) => {
-        const newMatch = this.mapToDomain(response);
-        this.matchesSignal.update(matches => [...matches, newMatch]);
-        this.loadingSignal.set(false);
-
-        this.alertService.success('El partido se creó exitosamente.', '¡Partido creado!');
-      },
-      error: (error) => {
-        console.error('Error creating match:', error);
-        this.loadingSignal.set(false);
-
-        const errorMessage = error.error?.message || 'No se pudo crear el partido.';
-        this.alertService.error(errorMessage);
-      }
-    });
+    this.matchApi.createMatch(tournamentId, request)
+      .pipe(finalize(() => this.loadingSignal.set(false)))
+      .subscribe({
+        next: (response) => {
+          const newMatch = this.mapToDomain(response);
+          this.matchesSignal.update(matches => [...matches, newMatch]);
+          this.alertService.success('El partido se creó exitosamente.', '¡Partido creado!');
+        },
+        error: (error) => {
+          console.error('Error creating match:', error);
+          const errorMessage = error.error?.message || 'No se pudo crear el partido.';
+          this.alertService.error(errorMessage);
+        }
+      });
   }
 
   /**
@@ -98,24 +95,22 @@ export class MatchService {
   updateMatch(tournamentId: number, matchId: number, request: MatchRequest): void {
     this.loadingSignal.set(true);
 
-    this.matchApi.updateMatch(tournamentId, matchId, request).subscribe({
-      next: (response) => {
-        const updatedMatch = this.mapToDomain(response);
-        this.matchesSignal.update(matches =>
-          matches.map(m => m.id === matchId ? updatedMatch : m)
-        );
-        this.loadingSignal.set(false);
-
-        this.alertService.success('El partido se actualizó exitosamente.', '¡Partido actualizado!');
-      },
-      error: (error) => {
-        console.error('Error updating match:', error);
-        this.loadingSignal.set(false);
-
-        const errorMessage = error.error?.message || 'No se pudo actualizar el partido.';
-        this.alertService.error(errorMessage);
-      }
-    });
+    this.matchApi.updateMatch(tournamentId, matchId, request)
+      .pipe(finalize(() => this.loadingSignal.set(false)))
+      .subscribe({
+        next: (response) => {
+          const updatedMatch = this.mapToDomain(response);
+          this.matchesSignal.update(matches =>
+            matches.map(m => m.id === matchId ? updatedMatch : m)
+          );
+          this.alertService.success('El partido se actualizó exitosamente.', '¡Partido actualizado!');
+        },
+        error: (error) => {
+          console.error('Error updating match:', error);
+          const errorMessage = error.error?.message || 'No se pudo actualizar el partido.';
+          this.alertService.error(errorMessage);
+        }
+      });
   }
 
   /**
@@ -129,25 +124,23 @@ export class MatchService {
       cancelButtonText: 'Cancelar'
     });
 
-    if (confirmed) {
-      this.loadingSignal.set(true);
+    if (!confirmed) return;
 
-      this.matchApi.deleteMatch(tournamentId, matchId).subscribe({
+    this.loadingSignal.set(true);
+
+    this.matchApi.deleteMatch(tournamentId, matchId)
+      .pipe(finalize(() => this.loadingSignal.set(false)))
+      .subscribe({
         next: () => {
           this.matchesSignal.update(matches => matches.filter(m => m.id !== matchId));
-          this.loadingSignal.set(false);
-
           this.alertService.success('El partido se eliminó exitosamente.', '¡Eliminado!');
         },
         error: (error) => {
           console.error('Error deleting match:', error);
-          this.loadingSignal.set(false);
-
           const errorMessage = error.error?.message || 'No se pudo eliminar el partido.';
           this.alertService.error(errorMessage);
         }
       });
-    }
   }
 
   /**
@@ -157,24 +150,22 @@ export class MatchService {
   finishMatch(tournamentId: number, matchId: number, request: FinishMatchRequest): void {
     this.loadingSignal.set(true);
 
-    this.matchApi.finishMatch(tournamentId, matchId, request).subscribe({
-      next: (response) => {
-        const updatedMatch = this.mapToDomain(response);
-        this.matchesSignal.update(matches =>
-          matches.map(m => m.id === matchId ? updatedMatch : m)
-        );
-        this.loadingSignal.set(false);
-
-        this.alertService.success('El resultado del partido se guardó exitosamente.', '¡Resultado guardado!');
-      },
-      error: (error) => {
-        console.error('Error finishing match:', error);
-        this.loadingSignal.set(false);
-
-        const errorMessage = error.error?.message || 'No se pudo guardar el resultado.';
-        this.alertService.error(errorMessage);
-      }
-    });
+    this.matchApi.finishMatch(tournamentId, matchId, request)
+      .pipe(finalize(() => this.loadingSignal.set(false)))
+      .subscribe({
+        next: (response) => {
+          const updatedMatch = this.mapToDomain(response);
+          this.matchesSignal.update(matches =>
+            matches.map(m => m.id === matchId ? updatedMatch : m)
+          );
+          this.alertService.success('El resultado del partido se guardó exitosamente.', '¡Resultado guardado!');
+        },
+        error: (error) => {
+          console.error('Error finishing match:', error);
+          const errorMessage = error.error?.message || 'No se pudo guardar el resultado.';
+          this.alertService.error(errorMessage);
+        }
+      });
   }
 
   /**
@@ -188,28 +179,26 @@ export class MatchService {
       cancelButtonText: 'Cancelar'
     });
 
-    if (confirmed) {
-      this.loadingSignal.set(true);
+    if (!confirmed) return;
 
-      this.matchApi.postponeMatch(tournamentId, matchId).subscribe({
+    this.loadingSignal.set(true);
+
+    this.matchApi.postponeMatch(tournamentId, matchId)
+      .pipe(finalize(() => this.loadingSignal.set(false)))
+      .subscribe({
         next: (response) => {
           const updatedMatch = this.mapToDomain(response);
           this.matchesSignal.update(matches =>
             matches.map(m => m.id === matchId ? updatedMatch : m)
           );
-          this.loadingSignal.set(false);
-
           this.alertService.success('El partido se pospuso exitosamente.', '¡Partido pospuesto!');
         },
         error: (error) => {
           console.error('Error postponing match:', error);
-          this.loadingSignal.set(false);
-
           const errorMessage = error.error?.message || 'No se pudo posponer el partido.';
           this.alertService.error(errorMessage);
         }
       });
-    }
   }
 
   /**

@@ -1,5 +1,5 @@
 import { Injectable, inject, signal } from '@angular/core';
-import { Observable, tap, firstValueFrom } from 'rxjs';
+import { Observable, tap, firstValueFrom, finalize } from 'rxjs';
 import { PlayerApiService } from '../../infrastructure/player-api.service';
 import { Player, PlayerRequestDto, PlayerHelper } from '../../domain/models';
 import { AlertService } from '@app/core/services';
@@ -39,18 +39,10 @@ export class PlayerService {
     this.isLoading.set(true);
 
     this.api.getAllByTeam(tournamentId, teamId)
-      .pipe(
-        tap({
-          next: (players) => {
-            this.players.set(players);
-            this.isLoading.set(false);
-          },
-          error: () => {
-            this.isLoading.set(false);
-          }
-        })
-      )
-      .subscribe();
+      .pipe(finalize(() => this.isLoading.set(false)))
+      .subscribe({
+        next: (players) => this.players.set(players)
+      });
   }
 
   /**
@@ -58,11 +50,9 @@ export class PlayerService {
    */
   create(request: PlayerRequestDto): Observable<Player> {
     return this.api.create(this.currentTournamentId, this.currentTeamId, request).pipe(
-      tap({
-        next: (player) => {
-          this.alert.success(`Player "${PlayerHelper.getFullName(player)}" created successfully!`);
-          this.refreshPlayers();
-        }
+      tap((player) => {
+        this.alert.success(`Player "${PlayerHelper.getFullName(player)}" created successfully!`);
+        this.refreshPlayers();
       })
     );
   }
@@ -72,11 +62,9 @@ export class PlayerService {
    */
   update(playerId: number, request: PlayerRequestDto): Observable<Player> {
     return this.api.update(this.currentTournamentId, this.currentTeamId, playerId, request).pipe(
-      tap({
-        next: (player) => {
-          this.alert.success(`Player "${PlayerHelper.getFullName(player)}" updated successfully!`);
-          this.refreshPlayers();
-        }
+      tap((player) => {
+        this.alert.success(`Player "${PlayerHelper.getFullName(player)}" updated successfully!`);
+        this.refreshPlayers();
       })
     );
   }
@@ -94,16 +82,9 @@ export class PlayerService {
 
     if (!confirmed) return;
 
-    await firstValueFrom(
-      this.api.delete(this.currentTournamentId, this.currentTeamId, player.id).pipe(
-        tap({
-          next: () => {
-            this.alert.success(`Player "${PlayerHelper.getFullName(player)}" deleted successfully!`);
-            this.refreshPlayers();
-          }
-        })
-      )
-    );
+    await firstValueFrom(this.api.delete(this.currentTournamentId, this.currentTeamId, player.id));
+    this.alert.success(`Player "${PlayerHelper.getFullName(player)}" deleted successfully!`);
+    this.refreshPlayers();
   }
 
   /**
