@@ -1,6 +1,6 @@
-import { Component, signal, inject, OnInit, OnDestroy } from '@angular/core';
+import { Component, signal, inject, computed, effect } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Subscription } from 'rxjs';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { TournamentService } from '../../../application/services';
 import { Tournament, TournamentHelper, TournamentRequestDto } from '../../../domain/models';
 import { TournamentFormModalComponent } from '../tournament-form-modal/tournament-form-modal.component';
@@ -12,31 +12,33 @@ import { TournamentActionsComponent } from '../tournament-actions/tournament-act
   imports: [TournamentFormModalComponent, TournamentActionsComponent],
   templateUrl: './tournament-manage.component.html'
 })
-export class TournamentManageComponent implements OnInit, OnDestroy {
+export class TournamentManageComponent {
   private readonly route = inject(ActivatedRoute);
   private readonly tournamentService = inject(TournamentService);
-  private paramSubscription?: Subscription;
+
+  private readonly params = toSignal(this.route.paramMap);
+
+  readonly tournamentId = computed(() => {
+    const id = this.params()?.get('id');
+    return id && id !== 'new' ? Number(id) : null;
+  });
 
   readonly tournament = signal<Tournament | null>(null);
   readonly isLoading = signal(false);
   readonly showEditModal = signal(false);
   readonly helper = TournamentHelper;
 
-  ngOnInit(): void {
-    this.paramSubscription = this.route.paramMap.subscribe(params => {
-      const id = params.get('id');
+  constructor() {
+    effect(() => {
+      const id = this.tournamentId();
       this.showEditModal.set(false);
 
-      if (id && id !== 'new') {
-        this.loadTournament(Number(id));
+      if (id) {
+        this.loadTournament(id);
       } else {
         this.tournament.set(null);
       }
     });
-  }
-
-  ngOnDestroy(): void {
-    this.paramSubscription?.unsubscribe();
   }
 
   private loadTournament(id: number): void {
