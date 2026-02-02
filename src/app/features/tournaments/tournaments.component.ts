@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, inject, OnInit, OnDestroy, signal } from '@angular/core';
+import { Component, inject, OnInit, OnDestroy, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { TournamentFormModalComponent } from './presentation/components/tournament-form-modal/tournament-form-modal.component';
@@ -10,8 +10,7 @@ import { TournamentRequestDto } from './domain/models';
   selector: 'app-tournaments',
   standalone: true,
   imports: [TournamentFormModalComponent, TournamentManageComponent],
-  templateUrl: './tournaments.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  templateUrl: './tournaments.component.html'
 })
 export class TournamentsComponent implements OnInit, OnDestroy {
   private readonly route = inject(ActivatedRoute);

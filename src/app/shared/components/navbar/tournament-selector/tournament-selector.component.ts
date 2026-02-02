@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, input, output, Signal } from '@angular/core';
+import { Component, input, output, Signal } from '@angular/core';
 import { Tournament } from '@app/features/tournaments/domain/models';
 
 /**
@@ -14,8 +14,7 @@ import { Tournament } from '@app/features/tournaments/domain/models';
   selector: 'app-tournament-selector',
   standalone: true,
   imports: [],
-  templateUrl: './tournament-selector.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  templateUrl: './tournament-selector.component.html'
 })
 export class TournamentSelectorComponent {
   /** Tournaments list signal */

@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, input, output, signal, computed, effect } from '@angular/core';
+import { Component, input, output, signal, computed, effect } from '@angular/core';
 import { form, required, minLength, FormField } from '@angular/forms/signals';
 import { Match, MatchRequest } from '../../../domain/models';
 import { Team } from '@app/features/teams/domain/models';
@@ -7,8 +7,7 @@ import { Team } from '@app/features/teams/domain/models';
   selector: 'app-match-form-modal',
   standalone: true,
   imports: [FormField],
-  templateUrl: './match-form-modal.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  templateUrl: './match-form-modal.component.html'
 })
 export class MatchFormModalComponent {
   match = input<Match | null>(null);

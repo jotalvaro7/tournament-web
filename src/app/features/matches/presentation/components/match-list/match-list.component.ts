@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, signal, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, inject, signal } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { MatchService } from '../../../application/services';
 import { TeamService } from '@app/features/teams/application/services';
@@ -21,8 +21,7 @@ import { MatchPaginationComponent } from '../match-pagination/match-pagination.c
     MatchFiltersComponent,
     MatchPaginationComponent
   ],
-  templateUrl: './match-list.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  templateUrl: './match-list.component.html'
 })
 export class MatchListComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);

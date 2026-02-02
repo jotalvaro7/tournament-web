@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, signal, inject, OnInit, OnDestroy } from '@angular/core';
+import { Component, signal, inject, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { PlayerService } from '../../../application/services';
 import { Player, PlayerRequestDto, PlayerHelper } from '../../../domain/models';
@@ -9,8 +9,7 @@ import { TeamService } from '@app/features/teams/application/services';
   selector: 'app-player-list',
   standalone: true,
   imports: [PlayerFormModalComponent],
-  templateUrl: './player-list.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  templateUrl: './player-list.component.html'
 })
 export class PlayerListComponent implements OnInit, OnDestroy {
   private readonly route = inject(ActivatedRoute);

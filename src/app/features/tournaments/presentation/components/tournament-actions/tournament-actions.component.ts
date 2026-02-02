@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, input, output } from '@angular/core';
+import { Component, input, output } from '@angular/core';
 import { Tournament, TournamentHelper } from '../../../domain/models';
 
 /**
@@ -19,8 +19,7 @@ import { Tournament, TournamentHelper } from '../../../domain/models';
   selector: 'app-tournament-actions',
   standalone: true,
   imports: [],
-  templateUrl: './tournament-actions.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  templateUrl: './tournament-actions.component.html'
 })
 export class TournamentActionsComponent {
   /**

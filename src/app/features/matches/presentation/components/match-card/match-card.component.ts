@@ -1,4 +1,4 @@
-import { Component, input, output, ChangeDetectionStrategy } from '@angular/core';
+import { Component, input, output } from '@angular/core';
 import { NgClass } from '@angular/common';
 import { Match } from '../../../domain/models';
 
@@ -14,15 +14,14 @@ import { Match } from '../../../domain/models';
  * - Click row to open details modal
  * - Status badge with color coding
  * - Responsive: Date and Status hidden on small screens
- * - OnPush for performance
+ * - Zoneless change detection with signals
  */
 @Component({
   selector: 'app-match-card',
   standalone: true,
   imports: [NgClass],
   templateUrl: './match-card.component.html',
-  host: { style: 'display: contents' },
-  changeDetection: ChangeDetectionStrategy.OnPush
+  host: { style: 'display: contents' }
 })
 export class MatchCardComponent {
   readonly match = input.required<Match>();

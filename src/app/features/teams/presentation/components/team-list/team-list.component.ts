@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, signal, inject, OnInit, OnDestroy } from '@angular/core';
+import { Component, signal, inject, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TeamService } from '../../../application/services';
 import { Team, TeamRequestDto } from '../../../domain/models';
@@ -22,8 +22,7 @@ import { MatchResultModalComponent } from '@app/features/matches/presentation/co
     MatchFormModalComponent,
     MatchResultModalComponent
   ],
-  templateUrl: './team-list.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  templateUrl: './team-list.component.html'
 })
 export class TeamListComponent implements OnInit, OnDestroy {
   private readonly route = inject(ActivatedRoute);

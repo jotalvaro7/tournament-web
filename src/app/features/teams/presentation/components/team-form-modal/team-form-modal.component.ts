@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, input, output, signal, computed, effect } from '@angular/core';
+import { Component, input, output, signal, computed, effect } from '@angular/core';
 import { form, required, minLength, maxLength, FormField } from '@angular/forms/signals';
 import { Team, TeamRequestDto } from '../../../domain/models';
 
@@ -6,8 +6,7 @@ import { Team, TeamRequestDto } from '../../../domain/models';
   selector: 'app-team-form-modal',
   standalone: true,
   imports: [FormField],
-  templateUrl: './team-form-modal.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  templateUrl: './team-form-modal.component.html'
 })
 export class TeamFormModalComponent {
   team = input<Team | null>(null);
