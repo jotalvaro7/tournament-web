@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, input } from '@angular/core';
+import { Component, input } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 
 /**
@@ -22,8 +22,7 @@ export interface NavItem {
   selector: 'app-navigation-items',
   standalone: true,
   imports: [RouterLink, RouterLinkActive],
-  templateUrl: './navigation-items.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  templateUrl: './navigation-items.component.html'
 })
 export class NavigationItemsComponent {
   /** Navigation items to display */

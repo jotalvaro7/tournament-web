@@ -1,5 +1,6 @@
-import { Component, OnInit, inject, signal, ChangeDetectionStrategy } from '@angular/core';
+import { Component, inject, signal, computed, effect } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { MatchService } from '../../../application/services';
 import { TeamService } from '@app/features/teams/application/services';
 import { Match, MatchRequest, FinishMatchRequest, MatchFilterParams, MatchStatus } from '../../../domain/models';
@@ -21,15 +22,20 @@ import { MatchPaginationComponent } from '../match-pagination/match-pagination.c
     MatchFiltersComponent,
     MatchPaginationComponent
   ],
-  templateUrl: './match-list.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  templateUrl: './match-list.component.html'
 })
-export class MatchListComponent implements OnInit {
+export class MatchListComponent {
   private readonly route = inject(ActivatedRoute);
   readonly matchService = inject(MatchService);
   private readonly teamService = inject(TeamService);
 
-  readonly tournamentId = signal<number | null>(null);
+  private readonly params = toSignal(this.route.paramMap);
+
+  readonly tournamentId = computed(() => {
+    const id = this.params()?.get('id');
+    return id ? Number(id) : null;
+  });
+
   readonly showFormModal = signal(false);
   readonly showResultModal = signal(false);
   readonly selectedMatch = signal<Match | null>(null);
@@ -41,13 +47,11 @@ export class MatchListComponent implements OnInit {
   readonly isLoading = this.matchService.isLoading;
   readonly pagination = this.matchService.pagination;
 
-  ngOnInit(): void {
-    this.route.paramMap.subscribe(params => {
-      const id = params.get('id');
+  constructor() {
+    effect(() => {
+      const id = this.tournamentId();
       if (id) {
-        const tournamentId = Number(id);
-        this.tournamentId.set(tournamentId);
-        this.teamService.loadTeamsByTournament(tournamentId);
+        this.teamService.loadTeamsByTournament(id);
       }
     });
   }

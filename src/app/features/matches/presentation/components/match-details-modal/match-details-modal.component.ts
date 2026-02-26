@@ -1,4 +1,4 @@
-import { Component, input, output, ChangeDetectionStrategy } from '@angular/core';
+import { Component, input, output } from '@angular/core';
 
 import { Match } from '../../../domain/models';
 
@@ -14,14 +14,13 @@ import { Match } from '../../../domain/models';
  * - Match information (date, field, status)
  * - Action buttons
  * - Backdrop click to close
- * - OnPush for performance
+ * - Zoneless change detection with signals
  */
 @Component({
   selector: 'app-match-details-modal',
   standalone: true,
   imports: [],
-  templateUrl: './match-details-modal.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  templateUrl: './match-details-modal.component.html'
 })
 export class MatchDetailsModalComponent {
   /** Match to display */

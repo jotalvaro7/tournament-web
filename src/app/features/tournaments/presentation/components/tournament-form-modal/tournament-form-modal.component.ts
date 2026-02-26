@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, input, output, signal, computed, effect } from '@angular/core';
+import { Component, input, output, signal, computed, effect } from '@angular/core';
 import { form, required, minLength, maxLength, FormField } from '@angular/forms/signals';
 import { Tournament, TournamentRequestDto } from '../../../domain/models';
 
@@ -6,8 +6,7 @@ import { Tournament, TournamentRequestDto } from '../../../domain/models';
   selector: 'app-tournament-form-modal',
   standalone: true,
   imports: [FormField],
-  templateUrl: './tournament-form-modal.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  templateUrl: './tournament-form-modal.component.html'
 })
 export class TournamentFormModalComponent {
   tournament = input<Tournament | null>(null);

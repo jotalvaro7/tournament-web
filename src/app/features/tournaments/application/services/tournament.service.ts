@@ -1,5 +1,5 @@
 import { Injectable, inject, signal } from '@angular/core';
-import { Observable, tap, firstValueFrom } from 'rxjs';
+import { Observable, firstValueFrom, finalize, tap } from 'rxjs';
 import { TournamentApiService } from '../../infrastructure/tournament-api.service';
 import { Tournament, TournamentRequestDto } from '../../domain/models';
 import { AlertService } from '@app/core/services';
@@ -47,19 +47,12 @@ export class TournamentService {
    */
   loadTournaments(): void {
     this.isLoading.set(true);
+
     this.api.getAll()
-      .pipe(
-        tap({
-          next: (tournaments) => {
-            this.tournaments.set(tournaments);
-            this.isLoading.set(false);
-          },
-          error: () => {
-            this.isLoading.set(false);
-          }
-        })
-      )
-      .subscribe();
+      .pipe(finalize(() => this.isLoading.set(false)))
+      .subscribe({
+        next: (tournaments) => this.tournaments.set(tournaments)
+      });
   }
 
   /**
@@ -74,11 +67,9 @@ export class TournamentService {
    */
   create(request: TournamentRequestDto): Observable<Tournament> {
     return this.api.create(request).pipe(
-      tap({
-        next: (tournament) => {
-          this.alert.success(`Tournament "${tournament.name}" created successfully!`);
-          this.loadTournaments();
-        }
+      tap((tournament) => {
+        this.alert.success(`Tournament "${tournament.name}" created successfully!`);
+        this.loadTournaments();
       })
     );
   }
@@ -88,11 +79,9 @@ export class TournamentService {
    */
   update(id: number, request: TournamentRequestDto): Observable<Tournament> {
     return this.api.update(id, request).pipe(
-      tap({
-        next: (tournament) => {
-          this.alert.success(`Tournament "${tournament.name}" updated successfully!`);
-          this.loadTournaments();
-        }
+      tap((tournament) => {
+        this.alert.success(`Tournament "${tournament.name}" updated successfully!`);
+        this.loadTournaments();
       })
     );
   }
@@ -109,20 +98,11 @@ export class TournamentService {
       cancelButtonText: 'Cancel'
     });
 
-    if (!confirmed) {
-      return;
-    }
+    if (!confirmed) return;
 
-    await firstValueFrom(
-      this.api.delete(tournament.id).pipe(
-        tap({
-          next: () => {
-            this.alert.success(`Tournament "${tournament.name}" deleted successfully!`);
-            this.loadTournaments();
-          }
-        })
-      )
-    );
+    await firstValueFrom(this.api.delete(tournament.id));
+    this.alert.success(`Tournament "${tournament.name}" deleted successfully!`);
+    this.loadTournaments();
   }
 
   /**
@@ -137,20 +117,11 @@ export class TournamentService {
       cancelButtonText: 'Cancel'
     });
 
-    if (!confirmed) {
-      return;
-    }
+    if (!confirmed) return;
 
-    await firstValueFrom(
-      this.api.start(tournament.id).pipe(
-        tap({
-          next: (updated) => {
-            this.alert.success(`Tournament "${updated.name}" started successfully!`);
-            this.loadTournaments();
-          }
-        })
-      )
-    );
+    const updated = await firstValueFrom(this.api.start(tournament.id));
+    this.alert.success(`Tournament "${updated.name}" started successfully!`);
+    this.loadTournaments();
   }
 
   /**
@@ -165,20 +136,11 @@ export class TournamentService {
       cancelButtonText: 'Cancel'
     });
 
-    if (!confirmed) {
-      return;
-    }
+    if (!confirmed) return;
 
-    await firstValueFrom(
-      this.api.end(tournament.id).pipe(
-        tap({
-          next: (updated) => {
-            this.alert.success(`Tournament "${updated.name}" completed successfully!`);
-            this.loadTournaments();
-          }
-        })
-      )
-    );
+    const updated = await firstValueFrom(this.api.end(tournament.id));
+    this.alert.success(`Tournament "${updated.name}" completed successfully!`);
+    this.loadTournaments();
   }
 
   /**
@@ -193,19 +155,10 @@ export class TournamentService {
       cancelButtonText: 'No, keep it'
     });
 
-    if (!confirmed) {
-      return;
-    }
+    if (!confirmed) return;
 
-    await firstValueFrom(
-      this.api.cancel(tournament.id).pipe(
-        tap({
-          next: (updated) => {
-            this.alert.success(`Tournament "${updated.name}" cancelled successfully!`);
-            this.loadTournaments();
-          }
-        })
-      )
-    );
+    const updated = await firstValueFrom(this.api.cancel(tournament.id));
+    this.alert.success(`Tournament "${updated.name}" cancelled successfully!`);
+    this.loadTournaments();
   }
 }

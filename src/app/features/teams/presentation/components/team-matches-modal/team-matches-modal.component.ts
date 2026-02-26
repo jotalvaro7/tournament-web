@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, input, output, computed } from '@angular/core';
+import { Component, input, output, computed } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { Team } from '../../../domain/models';
 import { MatchResponse, MatchStatus } from '@app/features/matches/domain/models';
@@ -7,8 +7,7 @@ import { MatchResponse, MatchStatus } from '@app/features/matches/domain/models'
   selector: 'app-team-matches-modal',
   standalone: true,
   imports: [DatePipe],
-  templateUrl: './team-matches-modal.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  templateUrl: './team-matches-modal.component.html'
 })
 export class TeamMatchesModalComponent {
   team = input<Team | null>(null);

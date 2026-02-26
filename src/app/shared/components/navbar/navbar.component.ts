@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, inject, OnInit, output, signal, computed } from '@angular/core';
+import { Component, inject, output, signal, computed } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { TournamentService } from '@app/features/tournaments/application/services';
 import { TournamentSelectorComponent } from './tournament-selector/tournament-selector.component';
@@ -16,16 +16,15 @@ import { NavigationItemsComponent, NavItem } from './navigation-items/navigation
  * - Contextual navigation (Teams, Matches) when a tournament is selected
  * - Create tournament button
  * - User profile area (placeholder)
- * - OnPush change detection for performance
+ * - Zoneless change detection with signals
  */
 @Component({
   selector: 'app-navbar',
   standalone: true,
   imports: [RouterLink, TournamentSelectorComponent, NavigationItemsComponent],
-  templateUrl: './navbar.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  templateUrl: './navbar.component.html'
 })
-export class NavbarComponent implements OnInit {
+export class NavbarComponent {
   private readonly tournamentService = inject(TournamentService);
 
   /** Event emitted when user wants to create a new tournament */
@@ -65,7 +64,7 @@ export class NavbarComponent implements OnInit {
     ];
   });
 
-  ngOnInit(): void {
+  constructor() {
     this.tournamentService.loadTournaments();
   }
 

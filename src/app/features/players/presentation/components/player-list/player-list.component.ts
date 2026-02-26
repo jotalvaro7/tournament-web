@@ -1,5 +1,6 @@
-import { Component, ChangeDetectionStrategy, signal, inject, OnInit, OnDestroy } from '@angular/core';
+import { Component, signal, inject, computed, effect, DestroyRef } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { PlayerService } from '../../../application/services';
 import { Player, PlayerRequestDto, PlayerHelper } from '../../../domain/models';
 import { PlayerFormModalComponent } from '../player-form-modal/player-form-modal.component';
@@ -9,16 +10,26 @@ import { TeamService } from '@app/features/teams/application/services';
   selector: 'app-player-list',
   standalone: true,
   imports: [PlayerFormModalComponent],
-  templateUrl: './player-list.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  templateUrl: './player-list.component.html'
 })
-export class PlayerListComponent implements OnInit, OnDestroy {
+export class PlayerListComponent {
   private readonly route = inject(ActivatedRoute);
   private readonly playerService = inject(PlayerService);
   private readonly teamService = inject(TeamService);
+  private readonly destroyRef = inject(DestroyRef);
 
-  readonly tournamentId = signal<number | null>(null);
-  readonly teamId = signal<number | null>(null);
+  private readonly params = toSignal(this.route.paramMap);
+
+  readonly tournamentId = computed(() => {
+    const id = this.params()?.get('id');
+    return id ? Number(id) : null;
+  });
+
+  readonly teamId = computed(() => {
+    const id = this.params()?.get('teamId');
+    return id ? Number(id) : null;
+  });
+
   readonly teamName = signal<string>('');
   readonly players = this.playerService.players;
   readonly isLoading = this.playerService.isLoading;
@@ -26,26 +37,22 @@ export class PlayerListComponent implements OnInit, OnDestroy {
   readonly editingPlayer = signal<Player | null>(null);
   readonly helper = PlayerHelper;
 
-  ngOnInit(): void {
-    const tournamentId = this.route.snapshot.paramMap.get('id');
-    const teamId = this.route.snapshot.paramMap.get('teamId');
+  constructor() {
+    effect(() => {
+      const tournamentId = this.tournamentId();
+      const teamId = this.teamId();
 
-    if (tournamentId && teamId) {
-      const tId = Number(tournamentId);
-      const tmId = Number(teamId);
+      if (tournamentId && teamId) {
+        this.playerService.loadPlayersByTeam(tournamentId, teamId);
+        this.teamService.getById(tournamentId, teamId).subscribe({
+          next: (team) => this.teamName.set(team.name)
+        });
+      }
+    });
 
-      this.tournamentId.set(tId);
-      this.teamId.set(tmId);
-      this.playerService.loadPlayersByTeam(tId, tmId);
-
-      this.teamService.getById(tId, tmId).subscribe({
-        next: (team) => this.teamName.set(team.name)
-      });
-    }
-  }
-
-  ngOnDestroy(): void {
-    this.playerService.clearPlayers();
+    this.destroyRef.onDestroy(() => {
+      this.playerService.clearPlayers();
+    });
   }
 
   onAddPlayer(): void {

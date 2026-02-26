@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, input, output } from '@angular/core';
+import { Component, input, output } from '@angular/core';
 import { Team, TeamHelper } from '../../../domain/models';
 
 /**
@@ -13,7 +13,7 @@ import { Team, TeamHelper } from '../../../domain/models';
  * - Action buttons: Edit, Delete, Close
  * - Color-coded badges for points and goal difference
  * - Semantic colors for W/D/L record
- * - OnPush change detection for performance
+ * - Zoneless change detection with signals
  *
  * Architecture:
  * - Pure presentation component (dumb component)
@@ -24,8 +24,7 @@ import { Team, TeamHelper } from '../../../domain/models';
   selector: 'app-team-details-modal',
   standalone: true,
   imports: [],
-  templateUrl: './team-details-modal.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  templateUrl: './team-details-modal.component.html'
 })
 export class TeamDetailsModalComponent {
   /**

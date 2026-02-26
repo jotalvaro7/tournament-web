@@ -1,6 +1,6 @@
-import { Component, ChangeDetectionStrategy, inject, OnInit, OnDestroy, signal } from '@angular/core';
+import { Component, inject, signal, computed, effect } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Subscription } from 'rxjs';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { TournamentFormModalComponent } from './presentation/components/tournament-form-modal/tournament-form-modal.component';
 import { TournamentManageComponent } from './presentation/components/tournament-manage/tournament-manage.component';
 import { TournamentService } from './application/services';
@@ -10,36 +10,34 @@ import { TournamentRequestDto } from './domain/models';
   selector: 'app-tournaments',
   standalone: true,
   imports: [TournamentFormModalComponent, TournamentManageComponent],
-  templateUrl: './tournaments.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  templateUrl: './tournaments.component.html'
 })
-export class TournamentsComponent implements OnInit, OnDestroy {
+export class TournamentsComponent {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly tournamentService = inject(TournamentService);
-  private paramSubscription?: Subscription;
 
-  readonly mode = signal<'list' | 'manage'>('list');
+  private readonly params = toSignal(this.route.paramMap);
+
+  readonly routeId = computed(() => this.params()?.get('id') ?? null);
+
+  readonly mode = computed(() => {
+    const id = this.routeId();
+    if (!id || id === 'new') return 'list';
+    return 'manage';
+  });
+
   readonly showCreateModal = signal(false);
 
-  ngOnInit(): void {
-    this.paramSubscription = this.route.paramMap.subscribe(params => {
-      const id = params.get('id');
-
+  constructor() {
+    effect(() => {
+      const id = this.routeId();
       if (id === 'new') {
-        this.mode.set('list');
         this.showCreateModal.set(true);
-      } else if (id) {
-        this.mode.set('manage');
-        this.showCreateModal.set(false);
       } else {
-        this.mode.set('list');
+        this.showCreateModal.set(false);
       }
     });
-  }
-
-  ngOnDestroy(): void {
-    this.paramSubscription?.unsubscribe();
   }
 
   openCreateModal(): void {

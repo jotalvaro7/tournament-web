@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, input, output, signal, computed, effect } from '@angular/core';
+import { Component, input, output, signal, computed, effect } from '@angular/core';
 import { form, required, minLength, maxLength, FormField } from '@angular/forms/signals';
 import { Player, PlayerRequestDto } from '../../../domain/models';
 
@@ -6,8 +6,7 @@ import { Player, PlayerRequestDto } from '../../../domain/models';
   selector: 'app-player-form-modal',
   standalone: true,
   imports: [FormField],
-  templateUrl: './player-form-modal.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  templateUrl: './player-form-modal.component.html'
 })
 export class PlayerFormModalComponent {
   player = input<Player | null>(null);

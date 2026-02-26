@@ -1,4 +1,4 @@
-import { Component, input, output, computed, ChangeDetectionStrategy } from '@angular/core';
+import { Component, input, output, computed } from '@angular/core';
 
 
 /**
@@ -11,8 +11,7 @@ import { Component, input, output, computed, ChangeDetectionStrategy } from '@an
   selector: 'app-match-pagination',
   standalone: true,
   imports: [],
-  templateUrl: './match-pagination.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  templateUrl: './match-pagination.component.html'
 })
 export class MatchPaginationComponent {
   // Inputs

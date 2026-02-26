@@ -1,5 +1,5 @@
 import { Injectable, inject, signal } from '@angular/core';
-import { Observable, tap, firstValueFrom } from 'rxjs';
+import { Observable, firstValueFrom, finalize, tap } from 'rxjs';
 import { TeamApiService } from '../../infrastructure/team-api.service';
 import { Team, TeamRequestDto } from '../../domain/models';
 import { MatchResponse } from '@app/features/matches/domain/models';
@@ -58,19 +58,12 @@ export class TeamService {
    */
   loadTeamsByTournament(tournamentId: number): void {
     this.isLoading.set(true);
+
     this.api.getAllByTournament(tournamentId)
-      .pipe(
-        tap({
-          next: (teams) => {
-            this.teams.set(teams);
-            this.isLoading.set(false);
-          },
-          error: () => {
-            this.isLoading.set(false);
-          }
-        })
-      )
-      .subscribe();
+      .pipe(finalize(() => this.isLoading.set(false)))
+      .subscribe({
+        next: (teams) => this.teams.set(teams)
+      });
   }
 
   /**
@@ -85,11 +78,9 @@ export class TeamService {
    */
   create(tournamentId: number, request: TeamRequestDto): Observable<Team> {
     return this.api.create(tournamentId, request).pipe(
-      tap({
-        next: (team) => {
-          this.alert.success(`Team "${team.name}" created successfully!`);
-          this.loadTeamsByTournament(tournamentId);
-        }
+      tap((team) => {
+        this.alert.success(`Team "${team.name}" created successfully!`);
+        this.loadTeamsByTournament(tournamentId);
       })
     );
   }
@@ -99,11 +90,9 @@ export class TeamService {
    */
   update(tournamentId: number, teamId: number, request: TeamRequestDto): Observable<Team> {
     return this.api.update(tournamentId, teamId, request).pipe(
-      tap({
-        next: (team) => {
-          this.alert.success(`Team "${team.name}" updated successfully!`);
-          this.loadTeamsByTournament(tournamentId);
-        }
+      tap((team) => {
+        this.alert.success(`Team "${team.name}" updated successfully!`);
+        this.loadTeamsByTournament(tournamentId);
       })
     );
   }
@@ -120,20 +109,11 @@ export class TeamService {
       cancelButtonText: 'Cancel'
     });
 
-    if (!confirmed) {
-      return;
-    }
+    if (!confirmed) return;
 
-    await firstValueFrom(
-      this.api.delete(tournamentId, team.id).pipe(
-        tap({
-          next: () => {
-            this.alert.success(`Team "${team.name}" deleted successfully!`);
-            this.loadTeamsByTournament(tournamentId);
-          }
-        })
-      )
-    );
+    await firstValueFrom(this.api.delete(tournamentId, team.id));
+    this.alert.success(`Team "${team.name}" deleted successfully!`);
+    this.loadTeamsByTournament(tournamentId);
   }
 
   /**
@@ -149,19 +129,12 @@ export class TeamService {
    */
   loadMatchesByTeam(tournamentId: number, teamId: number): void {
     this.isLoadingMatches.set(true);
+
     this.api.getMatchesByTeam(tournamentId, teamId)
-      .pipe(
-        tap({
-          next: (matches) => {
-            this.teamMatches.set(matches);
-            this.isLoadingMatches.set(false);
-          },
-          error: () => {
-            this.isLoadingMatches.set(false);
-          }
-        })
-      )
-      .subscribe();
+      .pipe(finalize(() => this.isLoadingMatches.set(false)))
+      .subscribe({
+        next: (matches) => this.teamMatches.set(matches)
+      });
   }
 
   /**

@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { Router, RouterOutlet } from '@angular/router';
 import { NavbarComponent } from '../navbar/navbar.component';
 
@@ -12,14 +12,13 @@ import { NavbarComponent } from '../navbar/navbar.component';
  * - Top navigation header with tournament selector
  * - Full-width content area with max-width constraint
  * - Tournament selection and creation routing
- * - OnPush change detection for performance
+ * - Zoneless change detection with signals
  */
 @Component({
   selector: 'app-layout',
   standalone: true,
   imports: [RouterOutlet, NavbarComponent],
-  templateUrl: './layout.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  templateUrl: './layout.component.html'
 })
 export class LayoutComponent {
   private readonly router = inject(Router);

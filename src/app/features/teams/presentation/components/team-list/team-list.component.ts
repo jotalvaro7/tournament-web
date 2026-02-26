@@ -1,5 +1,6 @@
-import { Component, ChangeDetectionStrategy, signal, inject, OnInit, OnDestroy } from '@angular/core';
+import { Component, signal, inject, computed, effect, DestroyRef } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { TeamService } from '../../../application/services';
 import { Team, TeamRequestDto } from '../../../domain/models';
 import { Match, MatchResponse, MatchRequest, FinishMatchRequest } from '@app/features/matches/domain/models';
@@ -22,16 +23,22 @@ import { MatchResultModalComponent } from '@app/features/matches/presentation/co
     MatchFormModalComponent,
     MatchResultModalComponent
   ],
-  templateUrl: './team-list.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  templateUrl: './team-list.component.html'
 })
-export class TeamListComponent implements OnInit, OnDestroy {
+export class TeamListComponent {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly teamService = inject(TeamService);
   private readonly matchService = inject(MatchService);
+  private readonly destroyRef = inject(DestroyRef);
 
-  readonly tournamentId = signal<number | null>(null);
+  private readonly params = toSignal(this.route.paramMap);
+
+  readonly tournamentId = computed(() => {
+    const id = this.params()?.get('id');
+    return id ? Number(id) : null;
+  });
+
   readonly teams = this.teamService.teams;
   readonly isLoading = this.teamService.isLoading;
   readonly showFormModal = signal(false);
@@ -44,17 +51,17 @@ export class TeamListComponent implements OnInit, OnDestroy {
   readonly editingMatch = signal<Match | null>(null);
   readonly matchForResult = signal<Match | null>(null);
 
-  ngOnInit(): void {
-    const id = this.route.snapshot.paramMap.get('id');
-    if (id) {
-      const tournamentId = Number(id);
-      this.tournamentId.set(tournamentId);
-      this.teamService.loadTeamsByTournament(tournamentId);
-    }
-  }
+  constructor() {
+    effect(() => {
+      const id = this.tournamentId();
+      if (id) {
+        this.teamService.loadTeamsByTournament(id);
+      }
+    });
 
-  ngOnDestroy(): void {
-    this.teamService.clearTeams();
+    this.destroyRef.onDestroy(() => {
+      this.teamService.clearTeams();
+    });
   }
 
   onAddTeam(): void {
