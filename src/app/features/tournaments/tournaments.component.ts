@@ -1,6 +1,5 @@
-import { Component, inject, signal, computed, effect } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { Component, inject, computed, input, linkedSignal } from '@angular/core';
+import { Router } from '@angular/router';
 import { TournamentFormModalComponent } from './presentation/components/tournament-form-modal/tournament-form-modal.component';
 import { TournamentManageComponent } from './presentation/components/tournament-manage/tournament-manage.component';
 import { TournamentService } from './application/services';
@@ -10,52 +9,31 @@ import { TournamentRequestDto } from './domain/models';
   selector: 'app-tournaments',
   standalone: true,
   imports: [TournamentFormModalComponent, TournamentManageComponent],
-  templateUrl: './tournaments.component.html'
+  templateUrl: './tournaments.component.html',
 })
 export class TournamentsComponent {
-  private readonly route = inject(ActivatedRoute);
+  id = input.required();
+
   private readonly router = inject(Router);
   private readonly tournamentService = inject(TournamentService);
 
-  private readonly params = toSignal(this.route.paramMap);
+  readonly mode = computed(() => this.id() === 'new' ? 'list' : 'manage');
 
-  readonly routeId = computed(() => this.params()?.get('id') ?? null);
-
-  readonly mode = computed(() => {
-    const id = this.routeId();
-    if (!id || id === 'new') return 'list';
-    return 'manage';
-  });
-
-  readonly showCreateModal = signal(false);
-
-  constructor() {
-    effect(() => {
-      const id = this.routeId();
-      if (id === 'new') {
-        this.showCreateModal.set(true);
-      } else {
-        this.showCreateModal.set(false);
-      }
-    });
-  }
+  readonly showCreateModal = linkedSignal(() => this.id() === 'new');
 
   openCreateModal(): void {
     this.showCreateModal.set(true);
   }
 
-  onCreateSave(request: TournamentRequestDto): void {
-    this.tournamentService.create(request).subscribe({
-      next: (tournament) => {
-        this.showCreateModal.set(false);
-        this.router.navigate(['/tournaments', tournament.id]);
-      }
-    });
+  async onCreateSave(request: TournamentRequestDto): Promise<void> {
+    const tournament = await this.tournamentService.create(request);
+    this.showCreateModal.set(false);
+    this.router.navigate(['/tournaments', tournament.id]);
   }
 
   onCreateClose(): void {
     this.showCreateModal.set(false);
-    if (this.route.snapshot.paramMap.get('id') === 'new') {
+    if (this.id() === 'new') {
       this.router.navigate(['/tournaments']);
     }
   }

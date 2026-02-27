@@ -8,7 +8,6 @@ import { TournamentActionsComponent } from '../tournament-actions/tournament-act
 
 @Component({
   selector: 'app-tournament-manage',
-  standalone: true,
   imports: [TournamentFormModalComponent, TournamentActionsComponent],
   templateUrl: './tournament-manage.component.html'
 })
@@ -41,64 +40,52 @@ export class TournamentManageComponent {
     });
   }
 
-  private loadTournament(id: number): void {
+  private async loadTournament(id: number): Promise<void> {
     this.isLoading.set(true);
-    this.tournamentService.getById(id).subscribe({
-      next: (tournament) => {
-        this.tournament.set(tournament);
-        this.isLoading.set(false);
-      },
-      error: () => {
-        this.isLoading.set(false);
-      }
-    });
+    const tournamentById = await this.tournamentService.getById(id);
+    this.tournament.set(tournamentById);
+    this.isLoading.set(false);
   }
 
   onEdit(): void {
     this.showEditModal.set(true);
   }
 
-  onSave(request: TournamentRequestDto): void {
+  async onSave(request: TournamentRequestDto): Promise<void> {
     const tournament = this.tournament();
     if (!tournament) return;
 
-    this.tournamentService.update(tournament.id, request).subscribe({
-      next: (updated) => {
-        this.tournament.set(updated);
-        this.showEditModal.set(false);
-      }
-    });
+    const updated = await this.tournamentService.update(tournament.id, request);
+    this.tournament.set(updated);
+    this.showEditModal.set(false);
   }
 
   onCloseModal(): void {
     this.showEditModal.set(false);
   }
 
-  onStart(): void {
+  async onStart(): Promise<void> {
     const tournament = this.tournament();
     if (!tournament) return;
 
-    this.tournamentService.start(tournament).then(() => {
-      this.loadTournament(tournament.id);
-    });
+    await this.tournamentService.start(tournament);
+    await this.loadTournament(tournament.id);
   }
 
-  onEnd(): void {
+  async onEnd(): Promise<void> {
     const tournament = this.tournament();
     if (!tournament) return;
 
-    this.tournamentService.end(tournament).then(() => {
-      this.loadTournament(tournament.id);
-    });
+    await this.tournamentService.end(tournament);
+    await this.loadTournament(tournament.id);
   }
 
-  onCancel(): void {
+  async onCancel(): Promise<void> {
     const tournament = this.tournament();
     if (!tournament) return;
 
-    this.tournamentService.cancel(tournament).then(() => {
-      this.loadTournament(tournament.id);
-    });
+    await this.tournamentService.cancel(tournament);
+    await this.loadTournament(tournament.id);
   }
 
   onDelete(): void {

@@ -1,5 +1,5 @@
 import { Injectable, inject, signal } from '@angular/core';
-import { Observable, firstValueFrom, finalize, tap } from 'rxjs';
+import { Observable, firstValueFrom, finalize } from 'rxjs';
 import { TournamentApiService } from '../../infrastructure/tournament-api.service';
 import { Tournament, TournamentRequestDto } from '../../domain/models';
 import { AlertService } from '@app/core/services';
@@ -58,32 +58,28 @@ export class TournamentService {
   /**
    * Gets a tournament by ID
    */
-  getById(id: number): Observable<Tournament> {
-    return this.api.getById(id);
+  async getById(id: number): Promise<Tournament> {
+    return await firstValueFrom(this.api.getById(id));
   }
 
   /**
    * Creates a new tournament
    */
-  create(request: TournamentRequestDto): Observable<Tournament> {
-    return this.api.create(request).pipe(
-      tap((tournament) => {
-        this.alert.success(`Tournament "${tournament.name}" created successfully!`);
-        this.loadTournaments();
-      })
-    );
+  async create(request: TournamentRequestDto): Promise<Tournament> {
+    const tournament = await firstValueFrom(this.api.create(request));
+    this.alert.success(`Tournament "${tournament.name}" created successfully!`);
+    this.loadTournaments();
+    return tournament;
   }
 
   /**
    * Updates an existing tournament
    */
-  update(id: number, request: TournamentRequestDto): Observable<Tournament> {
-    return this.api.update(id, request).pipe(
-      tap((tournament) => {
-        this.alert.success(`Tournament "${tournament.name}" updated successfully!`);
-        this.loadTournaments();
-      })
-    );
+  async update(id: number, request: TournamentRequestDto): Promise<Tournament> {
+    const tournament = await firstValueFrom(this.api.update(id, request));
+    this.alert.success(`Tournament "${tournament.name}" updated successfully!`);
+    this.loadTournaments();
+    return tournament;
   }
 
   /**

@@ -23,6 +23,9 @@ export class TournamentSelectorComponent {
   /** Loading state signal */
   readonly isLoading = input.required<Signal<boolean>>();
 
+  /** Currently selected tournament ID, used to mark the active option */
+  readonly selectedId = input<number | null>(null);
+
   /** Emitted when create button is clicked */
   readonly createTournament = output<void>();
 

@@ -63,7 +63,7 @@
         </div>
 
         <div class="flex gap-3 pt-4 border-t border-gray-200">
-          <button type="submit" [disabled]="tournamentForm().invalid()" class="btn-primary flex-1">
+          <button type="submit" [disabled]="!tournamentForm().valid()" class="btn-primary flex-1">
             <i class="fas fa-save mr-2"></i>
             @if (isEditMode()) {
               Update

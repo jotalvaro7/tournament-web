@@ -1,5 +1,7 @@
-import { Component, inject, output, signal, computed } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { Component, inject, output, computed } from '@angular/core';
+import { Router, RouterLink, NavigationEnd } from '@angular/router';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { filter, map, startWith } from 'rxjs';
 import { TournamentService } from '@app/features/tournaments/application/services';
 import { TournamentSelectorComponent } from './tournament-selector/tournament-selector.component';
 import { NavigationItemsComponent, NavItem } from './navigation-items/navigation-items.component';
@@ -26,6 +28,7 @@ import { NavigationItemsComponent, NavItem } from './navigation-items/navigation
 })
 export class NavbarComponent {
   private readonly tournamentService = inject(TournamentService);
+  private readonly router = inject(Router);
 
   /** Event emitted when user wants to create a new tournament */
   createTournament = output<void>();
@@ -39,8 +42,22 @@ export class NavbarComponent {
   /** Loading state signal from service */
   readonly isLoading = this.tournamentService.isLoading;
 
-  /** Currently selected tournament ID */
-  private readonly selectedTournamentId = signal<number | null>(null);
+  /**
+   * Currently selected tournament ID derived from the router URL.
+   * Updates automatically on any navigation, including programmatic navigation
+   * after tournament creation.
+   */
+  readonly selectedTournamentId = toSignal(
+    this.router.events.pipe(
+      filter(e => e instanceof NavigationEnd),
+      startWith(null),
+      map(() => {
+        const match = this.router.url.match(/\/tournaments\/(\d+)/);
+        return match ? Number(match[1]) : null;
+      })
+    ),
+    { initialValue: null }
+  );
 
   /** Dynamic navigation items based on selected tournament */
   readonly navItems = computed<NavItem[]>(() => {
@@ -74,10 +91,7 @@ export class NavbarComponent {
     const tournamentId = Number(select.value);
 
     if (tournamentId) {
-      this.selectedTournamentId.set(tournamentId);
       this.selectTournament.emit(tournamentId);
-    } else {
-      this.selectedTournamentId.set(null);
     }
   }
 

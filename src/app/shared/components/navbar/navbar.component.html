@@ -10,6 +10,7 @@
       <app-tournament-selector
         [tournaments]="tournaments"
         [isLoading]="isLoading"
+        [selectedId]="selectedTournamentId()"
         (createTournament)="onCreateClick()"
         (selectTournament)="onTournamentSelect($event)"
       />
