@@ -1,8 +1,6 @@
-import { Component, signal, inject, computed, effect } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { Component, inject, input, computed, linkedSignal } from '@angular/core';
 import { TournamentService } from '../../../application/services';
-import { Tournament, TournamentHelper, TournamentRequestDto } from '../../../domain/models';
+import { TournamentHelper, TournamentRequestDto } from '../../../domain/models';
 import { TournamentFormModalComponent } from '../tournament-form-modal/tournament-form-modal.component';
 import { TournamentActionsComponent } from '../tournament-actions/tournament-actions.component';
 
@@ -12,40 +10,23 @@ import { TournamentActionsComponent } from '../tournament-actions/tournament-act
   templateUrl: './tournament-manage.component.html'
 })
 export class TournamentManageComponent {
-  private readonly route = inject(ActivatedRoute);
+  readonly id = input<string>('');
+
   private readonly tournamentService = inject(TournamentService);
 
-  private readonly params = toSignal(this.route.paramMap);
+  readonly tournamentId = computed(() => Number(this.id()) || null);
 
-  readonly tournamentId = computed(() => {
-    const id = this.params()?.get('id');
-    return id && id !== 'new' ? Number(id) : null;
+  private readonly tournamentResource = this.tournamentService.getTournamentResource(this.tournamentId);
+
+  readonly tournament = this.tournamentResource.value;
+  readonly isLoading = this.tournamentResource.isLoading;
+
+  readonly showEditModal = linkedSignal({
+    source: () => this.tournamentId(),
+    computation: () => false
   });
 
-  readonly tournament = signal<Tournament | null>(null);
-  readonly isLoading = signal(false);
-  readonly showEditModal = signal(false);
   readonly helper = TournamentHelper;
-
-  constructor() {
-    effect(() => {
-      const id = this.tournamentId();
-      this.showEditModal.set(false);
-
-      if (id) {
-        this.loadTournament(id);
-      } else {
-        this.tournament.set(null);
-      }
-    });
-  }
-
-  private async loadTournament(id: number): Promise<void> {
-    this.isLoading.set(true);
-    const tournamentById = await this.tournamentService.getById(id);
-    this.tournament.set(tournamentById);
-    this.isLoading.set(false);
-  }
 
   onEdit(): void {
     this.showEditModal.set(true);
@@ -55,8 +36,8 @@ export class TournamentManageComponent {
     const tournament = this.tournament();
     if (!tournament) return;
 
-    const updated = await this.tournamentService.update(tournament.id, request);
-    this.tournament.set(updated);
+    await this.tournamentService.update(tournament.id, request);
+    this.tournamentResource.reload();
     this.showEditModal.set(false);
   }
 
@@ -69,7 +50,7 @@ export class TournamentManageComponent {
     if (!tournament) return;
 
     await this.tournamentService.start(tournament);
-    await this.loadTournament(tournament.id);
+    this.tournamentResource.reload();
   }
 
   async onEnd(): Promise<void> {
@@ -77,7 +58,7 @@ export class TournamentManageComponent {
     if (!tournament) return;
 
     await this.tournamentService.end(tournament);
-    await this.loadTournament(tournament.id);
+    this.tournamentResource.reload();
   }
 
   async onCancel(): Promise<void> {
@@ -85,7 +66,7 @@ export class TournamentManageComponent {
     if (!tournament) return;
 
     await this.tournamentService.cancel(tournament);
-    await this.loadTournament(tournament.id);
+    this.tournamentResource.reload();
   }
 
   onDelete(): void {

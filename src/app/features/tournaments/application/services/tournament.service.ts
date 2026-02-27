@@ -1,8 +1,10 @@
-import { Injectable, inject, signal } from '@angular/core';
+import { Injectable, inject, signal, Signal } from '@angular/core';
+import { httpResource } from '@angular/common/http';
 import { Observable, firstValueFrom, finalize } from 'rxjs';
 import { TournamentApiService } from '../../infrastructure/tournament-api.service';
 import { Tournament, TournamentRequestDto } from '../../domain/models';
 import { AlertService } from '@app/core/services';
+import { environment } from '@environments/environment';
 
 /**
  * Tournament Service (Application Layer - Facade)
@@ -56,10 +58,17 @@ export class TournamentService {
   }
 
   /**
-   * Gets a tournament by ID
+   * Creates a reactive resource for a tournament by ID.
+   * Automatically re-fetches when the ID signal changes.
+   * Returns undefined when ID is null (no fetch).
    */
-  async getById(id: number): Promise<Tournament> {
-    return await firstValueFrom(this.api.getById(id));
+  getTournamentResource(id: Signal<number | null>) {
+    return httpResource<Tournament>(
+      () => {
+        const idValue = id();
+        return idValue ? `${environment.apiUrl}/tournaments/${idValue}` : undefined;
+      }
+    );
   }
 
   /**
@@ -117,7 +126,6 @@ export class TournamentService {
 
     const updated = await firstValueFrom(this.api.start(tournament.id));
     this.alert.success(`Tournament "${updated.name}" started successfully!`);
-    this.loadTournaments();
   }
 
   /**
@@ -136,7 +144,6 @@ export class TournamentService {
 
     const updated = await firstValueFrom(this.api.end(tournament.id));
     this.alert.success(`Tournament "${updated.name}" completed successfully!`);
-    this.loadTournaments();
   }
 
   /**
@@ -155,6 +162,5 @@ export class TournamentService {
 
     const updated = await firstValueFrom(this.api.cancel(tournament.id));
     this.alert.success(`Tournament "${updated.name}" cancelled successfully!`);
-    this.loadTournaments();
   }
 }

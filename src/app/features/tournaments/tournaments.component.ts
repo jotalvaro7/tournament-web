@@ -12,7 +12,7 @@ import { TournamentRequestDto } from './domain/models';
   templateUrl: './tournaments.component.html',
 })
 export class TournamentsComponent {
-  id = input.required();
+  id = input.required<string>();
 
   private readonly router = inject(Router);
   private readonly tournamentService = inject(TournamentService);
