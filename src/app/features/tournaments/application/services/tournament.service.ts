@@ -1,6 +1,6 @@
 import { Injectable, inject, signal, Signal } from '@angular/core';
 import { httpResource } from '@angular/common/http';
-import { Observable, firstValueFrom, finalize } from 'rxjs';
+import { firstValueFrom } from 'rxjs';
 import { TournamentApiService } from '../../infrastructure/tournament-api.service';
 import { Tournament, TournamentRequestDto } from '../../domain/models';
 import { AlertService } from '@app/core/services';
@@ -47,14 +47,14 @@ export class TournamentService {
   /**
    * Loads all tournaments from API and updates signal
    */
-  loadTournaments(): void {
+  async loadTournaments(): Promise<void> {
     this.isLoading.set(true);
-
-    this.api.getAll()
-      .pipe(finalize(() => this.isLoading.set(false)))
-      .subscribe({
-        next: (tournaments) => this.tournaments.set(tournaments)
-      });
+    try {
+      const tournaments = await firstValueFrom(this.api.getAll());
+      this.tournaments.set(tournaments);
+    } finally {
+      this.isLoading.set(false);
+    }
   }
 
   /**
