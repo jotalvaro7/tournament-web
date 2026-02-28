@@ -3,6 +3,7 @@ import { TournamentService } from '../../../application/services';
 import { TournamentHelper, TournamentRequestDto } from '../../../domain/models';
 import { TournamentFormModalComponent } from '../tournament-form-modal/tournament-form-modal.component';
 import { TournamentActionsComponent } from '../tournament-actions/tournament-actions.component';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-tournament-manage',
@@ -13,6 +14,7 @@ export class TournamentManageComponent {
   readonly id = input<string>('');
 
   private readonly tournamentService = inject(TournamentService);
+  private readonly router = inject(Router);
 
   readonly tournamentId = computed(() => Number(this.id()) || null);
 
@@ -69,10 +71,11 @@ export class TournamentManageComponent {
     this.tournamentResource.reload();
   }
 
-  onDelete(): void {
+  async onDelete(): Promise<void> {
     const tournament = this.tournament();
     if (!tournament) return;
 
-    this.tournamentService.delete(tournament);
+    await this.tournamentService.delete(tournament);
+    this.router.navigate(['/tournaments']);
   }
 }
