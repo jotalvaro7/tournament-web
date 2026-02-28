@@ -1,10 +1,8 @@
-import { Injectable, inject, signal, Signal } from '@angular/core';
-import { httpResource } from '@angular/common/http';
+import { Injectable, inject, computed, Signal } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 import { TournamentApiService } from '../../infrastructure/tournament-api.service';
 import { Tournament, TournamentRequestDto } from '../../domain/models';
 import { AlertService } from '@app/core/services';
-import { environment } from '@environments/environment';
 
 /**
  * Tournament Service (Application Layer - Facade)
@@ -33,42 +31,21 @@ export class TournamentService {
   private readonly api = inject(TournamentApiService);
   private readonly alert = inject(AlertService);
 
-  /**
-   * Signal holding the list of tournaments
-   * Components can read this signal reactively
-   */
-  readonly tournaments = signal<Tournament[]>([]);
+  private readonly tournamentsResource = this.api.getAllResource();
 
-  /**
-   * Signal indicating if data is being loaded
-   */
-  readonly isLoading = signal(false);
+  /** Reactive list of all tournaments. Auto-fetches on service creation. */
+  readonly tournaments = computed(() => this.tournamentsResource.value() ?? []);
 
-  /**
-   * Loads all tournaments from API and updates signal
-   */
-  async loadTournaments(): Promise<void> {
-    this.isLoading.set(true);
-    try {
-      const tournaments = await firstValueFrom(this.api.getAll());
-      this.tournaments.set(tournaments);
-    } finally {
-      this.isLoading.set(false);
-    }
-  }
+  /** Loading state of the tournaments list */
+  readonly isLoading = this.tournamentsResource.isLoading;
 
   /**
    * Creates a reactive resource for a tournament by ID.
    * Automatically re-fetches when the ID signal changes.
    * Returns undefined when ID is null (no fetch).
    */
-  getTournamentResource(id: Signal<number | null>) {
-    return httpResource<Tournament>(
-      () => {
-        const idValue = id();
-        return idValue ? `${environment.apiUrl}/tournaments/${idValue}` : undefined;
-      }
-    );
+  getTournamentByIdResource(id: Signal<number | null>) {
+    return this.api.getByIdResource(id);
   }
 
   /**
@@ -77,7 +54,7 @@ export class TournamentService {
   async create(request: TournamentRequestDto): Promise<Tournament> {
     const tournament = await firstValueFrom(this.api.create(request));
     this.alert.success(`Tournament "${tournament.name}" created successfully!`);
-    this.loadTournaments();
+    this.tournamentsResource.reload();
     return tournament;
   }
 
@@ -87,7 +64,7 @@ export class TournamentService {
   async update(id: number, request: TournamentRequestDto): Promise<Tournament> {
     const tournament = await firstValueFrom(this.api.update(id, request));
     this.alert.success(`Tournament "${tournament.name}" updated successfully!`);
-    this.loadTournaments();
+    this.tournamentsResource.reload();
     return tournament;
   }
 
@@ -107,7 +84,7 @@ export class TournamentService {
 
     await firstValueFrom(this.api.delete(tournament.id));
     this.alert.success(`Tournament "${tournament.name}" deleted successfully!`);
-    this.loadTournaments();
+    this.tournamentsResource.reload();
   }
 
   /**

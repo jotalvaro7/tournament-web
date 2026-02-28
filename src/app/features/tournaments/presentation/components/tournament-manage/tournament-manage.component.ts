@@ -16,7 +16,7 @@ export class TournamentManageComponent {
 
   readonly tournamentId = computed(() => Number(this.id()) || null);
 
-  private readonly tournamentResource = this.tournamentService.getTournamentResource(this.tournamentId);
+  private readonly tournamentResource = this.tournamentService.getTournamentByIdResource(this.tournamentId);
 
   readonly tournament = this.tournamentResource.value;
   readonly isLoading = this.tournamentResource.isLoading;

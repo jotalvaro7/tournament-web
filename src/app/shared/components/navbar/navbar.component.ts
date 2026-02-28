@@ -81,10 +81,6 @@ export class NavbarComponent {
     ];
   });
 
-  constructor() {
-    this.tournamentService.loadTournaments();
-  }
-
   /** Handles tournament selection from dropdown */
   onTournamentSelect(event: Event): void {
     const select = event.target as HTMLSelectElement;
