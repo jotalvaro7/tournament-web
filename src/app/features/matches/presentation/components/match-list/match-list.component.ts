@@ -25,6 +25,7 @@ import { MatchPaginationComponent } from '../match-pagination/match-pagination.c
   templateUrl: './match-list.component.html'
 })
 export class MatchListComponent {
+  /*
   private readonly route = inject(ActivatedRoute);
   readonly matchService = inject(MatchService);
   private readonly teamService = inject(TeamService);
@@ -51,7 +52,7 @@ export class MatchListComponent {
     effect(() => {
       const id = this.tournamentId();
       if (id) {
-        this.teamService.loadTeamsByTournament(id);
+        this.teamService.loadTeamsByTournament(this.tournamentId);
       }
     });
   }
@@ -156,4 +157,5 @@ export class MatchListComponent {
   closeDetails(): void {
     this.matchService.selectMatch(null);
   }
+    */
 }

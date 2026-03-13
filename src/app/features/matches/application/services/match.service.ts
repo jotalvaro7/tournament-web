@@ -1,5 +1,5 @@
 import { Injectable, inject, signal, computed } from '@angular/core';
-import { finalize } from 'rxjs';
+import { Observable, finalize, map, tap } from 'rxjs';
 import { MatchApiService } from '../../infrastructure/match-api.service';
 import { Match, MatchRequest, MatchResponse, FinishMatchRequest, MatchFilterParams, PageResponseMatch } from '../../domain/models';
 import { AlertService } from '@app/core/services/alert.service';
@@ -92,25 +92,20 @@ export class MatchService {
   /**
    * Update match details
    */
-  updateMatch(tournamentId: number, matchId: number, request: MatchRequest): void {
+  updateMatch(tournamentId: number, matchId: number, request: MatchRequest): Observable<Match> {
     this.loadingSignal.set(true);
 
-    this.matchApi.updateMatch(tournamentId, matchId, request)
-      .pipe(finalize(() => this.loadingSignal.set(false)))
-      .subscribe({
-        next: (response) => {
-          const updatedMatch = this.mapToDomain(response);
+    return this.matchApi.updateMatch(tournamentId, matchId, request)
+      .pipe(
+        map(response => this.mapToDomain(response)),
+        tap(updatedMatch => {
           this.matchesSignal.update(matches =>
             matches.map(m => m.id === matchId ? updatedMatch : m)
           );
           this.alertService.success('El partido se actualizó exitosamente.', '¡Partido actualizado!');
-        },
-        error: (error) => {
-          console.error('Error updating match:', error);
-          const errorMessage = error.error?.message || 'No se pudo actualizar el partido.';
-          this.alertService.error(errorMessage);
-        }
-      });
+        }),
+        finalize(() => this.loadingSignal.set(false))
+      );
   }
 
   /**
@@ -147,25 +142,20 @@ export class MatchService {
    * Finish match and set result
    * Can be used to update scores even for finished matches
    */
-  finishMatch(tournamentId: number, matchId: number, request: FinishMatchRequest): void {
+  finishMatch(tournamentId: number, matchId: number, request: FinishMatchRequest): Observable<Match> {
     this.loadingSignal.set(true);
 
-    this.matchApi.finishMatch(tournamentId, matchId, request)
-      .pipe(finalize(() => this.loadingSignal.set(false)))
-      .subscribe({
-        next: (response) => {
-          const updatedMatch = this.mapToDomain(response);
+    return this.matchApi.finishMatch(tournamentId, matchId, request)
+      .pipe(
+        map(response => this.mapToDomain(response)),
+        tap(updatedMatch => {
           this.matchesSignal.update(matches =>
             matches.map(m => m.id === matchId ? updatedMatch : m)
           );
           this.alertService.success('El resultado del partido se guardó exitosamente.', '¡Resultado guardado!');
-        },
-        error: (error) => {
-          console.error('Error finishing match:', error);
-          const errorMessage = error.error?.message || 'No se pudo guardar el resultado.';
-          this.alertService.error(errorMessage);
-        }
-      });
+        }),
+        finalize(() => this.loadingSignal.set(false))
+      );
   }
 
   /**

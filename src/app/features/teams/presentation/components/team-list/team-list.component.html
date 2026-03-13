@@ -5,9 +5,7 @@
       <p class="text-gray-500">Loading teams...</p>
     </div>
   </div>
-}
-
-@if (!isLoading()) {
+} @else {
   <div class="space-y-6 animate-fade-in">
     <div class="card px-6 py-4">
       <div class="flex items-center justify-between">
@@ -47,9 +45,7 @@
           </tbody>
         </table>
       </div>
-    }
-
-    @if (teams().length === 0) {
+    }@else {
       <div class="card p-16">
         <div class="empty-state">
           <i class="fas fa-users empty-state-icon"></i>

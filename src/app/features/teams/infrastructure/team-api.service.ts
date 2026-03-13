@@ -1,5 +1,5 @@
-import { Injectable, inject } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { Injectable, Signal, inject } from '@angular/core';
+import { HttpClient, httpResource } from '@angular/common/http';
 import { Observable, map } from 'rxjs';
 import { environment } from '@environments/environment';
 import { Team, TeamRequestDto, TeamResponseDto } from '../domain/models';
@@ -13,14 +13,7 @@ import { MatchResponse } from '@app/features/matches/domain/models';
  *
  * Architecture: Ports & Adapters Pattern
  * This is an adapter that implements the port defined by the domain.
- *
- * Endpoints (to be implemented in backend):
- * - GET    /tournaments/{tournamentId}/teams       - List all teams
- * - GET    /tournaments/{tournamentId}/teams/{id}  - Get team by ID
- * - POST   /tournaments/{tournamentId}/teams       - Create team
- * - PUT    /tournaments/{tournamentId}/teams/{id}  - Update team
- * - DELETE /tournaments/{tournamentId}/teams/{id}  - Delete team
- */
+ **/ 
 @Injectable({
   providedIn: 'root'
 })
@@ -31,10 +24,13 @@ export class TeamApiService {
   /**
    * Gets all teams for a specific tournament
    */
-  getAllByTournament(tournamentId: number): Observable<Team[]> {
-    return this.http
-      .get<TeamResponseDto[]>(`${this.baseUrl}/tournaments/${tournamentId}/teams`)
-      .pipe(map(dtos => dtos.map(this.mapToModel)));
+  getAllByTournamentResource(tournamentId: Signal<number | null>) {
+    return httpResource<Team[]>(
+      () => {
+      const tournamentIdValue = tournamentId();
+      return tournamentIdValue ? `${this.baseUrl}/tournaments/${tournamentIdValue}/teams` : undefined
+      }
+    );
   }
 
   /**
@@ -74,10 +70,12 @@ export class TeamApiService {
   /**
    * Gets all matches played by a team
    */
-  getMatchesByTeam(tournamentId: number, teamId: number): Observable<MatchResponse[]> {
-    return this.http.get<MatchResponse[]>(
-      `${this.baseUrl}/tournaments/${tournamentId}/teams/${teamId}/matches`
-    );
+  getMatchesByTeamResource(tournamentId: Signal<number | null>, teamId: Signal<number | null>) {
+    return httpResource<MatchResponse[]>(() => {
+      const tId = tournamentId();
+      const tmId = teamId();
+      return tId && tmId ? `${this.baseUrl}/tournaments/${tId}/teams/${tmId}/matches` : undefined;
+    })
   }
 
   /**
