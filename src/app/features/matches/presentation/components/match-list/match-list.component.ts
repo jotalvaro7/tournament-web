@@ -45,6 +45,7 @@ export class MatchListComponent {
   readonly teams = computed(() => this.teamsListResource.value() ?? []);
   readonly matches = computed(() => this.matchesResource.value()?.content ?? []);
   readonly isLoading = computed(() => this.matchesResource.isLoading());
+  readonly selectedMatchForDetails = computed(() => this.matchService.selectedMatch());
   readonly pagination = computed(() => {
     const r = this.matchesResource.value();
     if (!r) return null;
