@@ -3,7 +3,7 @@ import { HttpClient, httpResource } from '@angular/common/http';
 import { Observable, map } from 'rxjs';
 import { environment } from '@environments/environment';
 import { Team, TeamRequestDto, TeamResponseDto } from '../domain/models';
-import { MatchResponse } from '@app/features/matches/domain/models';
+import { Match, MatchResponse } from '@app/features/matches/domain/models';
 
 /**
  * Team API Service (Infrastructure Layer - Adapter)
@@ -71,11 +71,20 @@ export class TeamApiService {
    * Gets all matches played by a team
    */
   getMatchesByTeamResource(tournamentId: Signal<number | null>, teamId: Signal<number | null>) {
-    return httpResource<MatchResponse[]>(() => {
-      const tId = tournamentId();
-      const tmId = teamId();
-      return tId && tmId ? `${this.baseUrl}/tournaments/${tId}/teams/${tmId}/matches` : undefined;
-    })
+    return httpResource<Match[]>(
+      () => {
+        const tId = tournamentId();
+        const tmId = teamId();
+        return tId && tmId ? `${this.baseUrl}/tournaments/${tId}/teams/${tmId}/matches` : undefined;
+      },
+      {
+        parse: (raw: unknown) => (raw as MatchResponse[]).map(r => new Match(
+          r.id, r.tournamentId, r.homeTeamId, r.awayTeamId,
+          r.homeTeamScore, r.awayTeamScore, new Date(r.matchDate),
+          r.field, r.status
+        ))
+      }
+    );
   }
 
   /**

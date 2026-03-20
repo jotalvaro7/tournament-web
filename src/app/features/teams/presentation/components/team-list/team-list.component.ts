@@ -2,7 +2,7 @@ import { Component, signal, inject, computed, input } from '@angular/core';
 import { Router } from '@angular/router';
 import { TeamService } from '../../../application/services';
 import { Team, TeamRequestDto } from '../../../domain/models';
-import { Match, MatchResponse, MatchRequest, FinishMatchRequest } from '@app/features/matches/domain/models';
+import { Match, MatchRequest, FinishMatchRequest } from '@app/features/matches/domain/models';
 import { MatchService } from '@app/features/matches/application/services';
 import { TeamFormModalComponent } from '../team-form-modal/team-form-modal.component';
 import { TeamDetailsModalComponent } from '../team-details-modal/team-details-modal.component';
@@ -140,18 +140,7 @@ export class TeamListComponent {
     this.selectedTeamForMatches.set(null);
   }
 
-  viewMatchDetails(matchResponse: MatchResponse): void {
-    const match = new Match(
-      matchResponse.id,
-      matchResponse.tournamentId,
-      matchResponse.homeTeamId,
-      matchResponse.awayTeamId,
-      matchResponse.homeTeamScore,
-      matchResponse.awayTeamScore,
-      new Date(matchResponse.matchDate),
-      matchResponse.field,
-      matchResponse.status
-    );
+  viewMatchDetails(match: Match): void {
     this.selectedMatchForDetails.set(match);
   }
 

@@ -1,7 +1,7 @@
 import { Component, input, output, computed } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { Team } from '../../../domain/models';
-import { MatchResponse, MatchStatus } from '@app/features/matches/domain/models';
+import { Match, MatchStatus } from '@app/features/matches/domain/models';
 
 @Component({
   selector: 'app-team-matches-modal',
@@ -10,12 +10,12 @@ import { MatchResponse, MatchStatus } from '@app/features/matches/domain/models'
   templateUrl: './team-matches-modal.component.html'
 })
 export class TeamMatchesModalComponent {
-  team = input<Team | null>(null);
-  matches = input<MatchResponse[]>([]);
-  teams = input<Team[]>([]);
-  isLoading = input<boolean>(false);
-  close = output<void>();
-  viewMatch = output<MatchResponse>();
+  readonly team = input<Team | null>(null);
+  readonly matches = input<Match[]>([]);
+  readonly teams = input<Team[]>([]);
+  readonly isLoading = input<boolean>(false);
+  readonly close = output<void>();
+  readonly viewMatch = output<Match>();
 
   readonly hasMatches = computed(() => this.matches().length > 0);
 
@@ -27,11 +27,11 @@ export class TeamMatchesModalComponent {
     this.close.emit();
   }
 
-  onMatchClick(match: MatchResponse): void {
+  onMatchClick(match: Match): void {
     this.viewMatch.emit(match);
   }
 
-  getOpponentName(match: MatchResponse): string {
+  getOpponentName(match: Match): string {
     const team = this.team();
     if (!team) return '';
 
@@ -40,21 +40,21 @@ export class TeamMatchesModalComponent {
     return opponent?.name ?? 'Unknown';
   }
 
-  getHomeTeamName(match: MatchResponse): string {
+  getHomeTeamName(match: Match): string {
     const team = this.teams().find(t => t.id === match.homeTeamId);
     return team?.name ?? 'Home';
   }
 
-  getAwayTeamName(match: MatchResponse): string {
+  getAwayTeamName(match: Match): string {
     const team = this.teams().find(t => t.id === match.awayTeamId);
     return team?.name ?? 'Away';
   }
 
-  isHomeMatch(match: MatchResponse): boolean {
+  isHomeMatch(match: Match): boolean {
     return match.homeTeamId === this.team()?.id;
   }
 
-  getMatchResult(match: MatchResponse): 'win' | 'draw' | 'loss' | null {
+  getMatchResult(match: Match): 'win' | 'draw' | 'loss' | null {
     if (match.status !== MatchStatus.FINISHED) return null;
     if (match.homeTeamScore === null || match.awayTeamScore === null) return null;
 
@@ -70,7 +70,7 @@ export class TeamMatchesModalComponent {
     return 'draw';
   }
 
-  getResultLabel(match: MatchResponse): string {
+  getResultLabel(match: Match): string {
     const result = this.getMatchResult(match);
     switch (result) {
       case 'win': return 'W';
@@ -80,7 +80,7 @@ export class TeamMatchesModalComponent {
     }
   }
 
-  getResultColor(match: MatchResponse): string {
+  getResultColor(match: Match): string {
     const result = this.getMatchResult(match);
     switch (result) {
       case 'win': return 'bg-emerald-100 text-emerald-700';
@@ -90,7 +90,7 @@ export class TeamMatchesModalComponent {
     }
   }
 
-  getScoreDisplay(match: MatchResponse): string {
+  getScoreDisplay(match: Match): string {
     if (match.homeTeamScore === null || match.awayTeamScore === null) {
       return 'vs';
     }

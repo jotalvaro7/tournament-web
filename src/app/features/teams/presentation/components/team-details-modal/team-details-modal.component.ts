@@ -30,32 +30,32 @@ export class TeamDetailsModalComponent {
   /**
    * Team to display (null = modal closed)
    */
-  team = input<Team | null>(null);
+  readonly team = input<Team | null>(null);
 
   /**
    * Event emitted when user closes the modal
    */
-  close = output<void>();
+  readonly close = output<void>();
 
   /**
    * Event emitted when user clicks Edit button
    */
-  edit = output<Team>();
+  readonly edit = output<Team>();
 
   /**
    * Event emitted when user clicks Delete button
    */
-  delete = output<Team>();
+  readonly delete = output<Team>();
 
   /**
    * Event emitted when user clicks View Players button
    */
-  viewPlayers = output<Team>();
+  readonly viewPlayers = output<Team>();
 
   /**
    * Event emitted when user clicks View Matches button
    */
-  viewMatches = output<Team>();
+  readonly viewMatches = output<Team>();
 
   /**
    * Helper class for UI utilities
