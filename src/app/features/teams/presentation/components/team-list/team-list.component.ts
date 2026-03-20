@@ -116,10 +116,6 @@ export class TeamListComponent {
     this.onEditTeam(team);
   }
 
-  async deleteFromModal(team: Team): Promise<void>{
-    await this.onRemoveTeam(team);
-  }
-
   viewPlayersFromModal(team: Team): void {
     this.closeTeamDetails();
     const tournamentId = this.tournamentId();
