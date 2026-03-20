@@ -1,8 +1,10 @@
-import { Injectable, inject } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { Injectable, Signal, inject } from '@angular/core';
+import { HttpClient, HttpParams, httpResource } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { MatchResponse, MatchRequest, FinishMatchRequest, MatchFilterParams, PageResponseMatch } from '../domain/models';
+import { Match, MatchResponse, MatchRequest, FinishMatchRequest, MatchFilterParams, PageResponseMatch } from '../domain/models';
 import { environment } from '@environments/environment';
+
+type PageResponseMatches = Omit<PageResponseMatch, 'content'> & { content: Match[] };
 
 /**
  * Match API Service (Infrastructure Layer)
@@ -87,5 +89,44 @@ export class MatchApiService {
    */
   postponeMatch(tournamentId: number, matchId: number): Observable<MatchResponse> {
     return this.http.post<MatchResponse>(`${this.baseUrl}/${tournamentId}/matches/${matchId}/postpone`, {});
+  }
+
+  /**
+   * Get paginated matches for a tournament with optional filters (reactive)
+   */
+  getMatchesByTournamentResource(
+    tournamentId: Signal<number | null>,
+    filters: Signal<MatchFilterParams | undefined>
+  ) {
+    return httpResource<PageResponseMatches>(() => {
+      const tId = tournamentId();
+      if (!tId) return undefined;
+
+      const f = filters();
+      const params: Record<string, string | number> = {};
+
+      if (f?.specificDate)       params['specificDate'] = f.specificDate;
+      if (f?.dateFrom)           params['dateFrom']     = f.dateFrom;
+      if (f?.dateTo)             params['dateTo']       = f.dateTo;
+      if (f?.status)             params['status']       = f.status;
+      if (f?.page !== undefined) params['page']         = f.page;
+      if (f?.size !== undefined) params['size']         = f.size;
+      if (f?.sortBy)             params['sortBy']       = f.sortBy;
+      if (f?.direction)          params['direction']    = f.direction;
+
+      return { url: `${this.baseUrl}/${tId}/matches`, params };
+    }, {
+      parse: (raw: unknown) => {
+        const response = raw as PageResponseMatch;
+        return {
+          ...response,
+          content: response.content.map(r => new Match(
+            r.id, r.tournamentId, r.homeTeamId, r.awayTeamId,
+            r.homeTeamScore, r.awayTeamScore, new Date(r.matchDate),
+            r.field, r.status
+          ))
+        };
+      }
+    });
   }
 }

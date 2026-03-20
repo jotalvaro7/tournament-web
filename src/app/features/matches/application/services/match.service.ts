@@ -1,20 +1,19 @@
-import { Injectable, inject, signal, computed } from '@angular/core';
-import { Observable, finalize, map, tap } from 'rxjs';
+import { Injectable, Signal, inject, signal } from '@angular/core';
+import { Observable, firstValueFrom, map, tap } from 'rxjs';
 import { MatchApiService } from '../../infrastructure/match-api.service';
-import { Match, MatchRequest, MatchResponse, FinishMatchRequest, MatchFilterParams, PageResponseMatch } from '../../domain/models';
+import { Match, MatchRequest, MatchResponse, FinishMatchRequest, MatchFilterParams } from '../../domain/models';
 import { AlertService } from '@app/core/services/alert.service';
 
 /**
- * Match Service (Application Layer)
+ * Match Service (Application Layer - Facade)
  *
- * Orchestrates match business logic and state management
- * Converts DTOs to domain models and handles UI feedback
+ * Orchestrates match operations and delegates to the API adapter.
  *
- * Features:
- * - Reactive state with signals
- * - Domain model conversion
- * - Error handling with SweetAlert2
- * - Loading states management
+ * Important: Business validations are handled by the backend.
+ * The error interceptor automatically displays backend errors to the user.
+ *
+ * Architecture: Facade Pattern
+ * Components → MatchService (facade) → MatchApiService (adapter) → Backend
  */
 @Injectable({
   providedIn: 'root'
@@ -23,93 +22,42 @@ export class MatchService {
   private readonly matchApi = inject(MatchApiService);
   private readonly alertService = inject(AlertService);
 
-  // State management with signals
-  private readonly matchesSignal = signal<Match[]>([]);
-  private readonly loadingSignal = signal<boolean>(false);
   private readonly selectedMatchSignal = signal<Match | null>(null);
-  private readonly paginationSignal = signal<Omit<PageResponseMatch, 'content'>>({
-    page: 0,
-    size: 15,
-    totalElements: 0,
-    totalPages: 0,
-    first: true,
-    last: true,
-    hasNext: false,
-    hasPrevious: false
-  });
-
-  // Public readonly signals
-  readonly matches = this.matchesSignal.asReadonly();
-  readonly isLoading = this.loadingSignal.asReadonly();
   readonly selectedMatch = this.selectedMatchSignal.asReadonly();
-  readonly pagination = this.paginationSignal.asReadonly();
 
   /**
-   * Load matches for a tournament with optional filters
+   * Returns a reactive httpResource for paginated matches.
+   * Refetches automatically when tournamentId or filters signals change.
    */
-  loadMatches(tournamentId: number, filters?: MatchFilterParams): void {
-    this.loadingSignal.set(true);
-
-    this.matchApi.getMatchesByTournament(tournamentId, filters)
-      .pipe(finalize(() => this.loadingSignal.set(false)))
-      .subscribe({
-        next: (response) => {
-          const matches = response.content.map(r => this.mapToDomain(r));
-          this.matchesSignal.set(matches);
-
-          const { content, ...paginationInfo } = response;
-          this.paginationSignal.set(paginationInfo);
-        },
-        error: (error) => {
-          console.error('Error loading matches:', error);
-          this.alertService.error('No se pudieron cargar los partidos. Por favor, intenta de nuevo.');
-        }
-      });
+  loadMatchesByTournament(
+    tournamentId: Signal<number | null>,
+    filters: Signal<MatchFilterParams | undefined>
+  ) {
+    return this.matchApi.getMatchesByTournamentResource(tournamentId, filters);
   }
 
   /**
    * Create a new match
    */
-  createMatch(tournamentId: number, request: MatchRequest): void {
-    this.loadingSignal.set(true);
-
-    this.matchApi.createMatch(tournamentId, request)
-      .pipe(finalize(() => this.loadingSignal.set(false)))
-      .subscribe({
-        next: (response) => {
-          const newMatch = this.mapToDomain(response);
-          this.matchesSignal.update(matches => [...matches, newMatch]);
-          this.alertService.success('El partido se creó exitosamente.', '¡Partido creado!');
-        },
-        error: (error) => {
-          console.error('Error creating match:', error);
-          const errorMessage = error.error?.message || 'No se pudo crear el partido.';
-          this.alertService.error(errorMessage);
-        }
-      });
+  createMatch(tournamentId: number, request: MatchRequest): Observable<Match> {
+    return this.matchApi.createMatch(tournamentId, request).pipe(
+      map(response => this.mapToDomain(response)),
+      tap(() => this.alertService.success('El partido se creó exitosamente.', '¡Partido creado!'))
+    );
   }
 
   /**
    * Update match details
    */
   updateMatch(tournamentId: number, matchId: number, request: MatchRequest): Observable<Match> {
-    this.loadingSignal.set(true);
-
-    return this.matchApi.updateMatch(tournamentId, matchId, request)
-      .pipe(
-        map(response => this.mapToDomain(response)),
-        tap(updatedMatch => {
-          this.matchesSignal.update(matches =>
-            matches.map(m => m.id === matchId ? updatedMatch : m)
-          );
-          this.alertService.success('El partido se actualizó exitosamente.', '¡Partido actualizado!');
-        }),
-        finalize(() => this.loadingSignal.set(false))
-      );
+    return this.matchApi.updateMatch(tournamentId, matchId, request).pipe(
+      map(response => this.mapToDomain(response)),
+      tap(() => this.alertService.success('El partido se actualizó exitosamente.', '¡Partido actualizado!'))
+    );
   }
 
   /**
-   * Delete match
+   * Delete match with confirmation dialog
    */
   async deleteMatch(tournamentId: number, matchId: number): Promise<void> {
     const confirmed = await this.alertService.confirm({
@@ -121,45 +69,22 @@ export class MatchService {
 
     if (!confirmed) return;
 
-    this.loadingSignal.set(true);
-
-    this.matchApi.deleteMatch(tournamentId, matchId)
-      .pipe(finalize(() => this.loadingSignal.set(false)))
-      .subscribe({
-        next: () => {
-          this.matchesSignal.update(matches => matches.filter(m => m.id !== matchId));
-          this.alertService.success('El partido se eliminó exitosamente.', '¡Eliminado!');
-        },
-        error: (error) => {
-          console.error('Error deleting match:', error);
-          const errorMessage = error.error?.message || 'No se pudo eliminar el partido.';
-          this.alertService.error(errorMessage);
-        }
-      });
+    await firstValueFrom(this.matchApi.deleteMatch(tournamentId, matchId));
+    this.alertService.success('El partido se eliminó exitosamente.', '¡Eliminado!');
   }
 
   /**
    * Finish match and set result
-   * Can be used to update scores even for finished matches
    */
   finishMatch(tournamentId: number, matchId: number, request: FinishMatchRequest): Observable<Match> {
-    this.loadingSignal.set(true);
-
-    return this.matchApi.finishMatch(tournamentId, matchId, request)
-      .pipe(
-        map(response => this.mapToDomain(response)),
-        tap(updatedMatch => {
-          this.matchesSignal.update(matches =>
-            matches.map(m => m.id === matchId ? updatedMatch : m)
-          );
-          this.alertService.success('El resultado del partido se guardó exitosamente.', '¡Resultado guardado!');
-        }),
-        finalize(() => this.loadingSignal.set(false))
-      );
+    return this.matchApi.finishMatch(tournamentId, matchId, request).pipe(
+      map(response => this.mapToDomain(response)),
+      tap(() => this.alertService.success('El resultado del partido se guardó exitosamente.', '¡Resultado guardado!'))
+    );
   }
 
   /**
-   * Postpone match
+   * Postpone match with confirmation dialog
    */
   async postponeMatch(tournamentId: number, matchId: number): Promise<void> {
     const confirmed = await this.alertService.confirm({
@@ -171,24 +96,8 @@ export class MatchService {
 
     if (!confirmed) return;
 
-    this.loadingSignal.set(true);
-
-    this.matchApi.postponeMatch(tournamentId, matchId)
-      .pipe(finalize(() => this.loadingSignal.set(false)))
-      .subscribe({
-        next: (response) => {
-          const updatedMatch = this.mapToDomain(response);
-          this.matchesSignal.update(matches =>
-            matches.map(m => m.id === matchId ? updatedMatch : m)
-          );
-          this.alertService.success('El partido se pospuso exitosamente.', '¡Partido pospuesto!');
-        },
-        error: (error) => {
-          console.error('Error postponing match:', error);
-          const errorMessage = error.error?.message || 'No se pudo posponer el partido.';
-          this.alertService.error(errorMessage);
-        }
-      });
+    await firstValueFrom(this.matchApi.postponeMatch(tournamentId, matchId));
+    this.alertService.success('El partido se pospuso exitosamente.', '¡Partido pospuesto!');
   }
 
   /**
@@ -198,9 +107,6 @@ export class MatchService {
     this.selectedMatchSignal.set(match);
   }
 
-  /**
-   * Maps DTO to domain model
-   */
   private mapToDomain(response: MatchResponse): Match {
     return new Match(
       response.id,
