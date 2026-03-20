@@ -47,9 +47,9 @@
                     <span class="font-semibold" [class.text-gray-900]="!isHomeMatch(match)" [class.text-gray-500]="isHomeMatch(match)">
                       {{ getAwayTeamName(match) }}
                     </span>
-                    @if (getMatchResult(match)) {
-                      <span class="text-xs px-2 py-0.5 rounded font-medium" [class]="getResultColor(match)">
-                        {{ getMatchResult(match) === 'win' ? 'Win' : getMatchResult(match) === 'draw' ? 'Draw' : 'Loss' }}
+                    @if (getResultDisplay(match); as result) {
+                      <span class="text-xs px-2 py-0.5 rounded font-medium" [class]="result.color">
+                        {{ result.label }}
                       </span>
                     }
                   </div>
