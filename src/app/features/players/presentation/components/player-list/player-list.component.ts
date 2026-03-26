@@ -4,7 +4,6 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { PlayerService } from '../../../application/services';
 import { Player, PlayerRequestDto, PlayerHelper } from '../../../domain/models';
 import { PlayerFormModalComponent } from '../player-form-modal/player-form-modal.component';
-import { TeamService } from '@app/features/teams/application/services';
 import { AuthService } from '@app/features/auth/application/services';
 
 @Component({
@@ -16,7 +15,6 @@ import { AuthService } from '@app/features/auth/application/services';
 export class PlayerListComponent {
   private readonly route = inject(ActivatedRoute);
   private readonly playerService = inject(PlayerService);
-  private readonly teamService = inject(TeamService);
   private readonly destroyRef = inject(DestroyRef);
   private readonly authService = inject(AuthService);
 
@@ -34,7 +32,6 @@ export class PlayerListComponent {
     return id ? Number(id) : null;
   });
 
-  readonly teamName = signal<string>('');
   readonly players = this.playerService.players;
   readonly isLoading = this.playerService.isLoading;
   readonly showFormModal = signal(false);
@@ -48,9 +45,6 @@ export class PlayerListComponent {
 
       if (tournamentId && teamId) {
         this.playerService.loadPlayersByTeam(tournamentId, teamId);
-        this.teamService.getById(tournamentId, teamId).subscribe({
-          next: (team) => this.teamName.set(team.name)
-        });
       }
     });
 

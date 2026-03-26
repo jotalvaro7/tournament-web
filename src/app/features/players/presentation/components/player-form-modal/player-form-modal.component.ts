@@ -31,7 +31,7 @@ export class PlayerFormModalComponent {
 
   readonly isValid = computed(() => this.playerForm().valid());
   readonly isEditMode = computed(() => this.player() !== null);
-  readonly title = computed(() => this.isEditMode() ? 'Edit Player' : 'Add Player');
+  readonly title = computed(() => this.isEditMode() ? 'Editar Jugador' : 'Agregar Jugador');
 
   constructor() {
     effect(() => {

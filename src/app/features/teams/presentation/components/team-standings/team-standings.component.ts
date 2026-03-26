@@ -22,7 +22,7 @@ export class TeamStandingsComponent {
   onTeamClick(teamId: number): void {
     const tournamentId = this.tournamentId();
     if (tournamentId) {
-      this.router.navigate(['/tournaments', tournamentId, 'teams', teamId, 'players']);
+      this.router.navigate(['/tournaments', tournamentId, 'teams', teamId]);
     }
   }
 }

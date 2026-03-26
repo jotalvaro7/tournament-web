@@ -1,0 +1,50 @@
+@if (isLoading()) {
+  <div class="flex items-center justify-center py-12">
+    <div class="spinner"></div>
+  </div>
+} @else if (matches().length === 0) {
+  <div class="py-12 text-center">
+    <i class="fas fa-calendar-times text-gray-300 text-3xl mb-3"></i>
+    <p class="text-sm text-gray-500">No hay partidos registrados aún.</p>
+  </div>
+} @else {
+  <table class="w-full">
+    <thead>
+      <tr>
+        <th class="table-header text-center">#</th>
+        <th class="table-header text-center">Local</th>
+        <th class="table-header text-center">Resultado</th>
+        <th class="table-header text-center">Visitante</th>
+        <th class="table-header text-center">Fecha / Estado</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (match of matches(); track match.id; let idx = $index) {
+        <tr class="table-row">
+          <td class="table-cell text-center font-medium text-gray-500">{{ idx + 1 }}</td>
+          <td class="table-cell text-center font-medium text-gray-900">{{ getTeamName(match.homeTeamId) }}</td>
+          <td class="table-cell text-center font-bold text-gray-900">
+            @if (match.hasResult()) {
+              {{ match.homeTeamScore }} - {{ match.awayTeamScore }}
+            } @else {
+              <span class="text-gray-400 font-normal text-sm">vs</span>
+            }
+          </td>
+          <td class="table-cell text-center font-medium text-gray-900">{{ getTeamName(match.awayTeamId) }}</td>
+          <td class="table-cell text-center">
+            <p class="text-xs text-gray-500 mb-1">{{ match.getFormattedDate() }}</p>
+            <span class="text-xs font-medium px-2 py-1 rounded-full"
+              [class]="match.isFinished()
+                ? 'bg-emerald-100 text-emerald-700'
+                : match.isPostponed()
+                  ? 'bg-amber-100 text-amber-700'
+                  : 'bg-gray-100 text-gray-600'"
+            >
+              {{ match.getStatusLabel() }}
+            </span>
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table>
+}

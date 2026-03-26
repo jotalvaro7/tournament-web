@@ -1,57 +1,34 @@
 @if (isLoading()) {
-  <div class="flex items-center justify-center py-20">
-    <div class="text-center">
-      <div class="spinner mx-auto mb-6"></div>
-      <p class="text-gray-500">Loading players...</p>
-    </div>
+  <div class="flex items-center justify-center py-12">
+    <div class="spinner"></div>
   </div>
 }
 
 @if (!isLoading()) {
-  <div class="space-y-6 animate-fade-in">
-    <div class="card px-6 py-4">
-      <div class="flex items-center justify-between">
-        <div class="flex items-center gap-3">
-          <div class="w-8 h-8 rounded-lg flex items-center justify-center bg-gray-900">
-            <i class="fas fa-user-friends text-white text-sm"></i>
-          </div>
-          <div>
-            <h1 class="text-lg font-bold text-gray-900">Players</h1>
-            <p class="text-xs text-gray-500">
-              {{ teamName() || 'Loading...' }} · {{ players().length }} registered
-            </p>
-          </div>
-        </div>
-        @if (isAdmin()) {
-          <button type="button" (click)="onAddPlayer()" class="btn-primary">
-            <i class="fas fa-plus mr-2"></i> Add Player
-          </button>
-        }
-      </div>
-    </div>
+  <div class="space-y-4">
 
     @if (players().length > 0) {
       <div class="card overflow-hidden">
         <table class="w-full">
           <thead>
             <tr>
-              <th class="table-header text-left">#</th>
-              <th class="table-header text-left">Player</th>
-              <th class="table-header text-left">ID</th>
+              <th class="table-header text-center">#</th>
+              <th class="table-header text-center">Jugador</th>
+              <th class="table-header text-center">Identificacion</th>
               @if (isAdmin()) {
-                <th class="table-header text-right">Actions</th>
+                <th class="table-header text-center">Acciones</th>
               }
             </tr>
           </thead>
           <tbody>
             @for (player of players(); track player.id; let idx = $index) {
               <tr class="table-row">
-                <td class="table-cell font-medium text-gray-500 w-12">{{ idx + 1 }}</td>
-                <td class="table-cell font-semibold text-gray-900">{{ helper.getFullName(player) }}</td>
-                <td class="table-cell text-gray-600">{{ player.identificationNumber }}</td>
+                <td class="table-cell text-center font-medium text-gray-500 w-12">{{ idx + 1 }}</td>
+                <td class="table-cell text-center font-semibold text-gray-900">{{ helper.getFullName(player) }}</td>
+                <td class="table-cell text-center text-gray-600">{{ player.identificationNumber }}</td>
                 @if (isAdmin()) {
-                  <td class="table-cell text-right">
-                    <div class="flex items-center justify-end gap-2">
+                  <td class="table-cell text-center">
+                    <div class="flex items-center justify-center gap-2">
                       <button
                         type="button"
                         (click)="onEditPlayer(player)"
@@ -82,15 +59,10 @@
       <div class="card p-16">
         <div class="empty-state">
           <i class="fas fa-user-friends empty-state-icon"></i>
-          <h2 class="empty-state-title">No Players Yet</h2>
+          <h2 class="empty-state-title">No hay Jugadores registrados</h2>
           <p class="empty-state-description">
-            Start by adding the first player to this team.
+            Comienza registrando el primer jugador de este equipo.
           </p>
-          @if (isAdmin()) {
-            <button type="button" (click)="onAddPlayer()" class="btn-primary">
-              <i class="fas fa-plus mr-2"></i> Add First Player
-            </button>
-          }
         </div>
       </div>
     }

@@ -43,6 +43,19 @@ export class TeamApiService {
   }
 
   /**
+   * Gets a team by ID as a reactive resource
+   */
+  getByIdResource(tournamentId: Signal<number | null>, teamId: Signal<number | null>) {
+    return httpResource<Team>(
+      () => {
+        const tId = tournamentId();
+        const tmId = teamId();
+        return tId && tmId ? `${this.baseUrl}/tournaments/${tId}/teams/${tmId}` : undefined;
+      }
+    );
+  }
+
+  /**
    * Creates a new team in a tournament
    */
   create(tournamentId: number, request: TeamRequestDto): Observable<Team> {

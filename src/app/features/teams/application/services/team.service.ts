@@ -46,6 +46,13 @@ export class TeamService {
   }
 
   /**
+   * Loads a team by ID as a reactive resource
+   */
+  loadTeam(tournamentId: Signal<number | null>, teamId: Signal<number | null>) {
+    return this.api.getByIdResource(tournamentId, teamId);
+  }
+
+  /**
    * Creates a new team in a tournament
    */
   create(tournamentId: number, request: TeamRequestDto): Observable<Team> {

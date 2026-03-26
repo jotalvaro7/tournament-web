@@ -22,7 +22,7 @@
       <form (submit)="onSubmit($event)" class="space-y-5">
         <div>
           <label for="name" class="label">
-            First Name <span class="text-red-500">*</span>
+            Nombre <span class="text-red-500">*</span>
           </label>
           <input
             id="name"
@@ -30,7 +30,7 @@
             [formField]="playerForm.name"
             class="input"
             [class.input-error]="hasError('name')"
-            placeholder="Enter first name (e.g., Cristiano)" />
+          />
           @if (hasError('name')) {
             <p class="error-text">
               <i class="fas fa-exclamation-circle mr-1"></i> {{ getErrorMessage('name') }}
@@ -40,7 +40,7 @@
 
         <div>
           <label for="lastName" class="label">
-            Last Name <span class="text-red-500">*</span>
+            Apellido <span class="text-red-500">*</span>
           </label>
           <input
             id="lastName"
@@ -48,7 +48,7 @@
             [formField]="playerForm.lastName"
             class="input"
             [class.input-error]="hasError('lastName')"
-            placeholder="Enter last name (e.g., Ronaldo)" />
+          />
           @if (hasError('lastName')) {
             <p class="error-text">
               <i class="fas fa-exclamation-circle mr-1"></i> {{ getErrorMessage('lastName') }}
@@ -58,7 +58,7 @@
 
         <div>
           <label for="identificationNumber" class="label">
-            ID Number <span class="text-red-500">*</span>
+            Identificación <span class="text-red-500">*</span>
           </label>
           <input
             id="identificationNumber"
@@ -66,7 +66,7 @@
             [formField]="playerForm.identificationNumber"
             class="input"
             [class.input-error]="hasError('identificationNumber')"
-            placeholder="Enter ID number (e.g., 12345678A)" />
+          />
           @if (hasError('identificationNumber')) {
             <p class="error-text">
               <i class="fas fa-exclamation-circle mr-1"></i> {{ getErrorMessage('identificationNumber') }}
@@ -75,7 +75,7 @@
         </div>
 
         <div class="flex gap-3 pt-4 border-t border-gray-200">
-          <button type="submit" class="btn-primary flex-1">
+          <button type="submit" [disabled]="!playerForm().valid()" class="btn-primary flex-1">
             <i class="fas fa-save mr-2"></i>
             @if (isEditMode()) {
               Update

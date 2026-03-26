@@ -51,7 +51,7 @@ export class PlayerService {
   create(request: PlayerRequestDto): Observable<Player> {
     return this.api.create(this.currentTournamentId, this.currentTeamId, request).pipe(
       tap((player) => {
-        this.alert.success(`Player "${PlayerHelper.getFullName(player)}" created successfully!`);
+        this.alert.success(`Jugador "${PlayerHelper.getFullName(player)}" creado con éxito!`);
         this.refreshPlayers();
       })
     );
@@ -63,7 +63,7 @@ export class PlayerService {
   update(playerId: number, request: PlayerRequestDto): Observable<Player> {
     return this.api.update(this.currentTournamentId, this.currentTeamId, playerId, request).pipe(
       tap((player) => {
-        this.alert.success(`Player "${PlayerHelper.getFullName(player)}" updated successfully!`);
+        this.alert.success(`Jugador "${PlayerHelper.getFullName(player)}" actualizado con éxito!`);
         this.refreshPlayers();
       })
     );
@@ -74,16 +74,16 @@ export class PlayerService {
    */
   async delete(player: Player): Promise<void> {
     const confirmed = await this.alert.confirm({
-      title: 'Delete Player?',
-      text: `Are you sure you want to delete "${PlayerHelper.getFullName(player)}"? This action cannot be undone.`,
-      confirmButtonText: 'Yes, delete it',
-      cancelButtonText: 'Cancel'
+      title: 'Eliminar Jugador?',
+      text: `Estás seguro que deseas eliminar a "${PlayerHelper.getFullName(player)}"?`,
+      confirmButtonText: 'Confirmar',
+      cancelButtonText: 'Cancelar'
     });
 
     if (!confirmed) return;
 
     await firstValueFrom(this.api.delete(this.currentTournamentId, this.currentTeamId, player.id));
-    this.alert.success(`Player "${PlayerHelper.getFullName(player)}" deleted successfully!`);
+    this.alert.success(`Jugador "${PlayerHelper.getFullName(player)}" eliminado con éxito!`);
     this.refreshPlayers();
   }
 

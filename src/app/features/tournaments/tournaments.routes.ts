@@ -18,6 +18,12 @@ export const TOURNAMENT_ROUTES: Routes = [
         .then(c => c.TeamListComponent)
   },
   {
+    path: ':id/teams/:teamId',
+    loadComponent: () =>
+      import('../teams/presentation/pages/team-page/team-page.component')
+        .then(c => c.TeamPageComponent)
+  },
+  {
     path: ':id/teams/:teamId/players',
     loadComponent: () =>
       import('../players/presentation/components/player-list/player-list.component')
