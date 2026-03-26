@@ -1,6 +1,6 @@
-import { Component, input, output } from '@angular/core';
-
+import { Component, inject, input, output } from '@angular/core';
 import { Match } from '../../../domain/models';
+import { AuthService } from '@app/features/auth/application/services';
 
 /**
  * Match Details Modal Component
@@ -31,6 +31,8 @@ export class MatchDetailsModalComponent {
 
   /** Away team name */
   readonly awayTeamName = input<string>('Equipo Visitante');
+
+  readonly isAdmin = inject(AuthService).isAdmin;
 
   /** Event emitted when modal is closed */
   readonly close = output<void>();

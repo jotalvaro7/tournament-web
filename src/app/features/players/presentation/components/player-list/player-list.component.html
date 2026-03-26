@@ -22,9 +22,11 @@
             </p>
           </div>
         </div>
-        <button type="button" (click)="onAddPlayer()" class="btn-primary">
-          <i class="fas fa-plus mr-2"></i> Add Player
-        </button>
+        @if (isAdmin()) {
+          <button type="button" (click)="onAddPlayer()" class="btn-primary">
+            <i class="fas fa-plus mr-2"></i> Add Player
+          </button>
+        }
       </div>
     </div>
 
@@ -36,7 +38,9 @@
               <th class="table-header text-left">#</th>
               <th class="table-header text-left">Player</th>
               <th class="table-header text-left">ID</th>
-              <th class="table-header text-right">Actions</th>
+              @if (isAdmin()) {
+                <th class="table-header text-right">Actions</th>
+              }
             </tr>
           </thead>
           <tbody>
@@ -45,26 +49,28 @@
                 <td class="table-cell font-medium text-gray-500 w-12">{{ idx + 1 }}</td>
                 <td class="table-cell font-semibold text-gray-900">{{ helper.getFullName(player) }}</td>
                 <td class="table-cell text-gray-600">{{ player.identificationNumber }}</td>
-                <td class="table-cell text-right">
-                  <div class="flex items-center justify-end gap-2">
-                    <button
-                      type="button"
-                      (click)="onEditPlayer(player)"
-                      class="btn-icon"
-                      title="Edit player"
-                    >
-                      <i class="fas fa-edit"></i>
-                    </button>
-                    <button
-                      type="button"
-                      (click)="onDeletePlayer(player)"
-                      class="btn-icon hover:text-red-500 hover:bg-red-50"
-                      title="Delete player"
-                    >
-                      <i class="fas fa-trash"></i>
-                    </button>
-                  </div>
-                </td>
+                @if (isAdmin()) {
+                  <td class="table-cell text-right">
+                    <div class="flex items-center justify-end gap-2">
+                      <button
+                        type="button"
+                        (click)="onEditPlayer(player)"
+                        class="btn-icon"
+                        title="Edit player"
+                      >
+                        <i class="fas fa-edit"></i>
+                      </button>
+                      <button
+                        type="button"
+                        (click)="onDeletePlayer(player)"
+                        class="btn-icon hover:text-red-500 hover:bg-red-50"
+                        title="Delete player"
+                      >
+                        <i class="fas fa-trash"></i>
+                      </button>
+                    </div>
+                  </td>
+                }
               </tr>
             }
           </tbody>
@@ -80,9 +86,11 @@
           <p class="empty-state-description">
             Start by adding the first player to this team.
           </p>
-          <button type="button" (click)="onAddPlayer()" class="btn-primary">
-            <i class="fas fa-plus mr-2"></i> Add First Player
-          </button>
+          @if (isAdmin()) {
+            <button type="button" (click)="onAddPlayer()" class="btn-primary">
+              <i class="fas fa-plus mr-2"></i> Add First Player
+            </button>
+          }
         </div>
       </div>
     }

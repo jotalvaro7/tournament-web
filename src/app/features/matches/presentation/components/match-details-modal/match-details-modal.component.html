@@ -90,49 +90,50 @@
         </div>
       </div>
 
-      <!-- Action Buttons -->
-      <div class="flex flex-wrap gap-3 pt-6 border-t border-gray-200">
-        <!-- Finish / Edit Result Button -->
-        <button
-          (click)="onFinish()"
-          [class]="match().isFinished() ? 'btn-primary flex-1' : 'btn-success flex-1'"
-        >
-          @if (match().isFinished()) {
-            <i class="fas fa-edit mr-2"></i>
-            Editar Resultado
-          } @else {
-            <i class="fas fa-flag-checkered mr-2"></i>
-            Finalizar
-          }
-        </button>
-
-        <button
-          (click)="onEdit()"
-          class="btn-secondary"
-          title="Editar información del partido"
-        >
-          <i class="fas fa-edit mr-2"></i>
-          Editar
-        </button>
-
-        @if (match().canBePostponed()) {
+      <!-- Action Buttons (ADMIN only) -->
+      @if (isAdmin()) {
+        <div class="flex flex-wrap gap-3 pt-6 border-t border-gray-200">
           <button
-            (click)="onPostpone()"
-            class="btn-secondary"
+            (click)="onFinish()"
+            [class]="match().isFinished() ? 'btn-primary flex-1' : 'btn-success flex-1'"
           >
-            <i class="fas fa-pause-circle mr-2"></i>
-            Posponer
+            @if (match().isFinished()) {
+              <i class="fas fa-edit mr-2"></i>
+              Editar Resultado
+            } @else {
+              <i class="fas fa-flag-checkered mr-2"></i>
+              Finalizar
+            }
           </button>
-        }
 
-        <button
-          (click)="onDelete()"
-          class="btn-danger"
-        >
-          <i class="fas fa-trash mr-2"></i>
-          Eliminar
-        </button>
-      </div>
+          <button
+            (click)="onEdit()"
+            class="btn-secondary"
+            title="Editar información del partido"
+          >
+            <i class="fas fa-edit mr-2"></i>
+            Editar
+          </button>
+
+          @if (match().canBePostponed()) {
+            <button
+              (click)="onPostpone()"
+              class="btn-secondary"
+            >
+              <i class="fas fa-pause-circle mr-2"></i>
+              Posponer
+            </button>
+          }
+
+          <button
+            (click)="onDelete()"
+            class="btn-danger"
+          >
+            <i class="fas fa-trash mr-2"></i>
+            Eliminar
+          </button>
+        </div>
+      }
     </div>
   </div>
 </div>

@@ -1,6 +1,7 @@
 import { Component, inject, signal, computed, input } from '@angular/core';
 import { MatchService } from '../../../application/services';
 import { TeamService } from '@app/features/teams/application/services';
+import { AuthService } from '@app/features/auth/application/services';
 import { Match, MatchRequest, FinishMatchRequest, MatchFilterParams, MatchStatus } from '../../../domain/models';
 import { MatchCardComponent } from '../match-card/match-card.component';
 import { MatchFormModalComponent } from '../match-form-modal/match-form-modal.component';
@@ -27,6 +28,9 @@ export class MatchListComponent {
 
   private readonly matchService = inject(MatchService);
   private readonly teamService = inject(TeamService);
+  private readonly authService = inject(AuthService);
+
+  readonly isAdmin = this.authService.isAdmin;
 
   readonly tournamentId = computed(() => Number(this.id()) || null);
 

@@ -3,6 +3,7 @@ import { Router, RouterLink, NavigationEnd } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { filter, map, startWith } from 'rxjs';
 import { TournamentService } from '@app/features/tournaments/application/services';
+import { AuthService } from '@app/features/auth/application/services';
 import { TournamentSelectorComponent } from './tournament-selector/tournament-selector.component';
 import { NavigationItemsComponent, NavItem } from './navigation-items/navigation-items.component';
 
@@ -29,6 +30,11 @@ import { NavigationItemsComponent, NavItem } from './navigation-items/navigation
 export class NavbarComponent {
   private readonly tournamentService = inject(TournamentService);
   private readonly router = inject(Router);
+  private readonly authService = inject(AuthService);
+
+  readonly isAuthenticated = this.authService.isAuthenticated;
+  readonly isAdmin = this.authService.isAdmin;
+  readonly currentUser = this.authService.currentUser;
 
   /** Event emitted when user wants to create a new tournament */
   createTournament = output<void>();
@@ -94,5 +100,9 @@ export class NavbarComponent {
   /** Handles create tournament button click */
   onCreateClick(): void {
     this.createTournament.emit();
+  }
+
+  onLogout(): void {
+    this.authService.logout();
   }
 }

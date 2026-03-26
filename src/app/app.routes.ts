@@ -3,6 +3,11 @@ import { LayoutComponent } from './shared/components/layout/layout.component';
 
 export const routes: Routes = [
   {
+    path: 'login',
+    loadComponent: () =>
+      import('./features/auth/presentation/components/login/login.component').then(m => m.LoginComponent)
+  },
+  {
     path: '',
     component: LayoutComponent,
     children: [
@@ -17,5 +22,6 @@ export const routes: Routes = [
           import('./features/tournaments/tournaments.routes').then(m => m.TOURNAMENT_ROUTES)
       }
     ]
-  }
+  },
+  { path: '**', redirectTo: '' }
 ];

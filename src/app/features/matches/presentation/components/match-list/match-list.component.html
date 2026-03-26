@@ -11,9 +11,11 @@
             <p class="text-xs text-gray-500">{{ matches().length }} shown</p>
           </div>
         </div>
-        <button (click)="onCreateMatch()" class="btn-primary">
-          <i class="fas fa-plus mr-2"></i> Add Match
-        </button>
+        @if (isAdmin()) {
+          <button (click)="onCreateMatch()" class="btn-primary">
+            <i class="fas fa-plus mr-2"></i> Add Match
+          </button>
+        }
       </div>
     </div>
 

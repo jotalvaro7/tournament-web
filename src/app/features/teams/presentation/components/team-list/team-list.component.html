@@ -18,9 +18,11 @@
             <p class="text-xs text-gray-500">{{ teams().length }} registered</p>
           </div>
         </div>
-        <button type="button" (click)="onAddTeam()" class="btn-primary">
-          <i class="fas fa-plus mr-2"></i> Add Team
-        </button>
+        @if (isAdmin()) {
+          <button type="button" (click)="onAddTeam()" class="btn-primary">
+            <i class="fas fa-plus mr-2"></i> Add Team
+          </button>
+        }
       </div>
     </div>
 
@@ -53,9 +55,11 @@
           <p class="empty-state-description">
             Start by adding the first team to this tournament.
           </p>
-          <button type="button" (click)="onAddTeam()" class="btn-primary">
-            <i class="fas fa-plus mr-2"></i> Add First Team
-          </button>
+          @if (isAdmin()) {
+            <button type="button" (click)="onAddTeam()" class="btn-primary">
+              <i class="fas fa-plus mr-2"></i> Add First Team
+            </button>
+          }
         </div>
       </div>
     }

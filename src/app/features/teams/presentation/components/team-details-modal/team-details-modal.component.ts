@@ -1,5 +1,6 @@
-import { Component, input, output } from '@angular/core';
+import { Component, inject, input, output } from '@angular/core';
 import { Team, TeamHelper } from '../../../domain/models';
+import { AuthService } from '@app/features/auth/application/services';
 
 /**
  * Team Details Modal Component
@@ -61,6 +62,7 @@ export class TeamDetailsModalComponent {
    * Helper class for UI utilities
    */
   readonly helper = TeamHelper;
+  readonly isAdmin = inject(AuthService).isAdmin;
 
   /**
    * Handles close button click

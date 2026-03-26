@@ -1,6 +1,7 @@
 import { Component, signal, inject, computed, input } from '@angular/core';
 import { Router } from '@angular/router';
 import { TeamService } from '../../../application/services';
+import { AuthService } from '@app/features/auth/application/services';
 import { Team, TeamRequestDto } from '../../../domain/models';
 import { TeamFormModalComponent } from '../team-form-modal/team-form-modal.component';
 import { TeamDetailsModalComponent } from '../team-details-modal/team-details-modal.component';
@@ -17,6 +18,9 @@ export class TeamListComponent {
 
   private readonly router = inject(Router);
   private readonly teamService = inject(TeamService);
+  private readonly authService = inject(AuthService);
+
+  readonly isAdmin = this.authService.isAdmin;
 
   readonly tournamentId = computed(() => Number(this.id()) || null);
 

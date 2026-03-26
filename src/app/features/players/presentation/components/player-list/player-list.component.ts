@@ -5,6 +5,7 @@ import { PlayerService } from '../../../application/services';
 import { Player, PlayerRequestDto, PlayerHelper } from '../../../domain/models';
 import { PlayerFormModalComponent } from '../player-form-modal/player-form-modal.component';
 import { TeamService } from '@app/features/teams/application/services';
+import { AuthService } from '@app/features/auth/application/services';
 
 @Component({
   selector: 'app-player-list',
@@ -17,6 +18,9 @@ export class PlayerListComponent {
   private readonly playerService = inject(PlayerService);
   private readonly teamService = inject(TeamService);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly authService = inject(AuthService);
+
+  readonly isAdmin = this.authService.isAdmin;
 
   private readonly params = toSignal(this.route.paramMap);
 
