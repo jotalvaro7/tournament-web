@@ -1,5 +1,5 @@
 import { Component, inject, input, output } from '@angular/core';
-import { Team, TeamHelper } from '../../../domain/models';
+import { Team } from '../../../domain/models';
 import { AuthService } from '@app/features/auth/application/services';
 
 /**
@@ -58,10 +58,6 @@ export class TeamDetailsModalComponent {
    */
   readonly viewMatches = output<Team>();
 
-  /**
-   * Helper class for UI utilities
-   */
-  readonly helper = TeamHelper;
   readonly isAdmin = inject(AuthService).isAdmin;
 
   /**

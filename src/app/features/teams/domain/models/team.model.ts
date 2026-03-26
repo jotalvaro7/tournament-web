@@ -19,30 +19,3 @@ export interface Team {
   goalsAgainst: number;
   goalDifference: number;
 }
-
-/**
- * Team Helper
- *
- * Provides UI utility methods for team presentation.
- */
-export class TeamHelper {
-  /**
-   * Returns Tailwind CSS classes for points badge
-   * Higher points = better color
-   */
-  static getPointsColor(points: number): string {
-    if (points >= 9) return 'bg-emerald-100 text-emerald-800';
-    if (points >= 6) return 'bg-blue-100 text-blue-800';
-    if (points >= 3) return 'bg-amber-100 text-amber-800';
-    return 'bg-gray-100 text-gray-800';
-  }
-
-  /**
-   * Returns Tailwind CSS classes for goal difference badge
-   */
-  static getGoalDifferenceColor(goalDiff: number): string {
-    if (goalDiff > 0) return 'bg-emerald-100 text-emerald-800';
-    if (goalDiff < 0) return 'bg-red-100 text-red-800';
-    return 'bg-gray-100 text-gray-800';
-  }
-}

@@ -2,13 +2,14 @@ import { Component, inject, computed, input, linkedSignal } from '@angular/core'
 import { Router } from '@angular/router';
 import { TournamentFormModalComponent } from './presentation/components/tournament-form-modal/tournament-form-modal.component';
 import { TournamentManageComponent } from './presentation/components/tournament-manage/tournament-manage.component';
+import { TeamStandingsComponent } from '../teams/presentation/components/team-standings/team-standings.component';
 import { TournamentService } from './application/services';
 import { TournamentRequestDto } from './domain/models';
 
 @Component({
   selector: 'app-tournaments',
   standalone: true,
-  imports: [TournamentFormModalComponent, TournamentManageComponent],
+  imports: [TournamentFormModalComponent, TournamentManageComponent, TeamStandingsComponent],
   templateUrl: './tournaments.component.html',
 })
 export class TournamentsComponent {
@@ -18,6 +19,12 @@ export class TournamentsComponent {
   private readonly tournamentService = inject(TournamentService);
 
   readonly mode = computed(() => this.id() === 'new' ? 'list' : 'manage');
+  readonly hasValidId = computed(() => Number(this.id()) > 0);
+  readonly activeTab = linkedSignal<'standings' | 'next-date'>(() => { this.id(); return 'standings'; });
+
+  setTab(tab: 'standings' | 'next-date'): void {
+    this.activeTab.set(tab);
+  }
 
   readonly showCreateModal = linkedSignal(() => this.id() === 'new');
 

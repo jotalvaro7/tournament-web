@@ -1,0 +1,50 @@
+<aside class="w-64 shrink-0 bg-white border-r border-gray-200 flex flex-col h-full">
+  <!-- Header -->
+  <div class="flex items-center justify-between px-4 py-4 border-b border-gray-100">
+    <div class="flex items-center gap-2">
+      <div class="w-7 h-7 rounded-lg bg-gray-900 flex items-center justify-center">
+        <i class="fas fa-trophy text-white text-xs"></i>
+      </div>
+      <span class="text-sm font-bold text-gray-900">Torneos</span>
+    </div>
+    @if (isAdmin()) {
+      <button
+        type="button"
+        (click)="onCreate()"
+        class="w-7 h-7 rounded-lg flex items-center justify-center text-gray-400
+          hover:bg-gray-100 hover:text-gray-700 transition-all"
+        title="Nuevo torneo"
+      >
+        <i class="fas fa-plus text-xs"></i>
+      </button>
+    }
+  </div>
+
+  <!-- Tournament List -->
+  <nav class="flex-1 overflow-y-auto py-2">
+    @if (isLoading()) {
+      <div class="flex items-center justify-center py-8">
+        <div class="spinner"></div>
+      </div>
+    } @else if (tournaments().length === 0) {
+      <p class="text-xs text-gray-400 text-center py-6 px-4">No hay torneos</p>
+    } @else {
+      @for (tournament of tournaments(); track tournament.id) {
+        <button
+          type="button"
+          (click)="onSelect(tournament.id)"
+          class="w-full text-left px-4 py-2.5 text-sm transition-all flex items-center gap-2.5"
+          [class]="tournament.id === selectedId()
+            ? 'bg-gray-900 text-white font-medium'
+            : 'text-gray-700 hover:bg-gray-50'"
+        >
+          <i
+            class="fas fa-circle text-[6px] shrink-0"
+            [class]="tournament.id === selectedId() ? 'text-white' : 'text-gray-300'"
+          ></i>
+          <span class="truncate">{{ tournament.name }}</span>
+        </button>
+      }
+    }
+  </nav>
+</aside>

@@ -68,6 +68,18 @@ export class TeamApiService {
   }
 
   /**
+   * Gets standings (teams sorted by points and goal difference) for a tournament
+   */
+  getStandingsResource(tournamentId: Signal<number | null>) {
+    return httpResource<Team[]>(
+      () => {
+        const id = tournamentId();
+        return id ? `${this.baseUrl}/tournaments/${id}/teams/standings` : undefined;
+      }
+    );
+  }
+
+  /**
    * Gets all matches played by a team
    */
   getMatchesByTeamResource(tournamentId: Signal<number | null>, teamId: Signal<number | null>) {

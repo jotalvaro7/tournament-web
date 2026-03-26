@@ -1,22 +1,9 @@
 <header class="sticky top-0 z-50 bg-white border-b border-gray-200 shadow-sm">
-  <div class="max-w-7xl mx-auto flex items-center justify-between px-6 py-3">
+  <div class="flex items-center justify-between px-6 py-3">
     <!-- Left: Logo -->
     <a routerLink="/tournaments" class="text-xl font-bold text-gray-900 hover:text-gray-700 transition-colors">
       Tournament Manager
     </a>
-
-    <!-- Center: Tournament Selector + Nav -->
-    <div class="flex items-center gap-4">
-      <app-tournament-selector
-        [tournaments]="tournaments"
-        [isLoading]="isLoading"
-        [selectedId]="selectedTournamentId()"
-        (createTournament)="onCreateClick()"
-        (selectTournament)="onTournamentSelect($event)"
-      />
-
-      <app-navigation-items [navItems]="navItems()" />
-    </div>
 
     <!-- Right: Auth -->
     <div class="flex items-center gap-3">

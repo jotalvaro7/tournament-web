@@ -1,12 +1,9 @@
-<div class="min-h-screen bg-gray-50">
-  <!-- Header -->
-  <app-navbar
-    (createTournament)="onCreateTournament()"
-    (selectTournament)="onSelectTournament($event)"
-  />
-
-  <!-- Main Content -->
-  <main class="max-w-7xl mx-auto px-6 py-8">
-    <router-outlet />
-  </main>
+<div class="min-h-screen bg-gray-50 flex flex-col">
+  <app-navbar />
+  <div class="flex flex-1 overflow-hidden">
+    <app-sidebar />
+    <main class="flex-1 overflow-y-auto px-6 py-8">
+      <router-outlet />
+    </main>
+  </div>
 </div>

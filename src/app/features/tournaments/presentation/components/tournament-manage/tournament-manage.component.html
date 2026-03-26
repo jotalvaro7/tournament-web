@@ -1,66 +1,45 @@
 @if (isLoading()) {
-  <div class="flex items-center justify-center py-20">
-    <div class="text-center">
-      <div class="spinner mx-auto mb-6"></div>
-      <p class="text-gray-500">Loading tournament...</p>
-    </div>
+  <div class="flex items-center justify-center py-8">
+    <div class="spinner"></div>
   </div>
 }
 
 @if (!isLoading() && tournament(); as t) {
-  <div class="space-y-6 animate-fade-in">
-    <div class="card p-8">
-      <div class="flex items-start justify-between mb-6">
-        <div class="flex-1">
-          <div class="flex items-center gap-4 mb-4">
-            <div class="w-16 h-16 rounded-2xl flex items-center justify-center bg-gray-900 shadow-lg">
-              <i class="fas fa-trophy text-white text-2xl"></i>
-            </div>
-            <div>
-              <h1 class="text-3xl font-bold text-gray-900">{{ t.name }}</h1>
-              <p class="text-gray-500 mt-1">{{ t.description }}</p>
-            </div>
-          </div>
+  <div class="card px-6 py-4 animate-fade-in">
+    <div class="flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-8 h-8 rounded-lg bg-gray-900 flex items-center justify-center shrink-0">
+          <i class="fas fa-trophy text-white text-sm"></i>
         </div>
-
-        <span class="badge text-sm" [class]="helper.getStatusColor(t.status)">
-          <i [class]="helper.getStatusIcon(t.status)" class="mr-2"></i>
-          {{ helper.getStatusLabel(t.status) }}
-        </span>
-      </div>
-
-      <div class="pt-6 border-t border-gray-200">
-        <div class="flex items-center gap-4 p-4 rounded-xl bg-gray-50">
-          <div class="w-10 h-10 rounded-xl flex items-center justify-center bg-gray-200">
-            <i class="fas fa-hashtag text-gray-600"></i>
+        <div>
+          <div class="flex items-center gap-2">
+            <h1 class="text-base font-bold text-gray-900">{{ t.name }}</h1>
+            <span class="badge text-xs" [class]="helper.getStatusColor(t.status)">
+              {{ helper.getStatusLabel(t.status) }}
+            </span>
           </div>
-          <div>
-            <p class="text-sm text-gray-500">Tournament ID</p>
-            <p class="font-bold text-gray-900">#{{ t.id }}</p>
-          </div>
+          <p class="text-xs text-gray-500">{{ t.description }}</p>
         </div>
       </div>
+
+      <app-tournament-actions
+        [tournament]="t"
+        (edit)="onEdit()"
+        (start)="onStart()"
+        (end)="onEnd()"
+        (cancel)="onCancel()"
+        (delete)="onDelete()"
+      />
     </div>
-
-    <app-tournament-actions
-      [tournament]="t"
-      (edit)="onEdit()"
-      (start)="onStart()"
-      (end)="onEnd()"
-      (cancel)="onCancel()"
-      (delete)="onDelete()"
-    />
   </div>
 }
 
 @if (!isLoading() && !tournament()) {
-  <div class="card p-16">
+  <div class="card p-12">
     <div class="empty-state">
       <i class="fas fa-trophy empty-state-icon"></i>
-      <h2 class="empty-state-title">No Tournament Selected</h2>
-      <p class="empty-state-description">
-        Select a tournament from the header or create a new one to get started.
-      </p>
+      <h2 class="empty-state-title">No ha seleccionado ningun torneo</h2>
+      <p class="empty-state-description">Selecciona un torneo para ver mas detalles.</p>
     </div>
   </div>
 }

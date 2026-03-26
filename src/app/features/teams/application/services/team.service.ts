@@ -88,6 +88,13 @@ export class TeamService {
   }
 
   /**
+   * Loads standings (teams sorted by points and goal difference) for a tournament
+   */
+  loadStandings(tournamentId: Signal<number | null>) {
+    return this.api.getStandingsResource(tournamentId);
+  }
+
+  /**
    * Loads all matches played by a specific team
    */
   loadMatchesByTeam(tournamentId: Signal<number | null>, teamId:Signal<number | null>) {
