@@ -1,8 +1,7 @@
-import { Component, inject, signal, computed, effect } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { Component, inject, signal, computed, input } from '@angular/core';
 import { MatchService } from '../../../application/services';
 import { TeamService } from '@app/features/teams/application/services';
+import { AuthService } from '@app/features/auth/application/services';
 import { Match, MatchRequest, FinishMatchRequest, MatchFilterParams, MatchStatus } from '../../../domain/models';
 import { MatchCardComponent } from '../match-card/match-card.component';
 import { MatchFormModalComponent } from '../match-form-modal/match-form-modal.component';
@@ -25,59 +24,51 @@ import { MatchPaginationComponent } from '../match-pagination/match-pagination.c
   templateUrl: './match-list.component.html'
 })
 export class MatchListComponent {
-  private readonly route = inject(ActivatedRoute);
-  readonly matchService = inject(MatchService);
+  readonly id = input<string>('');
+
+  private readonly matchService = inject(MatchService);
   private readonly teamService = inject(TeamService);
+  private readonly authService = inject(AuthService);
 
-  private readonly params = toSignal(this.route.paramMap);
+  readonly isAdmin = this.authService.isAdmin;
 
-  readonly tournamentId = computed(() => {
-    const id = this.params()?.get('id');
-    return id ? Number(id) : null;
-  });
+  readonly tournamentId = computed(() => Number(this.id()) || null);
 
   readonly showFormModal = signal(false);
   readonly showResultModal = signal(false);
   readonly selectedMatch = signal<Match | null>(null);
-  readonly currentFilters = signal<MatchFilterParams>({});
+  readonly currentFilters = signal<MatchFilterParams | undefined>(undefined);
   readonly hasSearched = signal(false);
 
-  readonly matches = this.matchService.matches;
-  readonly teams = this.teamService.teams;
-  readonly isLoading = this.matchService.isLoading;
-  readonly pagination = this.matchService.pagination;
+  private readonly teamsListResource = this.teamService.loadTeamsByTournament(this.tournamentId);
+  private readonly matchesResource = this.matchService.loadMatchesByTournament(
+    this.tournamentId,
+    this.currentFilters
+  );
 
-  constructor() {
-    effect(() => {
-      const id = this.tournamentId();
-      if (id) {
-        this.teamService.loadTeamsByTournament(id);
-      }
-    });
-  }
+  readonly teams = computed(() => this.teamsListResource.value() ?? []);
+  readonly matches = computed(() => this.matchesResource.value()?.content ?? []);
+  readonly isLoading = computed(() => this.matchesResource.isLoading());
+  readonly selectedMatchForDetails = computed(() => this.matchService.selectedMatch());
+  readonly pagination = computed(() => {
+    const r = this.matchesResource.value();
+    if (!r) return null;
+    const { content, ...meta } = r;
+    return meta;
+  });
 
   onFilterChange(filters: { status?: MatchStatus; specificDate?: string; dateFrom?: string; dateTo?: string } | null): void {
-    const tournamentId = this.tournamentId();
-    if (!tournamentId) return;
-
     if (filters === null) {
       this.hasSearched.set(false);
-      this.currentFilters.set({});
+      this.currentFilters.set(undefined);
       return;
     }
-
-    this.currentFilters.set(filters);
     this.hasSearched.set(true);
-    this.matchService.loadMatches(tournamentId, filters);
+    this.currentFilters.set(filters);
   }
 
   onPageChange(page: number): void {
-    const tournamentId = this.tournamentId();
-    if (!tournamentId) return;
-
-    const filters = { ...this.currentFilters(), page };
-    this.currentFilters.set(filters);
-    this.matchService.loadMatches(tournamentId, filters);
+    this.currentFilters.update(f => ({ ...f, page }));
   }
 
   getTeamName(teamId: number): string {
@@ -104,18 +95,18 @@ export class MatchListComponent {
     this.matchService.selectMatch(match);
   }
 
-  onDeleteMatch(match: Match): void {
+  async onDeleteMatch(match: Match): Promise<void> {
     const tournamentId = this.tournamentId();
-    if (tournamentId) {
-      this.matchService.deleteMatch(tournamentId, match.id);
-    }
+    if (!tournamentId) return;
+    await this.matchService.deleteMatch(tournamentId, match.id);
+    this.matchesResource.reload();
   }
 
-  onPostponeMatch(match: Match): void {
+  async onPostponeMatch(match: Match): Promise<void> {
     const tournamentId = this.tournamentId();
-    if (tournamentId) {
-      this.matchService.postponeMatch(tournamentId, match.id);
-    }
+    if (!tournamentId) return;
+    await this.matchService.postponeMatch(tournamentId, match.id);
+    this.matchesResource.reload();
   }
 
   onMatchSubmit(request: MatchRequest): void {
@@ -123,24 +114,34 @@ export class MatchListComponent {
     if (!tournamentId) return;
 
     const match = this.selectedMatch();
-
     if (match) {
-      this.matchService.updateMatch(tournamentId, match.id, request);
+      this.matchService.updateMatch(tournamentId, match.id, request).subscribe({
+        next: () => {
+          this.closeFormModal();
+          this.matchesResource.reload();
+        }
+      });
     } else {
-      this.matchService.createMatch(tournamentId, request);
+      this.matchService.createMatch(tournamentId, request).subscribe({
+        next: () => {
+          this.closeFormModal();
+          this.matchesResource.reload();
+        }
+      });
     }
-
-    this.closeFormModal();
   }
 
   onResultSubmit(request: FinishMatchRequest): void {
     const tournamentId = this.tournamentId();
     const match = this.selectedMatch();
+    if (!tournamentId || !match) return;
 
-    if (tournamentId && match) {
-      this.matchService.finishMatch(tournamentId, match.id, request);
-      this.closeResultModal();
-    }
+    this.matchService.finishMatch(tournamentId, match.id, request).subscribe({
+      next: () => {
+        this.closeResultModal();
+        this.matchesResource.reload();
+      }
+    });
   }
 
   closeFormModal(): void {

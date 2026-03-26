@@ -67,7 +67,7 @@
 
 @if (showEditModal()) {
   <app-tournament-form-modal
-    [tournament]="tournament()"
+    [tournament]="tournament() ?? null"
     (save)="onSave($event)"
     (close)="onCloseModal()"
   />

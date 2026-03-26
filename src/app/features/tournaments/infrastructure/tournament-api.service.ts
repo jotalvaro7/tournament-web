@@ -1,5 +1,5 @@
-import { Injectable, inject } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { Injectable, inject, Signal } from '@angular/core';
+import { HttpClient, httpResource } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { TournamentRequestDto, TournamentResponseDto } from '../domain/models';
 import { environment } from '@environments/environment';
@@ -24,20 +24,22 @@ export class TournamentApiService {
   private readonly http = inject(HttpClient);
   private readonly apiUrl = `${environment.apiUrl}/tournaments`;
 
-  /**
-   * GET /api/tournaments
-   * Retrieve all tournaments
-   */
-  getAll(): Observable<TournamentResponseDto[]> {
-    return this.http.get<TournamentResponseDto[]>(this.apiUrl);
+  
+  getAllResource() {
+    return httpResource<TournamentResponseDto[]>(() => this.apiUrl);
   }
 
   /**
-   * GET /api/tournaments/{id}
-   * Retrieve a specific tournament by ID
+   * Reactive resource for GET /api/tournaments/{id}
+   * Auto-fetches when ID signal changes. Returns undefined when ID is null.
    */
-  getById(id: number): Observable<TournamentResponseDto> {
-    return this.http.get<TournamentResponseDto>(`${this.apiUrl}/${id}`);
+  getByIdResource(id: Signal<number | null>) {
+    return httpResource<TournamentResponseDto>(
+      () => {
+        const idValue = id();
+        return idValue ? `${this.apiUrl}/${idValue}` : undefined;
+      }
+    );
   }
 
   /**

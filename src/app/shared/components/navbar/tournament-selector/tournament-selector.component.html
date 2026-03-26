@@ -7,7 +7,7 @@
     >
       <option value="">Select tournament...</option>
       @for (tournament of tournaments()(); track tournament.id) {
-        <option [value]="tournament.id">
+        <option [value]="tournament.id" [selected]="tournament.id === selectedId()">
           {{ tournament.name }}
         </option>
       }

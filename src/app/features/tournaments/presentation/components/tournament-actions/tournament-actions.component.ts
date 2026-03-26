@@ -1,5 +1,6 @@
-import { Component, input, output } from '@angular/core';
+import { Component, inject, input, output } from '@angular/core';
 import { Tournament, TournamentHelper } from '../../../domain/models';
+import { AuthService } from '@app/features/auth/application/services';
 
 /**
  * Tournament Actions Component
@@ -52,9 +53,7 @@ export class TournamentActionsComponent {
    */
   readonly delete = output<void>();
 
-  /**
-   * Helper class for UI utilities
-   */
+  private readonly authService = inject(AuthService);
   readonly helper = TournamentHelper;
-  
+  readonly isAdmin = this.authService.isAdmin;
 }

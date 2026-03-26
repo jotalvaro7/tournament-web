@@ -5,9 +5,7 @@
       <p class="text-gray-500">Loading teams...</p>
     </div>
   </div>
-}
-
-@if (!isLoading()) {
+} @else {
   <div class="space-y-6 animate-fade-in">
     <div class="card px-6 py-4">
       <div class="flex items-center justify-between">
@@ -20,9 +18,11 @@
             <p class="text-xs text-gray-500">{{ teams().length }} registered</p>
           </div>
         </div>
-        <button type="button" (click)="onAddTeam()" class="btn-primary">
-          <i class="fas fa-plus mr-2"></i> Add Team
-        </button>
+        @if (isAdmin()) {
+          <button type="button" (click)="onAddTeam()" class="btn-primary">
+            <i class="fas fa-plus mr-2"></i> Add Team
+          </button>
+        }
       </div>
     </div>
 
@@ -47,9 +47,7 @@
           </tbody>
         </table>
       </div>
-    }
-
-    @if (teams().length === 0) {
+    }@else {
       <div class="card p-16">
         <div class="empty-state">
           <i class="fas fa-users empty-state-icon"></i>
@@ -57,9 +55,11 @@
           <p class="empty-state-description">
             Start by adding the first team to this tournament.
           </p>
-          <button type="button" (click)="onAddTeam()" class="btn-primary">
-            <i class="fas fa-plus mr-2"></i> Add First Team
-          </button>
+          @if (isAdmin()) {
+            <button type="button" (click)="onAddTeam()" class="btn-primary">
+              <i class="fas fa-plus mr-2"></i> Add First Team
+            </button>
+          }
         </div>
       </div>
     }
@@ -68,7 +68,7 @@
       [team]="selectedTeamForModal()"
       (close)="closeTeamDetails()"
       (edit)="editFromModal($event)"
-      (delete)="deleteFromModal($event)"
+      (delete)="onRemoveTeam($event)"
       (viewPlayers)="viewPlayersFromModal($event)"
       (viewMatches)="viewMatchesFromModal($event)"
     />
@@ -83,42 +83,9 @@
   />
 }
 
-<app-team-matches-modal
-  [team]="selectedTeamForMatches()"
-  [matches]="teamMatches()"
+<app-team-match-section
+  [tournamentId]="tournamentId()"
   [teams]="teams()"
-  [isLoading]="isLoadingMatches()"
-  (close)="closeMatchesModal()"
-  (viewMatch)="viewMatchDetails($event)"
+  [selectedTeam]="selectedTeamForMatches()"
+  (closeMatches)="closeMatchesModal()"
 />
-
-@if (selectedMatchForDetails()) {
-  <app-match-details-modal
-    [match]="selectedMatchForDetails()!"
-    [homeTeamName]="getTeamName(selectedMatchForDetails()!.homeTeamId)"
-    [awayTeamName]="getTeamName(selectedMatchForDetails()!.awayTeamId)"
-    (close)="closeMatchDetails()"
-    (edit)="onEditMatch($event)"
-    (delete)="onDeleteMatch($event)"
-    (finish)="onFinishMatch($event)"
-    (postpone)="onPostponeMatch($event)"
-  />
-}
-
-@if (editingMatch()) {
-  <app-match-form-modal
-    [match]="editingMatch()"
-    [teams]="teams()"
-    (save)="onSaveMatch($event)"
-    (close)="onCloseMatchForm()"
-  />
-}
-
-@if (matchForResult()) {
-  <app-match-result-modal
-    [match]="matchForResult()!"
-    [teams]="teams()"
-    (save)="onSaveResult($event)"
-    (close)="onCloseResultModal()"
-  />
-}

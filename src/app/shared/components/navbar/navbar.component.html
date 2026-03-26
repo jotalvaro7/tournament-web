@@ -10,6 +10,7 @@
       <app-tournament-selector
         [tournaments]="tournaments"
         [isLoading]="isLoading"
+        [selectedId]="selectedTournamentId()"
         (createTournament)="onCreateClick()"
         (selectTournament)="onTournamentSelect($event)"
       />
@@ -17,17 +18,44 @@
       <app-navigation-items [navItems]="navItems()" />
     </div>
 
-    <!-- Right: User Profile -->
+    <!-- Right: Auth -->
     <div class="flex items-center gap-3">
-      <button
-        type="button"
-        class="flex items-center gap-3 px-3 py-2 rounded-xl transition-all duration-300 hover:bg-gray-100"
-      >
-        <div class="w-9 h-9 rounded-xl flex items-center justify-center bg-gray-900">
-          <span class="text-white text-sm font-bold">U</span>
+      @if (isAuthenticated()) {
+        <div class="flex items-center gap-2.5">
+          <div class="w-9 h-9 rounded-xl flex items-center justify-center bg-gray-900">
+            <span class="text-white text-sm font-bold">
+              {{ currentUser()?.username?.charAt(0)?.toUpperCase() }}
+            </span>
+          </div>
+          <div class="hidden sm:block">
+            <p class="text-sm font-medium text-gray-900 leading-none">{{ currentUser()?.username }}</p>
+            <span
+              class="text-xs font-semibold px-1.5 py-0.5 rounded-md mt-0.5 inline-block"
+              [class]="isAdmin() ? 'bg-gray-900 text-white' : 'bg-gray-100 text-gray-500'"
+            >
+              {{ currentUser()?.role }}
+            </span>
+          </div>
+          <button
+            type="button"
+            (click)="onLogout()"
+            class="ml-1 w-8 h-8 rounded-lg flex items-center justify-center text-gray-400
+              hover:text-red-500 hover:bg-red-50 transition-all"
+            title="Sign out"
+          >
+            <i class="fas fa-sign-out-alt text-sm"></i>
+          </button>
         </div>
-        <span class="text-sm font-medium text-gray-700">User</span>
-      </button>
+      } @else {
+        <a
+          routerLink="/login"
+          class="flex items-center gap-2 px-4 py-2 bg-gray-900 text-white text-sm font-medium
+            rounded-xl hover:bg-gray-800 transition-all"
+        >
+          <i class="fas fa-sign-in-alt"></i>
+          Login
+        </a>
+      }
     </div>
   </div>
 </header>

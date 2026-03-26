@@ -1,5 +1,5 @@
-import { Injectable, inject, signal } from '@angular/core';
-import { Observable, firstValueFrom, finalize, tap } from 'rxjs';
+import { Injectable, inject, computed, Signal } from '@angular/core';
+import { firstValueFrom } from 'rxjs';
 import { TournamentApiService } from '../../infrastructure/tournament-api.service';
 import { Tournament, TournamentRequestDto } from '../../domain/models';
 import { AlertService } from '@app/core/services';
@@ -31,59 +31,41 @@ export class TournamentService {
   private readonly api = inject(TournamentApiService);
   private readonly alert = inject(AlertService);
 
-  /**
-   * Signal holding the list of tournaments
-   * Components can read this signal reactively
-   */
-  readonly tournaments = signal<Tournament[]>([]);
+  private readonly tournamentsResource = this.api.getAllResource();
+
+  /** Reactive list of all tournaments. Auto-fetches on service creation. */
+  readonly tournaments = computed(() => this.tournamentsResource.value() ?? []);
+
+  /** Loading state of the tournaments list */
+  readonly isLoading = this.tournamentsResource.isLoading;
 
   /**
-   * Signal indicating if data is being loaded
+   * Creates a reactive resource for a tournament by ID.
+   * Automatically re-fetches when the ID signal changes.
+   * Returns undefined when ID is null (no fetch).
    */
-  readonly isLoading = signal(false);
-
-  /**
-   * Loads all tournaments from API and updates signal
-   */
-  loadTournaments(): void {
-    this.isLoading.set(true);
-
-    this.api.getAll()
-      .pipe(finalize(() => this.isLoading.set(false)))
-      .subscribe({
-        next: (tournaments) => this.tournaments.set(tournaments)
-      });
-  }
-
-  /**
-   * Gets a tournament by ID
-   */
-  getById(id: number): Observable<Tournament> {
-    return this.api.getById(id);
+  getTournamentByIdResource(id: Signal<number | null>) {
+    return this.api.getByIdResource(id);
   }
 
   /**
    * Creates a new tournament
    */
-  create(request: TournamentRequestDto): Observable<Tournament> {
-    return this.api.create(request).pipe(
-      tap((tournament) => {
-        this.alert.success(`Tournament "${tournament.name}" created successfully!`);
-        this.loadTournaments();
-      })
-    );
+  async create(request: TournamentRequestDto): Promise<Tournament> {
+    const tournament = await firstValueFrom(this.api.create(request));
+    this.alert.success(`Tournament "${tournament.name}" created successfully!`);
+    this.tournamentsResource.reload();
+    return tournament;
   }
 
   /**
    * Updates an existing tournament
    */
-  update(id: number, request: TournamentRequestDto): Observable<Tournament> {
-    return this.api.update(id, request).pipe(
-      tap((tournament) => {
-        this.alert.success(`Tournament "${tournament.name}" updated successfully!`);
-        this.loadTournaments();
-      })
-    );
+  async update(id: number, request: TournamentRequestDto): Promise<Tournament> {
+    const tournament = await firstValueFrom(this.api.update(id, request));
+    this.alert.success(`Tournament "${tournament.name}" updated successfully!`);
+    this.tournamentsResource.reload();
+    return tournament;
   }
 
   /**
@@ -102,7 +84,7 @@ export class TournamentService {
 
     await firstValueFrom(this.api.delete(tournament.id));
     this.alert.success(`Tournament "${tournament.name}" deleted successfully!`);
-    this.loadTournaments();
+    this.tournamentsResource.reload();
   }
 
   /**
@@ -121,7 +103,6 @@ export class TournamentService {
 
     const updated = await firstValueFrom(this.api.start(tournament.id));
     this.alert.success(`Tournament "${updated.name}" started successfully!`);
-    this.loadTournaments();
   }
 
   /**
@@ -140,7 +121,6 @@ export class TournamentService {
 
     const updated = await firstValueFrom(this.api.end(tournament.id));
     this.alert.success(`Tournament "${updated.name}" completed successfully!`);
-    this.loadTournaments();
   }
 
   /**
@@ -159,6 +139,5 @@ export class TournamentService {
 
     const updated = await firstValueFrom(this.api.cancel(tournament.id));
     this.alert.success(`Tournament "${updated.name}" cancelled successfully!`);
-    this.loadTournaments();
   }
 }

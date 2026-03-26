@@ -2,6 +2,7 @@ import { HttpErrorResponse, HttpInterceptorFn } from '@angular/common/http';
 import { inject } from '@angular/core';
 import { catchError, throwError } from 'rxjs';
 import { AlertService } from '../services/alert.service';
+import { AuthService } from '@app/features/auth/application/services';
 
 /**
  * HTTP Error Interceptor
@@ -22,9 +23,16 @@ import { AlertService } from '../services/alert.service';
  */
 export const errorInterceptor: HttpInterceptorFn = (req, next) => {
   const alertService = inject(AlertService);
+  const authService = inject(AuthService);
 
   return next(req).pipe(
     catchError((error: HttpErrorResponse) => {
+      // 401: session expired or invalid token — logout silently and redirect
+      if (error.status === 401) {
+        authService.logout();
+        return throwError(() => error);
+      }
+
       let errorMessage = 'An unexpected error occurred';
       let errorTitle = 'Error';
 

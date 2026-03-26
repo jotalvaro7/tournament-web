@@ -1,8 +1,7 @@
-import { Injectable, inject, signal } from '@angular/core';
-import { Observable, firstValueFrom, finalize, tap } from 'rxjs';
+import { Injectable, Signal, inject } from '@angular/core';
+import { Observable, firstValueFrom, tap } from 'rxjs';
 import { TeamApiService } from '../../infrastructure/team-api.service';
 import { Team, TeamRequestDto } from '../../domain/models';
-import { MatchResponse } from '@app/features/matches/domain/models';
 import { AlertService } from '@app/core/services';
 
 /**
@@ -33,37 +32,10 @@ export class TeamService {
   private readonly alert = inject(AlertService);
 
   /**
-   * Signal holding the list of teams for current tournament
-   * Components can read this signal reactively
-   */
-  readonly teams = signal<Team[]>([]);
-
-  /**
-   * Signal indicating if data is being loaded
-   */
-  readonly isLoading = signal(false);
-
-  /**
-   * Signal holding the match history for a selected team
-   */
-  readonly teamMatches = signal<MatchResponse[]>([]);
-
-  /**
-   * Signal indicating if team matches are being loaded
-   */
-  readonly isLoadingMatches = signal(false);
-
-  /**
-   * Loads all teams for a specific tournament from API and updates signal
-   */
-  loadTeamsByTournament(tournamentId: number): void {
-    this.isLoading.set(true);
-
-    this.api.getAllByTournament(tournamentId)
-      .pipe(finalize(() => this.isLoading.set(false)))
-      .subscribe({
-        next: (teams) => this.teams.set(teams)
-      });
+  * Get all teams by Tournament
+  */
+  loadTeamsByTournament(tournamentId: Signal<number | null>) {
+    return this.api.getAllByTournamentResource(tournamentId);
   }
 
   /**
@@ -80,7 +52,6 @@ export class TeamService {
     return this.api.create(tournamentId, request).pipe(
       tap((team) => {
         this.alert.success(`Team "${team.name}" created successfully!`);
-        this.loadTeamsByTournament(tournamentId);
       })
     );
   }
@@ -92,7 +63,6 @@ export class TeamService {
     return this.api.update(tournamentId, teamId, request).pipe(
       tap((team) => {
         this.alert.success(`Team "${team.name}" updated successfully!`);
-        this.loadTeamsByTournament(tournamentId);
       })
     );
   }
@@ -101,7 +71,8 @@ export class TeamService {
    * Deletes a team from a tournament
    * Shows confirmation dialog before deletion
    */
-  async delete(tournamentId: number, team: Team): Promise<void> {
+  
+  async delete(tournamentId: number, team: Team): Promise<boolean> {
     const confirmed = await this.alert.confirm({
       title: 'Delete Team?',
       text: `Are you sure you want to delete "${team.name}"? This action cannot be undone.`,
@@ -109,38 +80,18 @@ export class TeamService {
       cancelButtonText: 'Cancel'
     });
 
-    if (!confirmed) return;
+    if (!confirmed) return false;
 
     await firstValueFrom(this.api.delete(tournamentId, team.id));
     this.alert.success(`Team "${team.name}" deleted successfully!`);
-    this.loadTeamsByTournament(tournamentId);
-  }
-
-  /**
-   * Clears the teams signal
-   * Useful when navigating away from teams view
-   */
-  clearTeams(): void {
-    this.teams.set([]);
+    return true;
   }
 
   /**
    * Loads all matches played by a specific team
    */
-  loadMatchesByTeam(tournamentId: number, teamId: number): void {
-    this.isLoadingMatches.set(true);
-
-    this.api.getMatchesByTeam(tournamentId, teamId)
-      .pipe(finalize(() => this.isLoadingMatches.set(false)))
-      .subscribe({
-        next: (matches) => this.teamMatches.set(matches)
-      });
+  loadMatchesByTeam(tournamentId: Signal<number | null>, teamId:Signal<number | null>) {
+    return this.api.getMatchesByTeamResource(tournamentId, teamId);
   }
 
-  /**
-   * Clears the team matches signal
-   */
-  clearTeamMatches(): void {
-    this.teamMatches.set([]);
-  }
 }

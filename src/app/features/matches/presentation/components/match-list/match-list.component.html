@@ -11,15 +11,17 @@
             <p class="text-xs text-gray-500">{{ matches().length }} shown</p>
           </div>
         </div>
-        <button (click)="onCreateMatch()" class="btn-primary">
-          <i class="fas fa-plus mr-2"></i> Add Match
-        </button>
+        @if (isAdmin()) {
+          <button (click)="onCreateMatch()" class="btn-primary">
+            <i class="fas fa-plus mr-2"></i> Add Match
+          </button>
+        }
       </div>
     </div>
 
     <app-match-filters (filterChange)="onFilterChange($event)" />
 
-    @if (matchService.selectedMatch(); as selectedMatch) {
+    @if (selectedMatchForDetails(); as selectedMatch) {
       <app-match-details-modal
         [match]="selectedMatch"
         [homeTeamName]="getTeamName(selectedMatch.homeTeamId)"
@@ -84,14 +86,16 @@
         </table>
       </div>
 
-      <app-match-pagination
-        [currentPage]="pagination().page"
-        [totalPages]="pagination().totalPages"
-        [totalElements]="pagination().totalElements"
-        [hasNext]="pagination().hasNext"
-        [hasPrevious]="pagination().hasPrevious"
-        (pageChange)="onPageChange($event)"
-      />
+      @if (pagination(); as p) {
+        <app-match-pagination
+          [currentPage]="p.page"
+          [totalPages]="p.totalPages"
+          [totalElements]="p.totalElements"
+          [hasNext]="p.hasNext"
+          [hasPrevious]="p.hasPrevious"
+          (pageChange)="onPageChange($event)"
+        />
+      }
     }
   </div>
 </div>
@@ -105,11 +109,13 @@
   />
 }
 
-@if (showResultModal() && selectedMatch(); as match) {
-  <app-match-result-modal
-    [match]="match"
-    [teams]="teams()"
-    (save)="onResultSubmit($event)"
-    (close)="closeResultModal()"
-  />
+@if (showResultModal()) {
+  @if (selectedMatch(); as match) {
+    <app-match-result-modal
+      [match]="match"
+      [teams]="teams()"
+      (save)="onResultSubmit($event)"
+      (close)="closeResultModal()"
+    />
+  }
 }
