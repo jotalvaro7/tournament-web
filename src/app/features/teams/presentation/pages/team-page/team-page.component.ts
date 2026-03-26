@@ -2,7 +2,7 @@ import { Component, computed, inject, input, linkedSignal, viewChild } from '@an
 import { Router } from '@angular/router';
 import { TeamService } from '../../../application/services';
 import { PlayerListComponent } from '@app/features/players/presentation/components/player-list/player-list.component';
-import { TeamResultsComponent } from '@app/features/matches/presentation/components/team-results/team-results.component';
+import { TeamResultsComponent } from '../../components/team-results/team-results.component';
 import { AuthService } from '@app/features/auth/application/services';
 
 @Component({

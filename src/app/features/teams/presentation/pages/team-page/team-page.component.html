@@ -48,7 +48,7 @@
     </div>
 
     @if (activeTab() === 'results') {
-      <app-team-results />
+      <app-team-results [id]="id()" [teamId]="teamId()" />
     }
   </div>
 

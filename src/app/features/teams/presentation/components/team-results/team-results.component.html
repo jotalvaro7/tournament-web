@@ -20,7 +20,12 @@
     </thead>
     <tbody>
       @for (match of matches(); track match.id; let idx = $index) {
-        <tr class="table-row">
+        <tr class="table-row"
+          [class.cursor-pointer]="isAdmin()"
+          [class.hover:bg-gray-50]="isAdmin()"
+          (click)="isAdmin() && onEditResult(match)"
+          [title]="isAdmin() ? 'Clic para editar resultado' : ''"
+        >
           <td class="table-cell text-center font-medium text-gray-500">{{ idx + 1 }}</td>
           <td class="table-cell text-center font-medium text-gray-900">{{ getTeamName(match.homeTeamId) }}</td>
           <td class="table-cell text-center font-bold text-gray-900">
@@ -47,4 +52,13 @@
       }
     </tbody>
   </table>
+}
+
+@if (matchForResult()) {
+  <app-match-result-modal
+    [match]="matchForResult()!"
+    [teams]="teams()"
+    (save)="onSaveResult($event)"
+    (close)="onCloseResultModal()"
+  />
 }
