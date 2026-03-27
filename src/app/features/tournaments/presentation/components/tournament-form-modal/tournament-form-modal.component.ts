@@ -28,17 +28,17 @@ export class TournamentFormModalComponent {
   });
 
   readonly tournamentForm = form(this.model, (f) => {
-    required(f.name, { message: 'Name is required' });
-    minLength(f.name, 3, { message: 'Name must be at least 3 characters' });
-    maxLength(f.name, 100, { message: 'Name must not exceed 100 characters' });
+    required(f.name, { message: 'Nombre es requerido' });
+    minLength(f.name, 3, { message: 'Nombre debe tener al menos 3 caracteres' });
+    maxLength(f.name, 100, { message: 'Nombre no debe exceder los 100 caracteres' });
 
-    required(f.description, { message: 'Description is required' });
-    minLength(f.description, 10, { message: 'Description must be at least 10 characters' });
-    maxLength(f.description, 500, { message: 'Description must not exceed 500 characters' });
+    required(f.description, { message: 'Descripción es requerida' });
+    minLength(f.description, 10, { message: 'Descripción debe tener al menos 10 caracteres' });
+    maxLength(f.description, 500, { message: 'Descripción no debe exceder los 500 caracteres' });
   });
 
   readonly isEditMode = computed(() => this.tournament() !== null);
-  readonly title = computed(() => (this.isEditMode() ? 'Edit Tournament' : 'Create Tournament'));
+  readonly title = computed(() => (this.isEditMode() ? 'Editar Torneo' : 'Crear Torneo'));
 
   onSubmit(event: Event): void {
     event.preventDefault();

@@ -1,24 +1,5 @@
 <div class="animate-fade-in">
   <div class="max-w-7xl mx-auto">
-    <div class="card px-6 py-4 mb-6">
-      <div class="flex items-center justify-between">
-        <div class="flex items-center gap-3">
-          <div class="w-8 h-8 rounded-lg flex items-center justify-center bg-gray-900">
-            <i class="fas fa-futbol text-white text-sm"></i>
-          </div>
-          <div>
-            <h1 class="text-lg font-bold text-gray-900">Matches</h1>
-            <p class="text-xs text-gray-500">{{ matches().length }} shown</p>
-          </div>
-        </div>
-        @if (isAdmin()) {
-          <button (click)="onCreateMatch()" class="btn-primary">
-            <i class="fas fa-plus mr-2"></i> Add Match
-          </button>
-        }
-      </div>
-    </div>
-
     <app-match-filters (filterChange)="onFilterChange($event)" />
 
     @if (selectedMatchForDetails(); as selectedMatch) {

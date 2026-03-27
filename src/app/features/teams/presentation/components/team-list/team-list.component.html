@@ -1,77 +1,54 @@
 @if (isLoading()) {
   <div class="flex items-center justify-center py-20">
-    <div class="text-center">
-      <div class="spinner mx-auto mb-6"></div>
-      <p class="text-gray-500">Loading teams...</p>
-    </div>
+    <div class="spinner"></div>
   </div>
 } @else {
-  <div class="space-y-6 animate-fade-in">
-    <div class="card px-6 py-4">
-      <div class="flex items-center justify-between">
-        <div class="flex items-center gap-3">
-          <div class="w-8 h-8 rounded-lg flex items-center justify-center bg-gray-900">
-            <i class="fas fa-users text-white text-sm"></i>
-          </div>
-          <div>
-            <h1 class="text-lg font-bold text-gray-900">Teams</h1>
-            <p class="text-xs text-gray-500">{{ teams().length }} registered</p>
-          </div>
-        </div>
-        @if (isAdmin()) {
-          <button type="button" (click)="onAddTeam()" class="btn-primary">
-            <i class="fas fa-plus mr-2"></i> Add Team
-          </button>
-        }
-      </div>
-    </div>
-
+  <div class="animate-fade-in">
     @if (teams().length > 0) {
       <div class="card overflow-hidden">
         <table class="w-full">
           <thead>
             <tr>
-              <th class="table-header text-left">#</th>
-              <th class="table-header text-left">Team</th>
-              <th class="table-header text-left">Coach</th>
+              <th class="table-header text-center">#</th>
+              <th class="table-header text-left">Equipo</th>
+              <th class="table-header text-left">Técnico</th>
+              @if (isAdmin()) {
+                <th class="table-header text-center">Acciones</th>
+              }
             </tr>
           </thead>
           <tbody>
             @for (team of teams(); track team.id; let idx = $index) {
-              <tr class="table-row cursor-pointer" (click)="openTeamDetails(team)">
-                <td class="table-cell font-medium text-gray-500 w-12">{{ idx + 1 }}</td>
+              <tr class="table-row">
+                <td class="table-cell text-center font-medium text-gray-500 w-12">{{ idx + 1 }}</td>
                 <td class="table-cell font-semibold text-gray-900">{{ team.name }}</td>
                 <td class="table-cell text-gray-600">{{ team.coach }}</td>
+                @if (isAdmin()) {
+                  <td class="table-cell text-center">
+                    <div class="flex items-center justify-center gap-2">
+                      <button type="button" (click)="onEditTeam(team)" class="btn-icon" title="Editar equipo">
+                        <i class="fas fa-edit"></i>
+                      </button>
+                      <button type="button" (click)="onRemoveTeam(team)" class="btn-icon" title="Eliminar equipo">
+                        <i class="fas fa-trash"></i>
+                      </button>
+                    </div>
+                  </td>
+                }
               </tr>
             }
           </tbody>
         </table>
       </div>
-    }@else {
+    } @else {
       <div class="card p-16">
         <div class="empty-state">
           <i class="fas fa-users empty-state-icon"></i>
-          <h2 class="empty-state-title">No Teams Yet</h2>
-          <p class="empty-state-description">
-            Start by adding the first team to this tournament.
-          </p>
-          @if (isAdmin()) {
-            <button type="button" (click)="onAddTeam()" class="btn-primary">
-              <i class="fas fa-plus mr-2"></i> Add First Team
-            </button>
-          }
+          <h2 class="empty-state-title">Sin equipos</h2>
+          <p class="empty-state-description">Aún no hay equipos registrados en este torneo.</p>
         </div>
       </div>
     }
-
-    <app-team-details-modal
-      [team]="selectedTeamForModal()"
-      (close)="closeTeamDetails()"
-      (edit)="editFromModal($event)"
-      (delete)="onRemoveTeam($event)"
-      (viewPlayers)="viewPlayersFromModal($event)"
-      (viewMatches)="viewMatchesFromModal($event)"
-    />
   </div>
 }
 
@@ -82,10 +59,3 @@
     (close)="onCloseFormModal()"
   />
 }
-
-<app-team-match-section
-  [tournamentId]="tournamentId()"
-  [teams]="teams()"
-  [selectedTeam]="selectedTeamForMatches()"
-  (closeMatches)="closeMatchesModal()"
-/>

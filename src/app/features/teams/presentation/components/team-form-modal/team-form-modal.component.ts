@@ -20,18 +20,18 @@ export class TeamFormModalComponent {
   });
 
   readonly teamForm = form(this.model, (f) => {
-    required(f.name, { message: 'Team name is required' });
-    minLength(f.name, 3, { message: 'Name must be at least 3 characters' });
-    maxLength(f.name, 100, { message: 'Name must not exceed 100 characters' });
+    required(f.name, { message: 'El nombre del equipo es requerido' });
+    minLength(f.name, 3, { message: 'El nombre del equipo debe tener al menos 3 caracteres' });
+    maxLength(f.name, 100, { message: 'El nombre del equipo no debe exceder los 100 caracteres' });
 
-    required(f.coach, { message: 'Coach name is required' });
-    minLength(f.coach, 3, { message: 'Coach must be at least 3 characters' });
-    maxLength(f.coach, 100, { message: 'Coach must not exceed 100 characters' });
+    required(f.coach, { message: 'El nombre del técnico es requerido' });
+    minLength(f.coach, 3, { message: 'El nombre del técnico debe tener al menos 3 caracteres' });
+    maxLength(f.coach, 100, { message: 'El nombre del técnico no debe exceder los 100 caracteres' });
   });
 
   readonly isValid = computed(() => this.teamForm().valid());
   readonly isEditMode = computed(() => this.team() !== null);
-  readonly title = computed(() => this.isEditMode() ? 'Edit Team' : 'Add Team');
+  readonly title = computed(() => this.isEditMode() ? 'Editar Equipo' : 'Agregar Equipo');
 
 
   onSubmit(event: Event): void {

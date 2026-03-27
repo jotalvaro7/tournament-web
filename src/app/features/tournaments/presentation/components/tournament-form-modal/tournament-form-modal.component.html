@@ -22,7 +22,7 @@
       <form (submit)="onSubmit($event)" class="space-y-5">
         <div>
           <label for="name" class="label">
-            Tournament Name <span class="text-red-500">*</span>
+            Nombre <span class="text-red-500">*</span>
           </label>
           <input
             id="name"
@@ -30,7 +30,7 @@
             [formField]="tournamentForm.name"
             class="input"
             [class.input-error]="hasError('name')"
-            placeholder="Enter tournament name" />
+          />
           @if (hasError('name')) {
             <p class="error-text">
               <i class="fas fa-exclamation-circle mr-1"></i> {{ getErrorMessage('name') }}
@@ -43,7 +43,7 @@
 
         <div>
           <label for="description" class="label">
-            Description <span class="text-red-500">*</span>
+            Descripción <span class="text-red-500">*</span>
           </label>
           <textarea
             id="description"
@@ -51,7 +51,7 @@
             rows="4"
             class="input resize-none"
             [class.input-error]="hasError('description')"
-            placeholder="Enter tournament description"></textarea>
+          ></textarea>
           @if (hasError('description')) {
             <p class="error-text">
               <i class="fas fa-exclamation-circle mr-1"></i> {{ getErrorMessage('description') }}
@@ -66,13 +66,13 @@
           <button type="submit" [disabled]="!tournamentForm().valid()" class="btn-primary flex-1">
             <i class="fas fa-save mr-2"></i>
             @if (isEditMode()) {
-              Update
+              Actualizar
             } @else {
-              Create
+              Crear
             }
           </button>
           <button type="button" (click)="onClose()" class="btn-secondary">
-            <i class="fas fa-times mr-2"></i> Cancel
+            <i class="fas fa-times mr-2"></i> Cancelar
           </button>
         </div>
       </form>
