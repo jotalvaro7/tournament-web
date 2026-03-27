@@ -19,7 +19,8 @@ export class MatchFormModalComponent {
     homeTeamId: '',
     awayTeamId: '',
     matchDate: '',
-    field: ''
+    field: '',
+    matchday: ''
   });
 
   readonly matchForm = form(this.model, (f) => {
@@ -47,10 +48,11 @@ export class MatchFormModalComponent {
           homeTeamId: match.homeTeamId.toString(),
           awayTeamId: match.awayTeamId.toString(),
           matchDate: this.formatDateForInput(match.matchDate),
-          field: match.field
+          field: match.field,
+          matchday: match.matchday?.toString() ?? ''
         });
       } else {
-        this.model.set({ homeTeamId: '', awayTeamId: '', matchDate: '', field: '' });
+        this.model.set({ homeTeamId: '', awayTeamId: '', matchDate: '', field: '', matchday: '' });
       }
     });
   }
@@ -73,7 +75,8 @@ export class MatchFormModalComponent {
         homeTeamId: Number(m.homeTeamId),
         awayTeamId: Number(m.awayTeamId),
         matchDate: new Date(m.matchDate).toISOString(),
-        field: m.field
+        field: m.field,
+        matchday: m.matchday ? Number(m.matchday) : null
       };
       this.save.emit(request);
     }
@@ -89,14 +92,14 @@ export class MatchFormModalComponent {
     }
   }
 
-  getErrorMessage(field: 'homeTeamId' | 'awayTeamId' | 'matchDate' | 'field'): string {
+  getErrorMessage(field: 'homeTeamId' | 'awayTeamId' | 'matchDate' | 'field' | 'matchday'): string {
     const fieldState = this.matchForm[field]();
     if (!fieldState.touched() || fieldState.valid()) return '';
     const errors = fieldState.errors();
     return errors.length > 0 ? (errors[0].message ?? errors[0].kind) : '';
   }
 
-  hasError(field: 'homeTeamId' | 'awayTeamId' | 'matchDate' | 'field'): boolean {
+  hasError(field: 'homeTeamId' | 'awayTeamId' | 'matchDate' | 'field' | 'matchday'): boolean {
     const fieldState = this.matchForm[field]();
     return fieldState.touched() && fieldState.invalid();
   }

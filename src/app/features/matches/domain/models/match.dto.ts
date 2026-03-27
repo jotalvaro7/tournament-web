@@ -10,6 +10,7 @@ export interface MatchRequest {
   awayTeamId: number;
   matchDate: string; // ISO 8601 format
   field: string;
+  matchday?: number | null;
 }
 
 /**
@@ -27,6 +28,7 @@ export interface MatchResponse {
   matchDate: string; // ISO 8601 format
   field: string;
   status: MatchStatus;
+  matchday: number | null;
 }
 
 /**
@@ -50,6 +52,7 @@ export interface MatchFilterParams {
   dateFrom?: string;            // Format: YYYY-MM-DD
   dateTo?: string;              // Format: YYYY-MM-DD
   status?: MatchStatus;
+  matchday?: number;
   page?: number;                // Zero-based
   size?: number;                // 1-100, default 15
   sortBy?: string;              // Default: matchDate

@@ -5,6 +5,7 @@ import { TournamentManageComponent } from './presentation/components/tournament-
 import { TeamStandingsComponent } from '../teams/presentation/components/team-standings/team-standings.component';
 import { TeamListComponent } from '../teams/presentation/components/team-list/team-list.component';
 import { MatchListComponent } from '../matches/presentation/components/match-list/match-list.component';
+import { MatchResultsByMatchdayComponent } from '../matches/presentation/components/match-results-by-matchday/match-results-by-matchday.component';
 import { TournamentService } from './application/services';
 import { TournamentRequestDto } from './domain/models';
 import { AuthService } from '@app/features/auth/application/services';
@@ -12,7 +13,7 @@ import { AuthService } from '@app/features/auth/application/services';
 @Component({
   selector: 'app-tournaments',
   standalone: true,
-  imports: [TournamentFormModalComponent, TournamentManageComponent, TeamStandingsComponent, TeamListComponent, MatchListComponent],
+  imports: [TournamentFormModalComponent, TournamentManageComponent, TeamStandingsComponent, TeamListComponent, MatchListComponent, MatchResultsByMatchdayComponent],
   templateUrl: './tournaments.component.html',
 })
 export class TournamentsComponent {
@@ -31,9 +32,9 @@ export class TournamentsComponent {
 
   readonly mode = computed(() => this.id() === 'new' ? 'list' : 'manage');
   readonly hasValidId = computed(() => Number(this.id()) > 0);
-  readonly activeTab = linkedSignal<'standings' | 'next-date' | 'teams' | 'matches'>(() => { this.id(); return 'standings'; });
+  readonly activeTab = linkedSignal<'standings' | 'next-date' | 'results' | 'teams' | 'matches'>(() => { this.id(); return 'standings'; });
 
-  setTab(tab: 'standings' | 'next-date' | 'teams' | 'matches'): void {
+  setTab(tab: 'standings' | 'next-date' | 'results' | 'teams' | 'matches'): void {
     this.activeTab.set(tab);
   }
 

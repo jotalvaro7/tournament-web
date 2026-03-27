@@ -30,7 +30,8 @@ export class Match {
     public readonly awayTeamScore: number | null,
     public readonly matchDate: Date,
     public readonly field: string,
-    public readonly status: MatchStatus
+    public readonly status: MatchStatus,
+    public readonly matchday: number | null = null
   ) {}
 
   /**

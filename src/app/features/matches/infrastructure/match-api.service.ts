@@ -39,6 +39,7 @@ export class MatchApiService {
       if (filters.dateFrom) params = params.set('dateFrom', filters.dateFrom);
       if (filters.dateTo) params = params.set('dateTo', filters.dateTo);
       if (filters.status) params = params.set('status', filters.status);
+      if (filters.matchday !== undefined) params = params.set('matchday', filters.matchday.toString());
       if (filters.page !== undefined) params = params.set('page', filters.page.toString());
       if (filters.size !== undefined) params = params.set('size', filters.size.toString());
       if (filters.sortBy) params = params.set('sortBy', filters.sortBy);
@@ -105,14 +106,15 @@ export class MatchApiService {
       const f = filters();
       const params: Record<string, string | number> = {};
 
-      if (f?.specificDate)       params['specificDate'] = f.specificDate;
-      if (f?.dateFrom)           params['dateFrom']     = f.dateFrom;
-      if (f?.dateTo)             params['dateTo']       = f.dateTo;
-      if (f?.status)             params['status']       = f.status;
-      if (f?.page !== undefined) params['page']         = f.page;
-      if (f?.size !== undefined) params['size']         = f.size;
-      if (f?.sortBy)             params['sortBy']       = f.sortBy;
-      if (f?.direction)          params['direction']    = f.direction;
+      if (f?.specificDate)        params['specificDate'] = f.specificDate;
+      if (f?.dateFrom)            params['dateFrom']     = f.dateFrom;
+      if (f?.dateTo)              params['dateTo']       = f.dateTo;
+      if (f?.status)              params['status']       = f.status;
+      if (f?.matchday !== undefined) params['matchday']  = f.matchday;
+      if (f?.page !== undefined)  params['page']         = f.page;
+      if (f?.size !== undefined)  params['size']         = f.size;
+      if (f?.sortBy)              params['sortBy']       = f.sortBy;
+      if (f?.direction)           params['direction']    = f.direction;
 
       return { url: `${this.baseUrl}/${tId}/matches`, params };
     }, {
@@ -123,7 +125,7 @@ export class MatchApiService {
           content: response.content.map(r => new Match(
             r.id, r.tournamentId, r.homeTeamId, r.awayTeamId,
             r.homeTeamScore, r.awayTeamScore, new Date(r.matchDate),
-            r.field, r.status
+            r.field, r.status, r.matchday
           ))
         };
       }

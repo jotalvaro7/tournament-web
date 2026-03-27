@@ -117,7 +117,8 @@ export class MatchService {
       response.awayTeamScore,
       new Date(response.matchDate),
       response.field,
-      response.status
+      response.status,
+      response.matchday
     );
   }
 }
