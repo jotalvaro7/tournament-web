@@ -1,13 +1,8 @@
 import { Component, computed, inject, input, signal } from '@angular/core';
 import { MatchService } from '../../../application/services';
 import { TeamService } from '@app/features/teams/application/services';
-import { Match, MatchFilterParams, MatchStatus } from '../../../domain/models';
-
-interface MatchdayGroup {
-  matchday: number | null;
-  label: string;
-  matches: Match[];
-}
+import { Match, MatchFilterParams } from '../../../domain/models';
+import { MatchdayGroup } from '../../models/matchday-group.model';
 
 @Component({
   selector: 'app-match-results-by-matchday',

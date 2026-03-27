@@ -33,10 +33,10 @@ export class NavbarComponent {
     this.showAdminMenu.update(v => !v);
   }
 
-  navigateToScheduler(): void {
+  navigateToPanel(): void {
     const match = this.router.url.match(/\/tournaments\/(\d+)/);
     if (match) {
-      this.router.navigate(['/tournaments', match[1], 'matches']);
+      this.router.navigate(['/tournaments', match[1], 'panel']);
     }
     this.showAdminMenu.set(false);
   }

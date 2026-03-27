@@ -1,4 +1,4 @@
-import { Component, signal, inject, computed, effect, DestroyRef } from '@angular/core';
+import { Component, signal, inject, computed, effect, DestroyRef, input } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { PlayerService } from '../../../application/services';
@@ -20,16 +20,21 @@ export class PlayerListComponent {
 
   readonly isAdmin = this.authService.isAdmin;
 
+  readonly idInput = input<string>('');
+  readonly teamIdInput = input<string>('');
+
   private readonly params = toSignal(this.route.paramMap);
 
   readonly tournamentId = computed(() => {
-    const id = this.params()?.get('id');
-    return id ? Number(id) : null;
+    const inp = this.idInput();
+    if (inp) return Number(inp);
+    return Number(this.params()?.get('id')) || null;
   });
 
   readonly teamId = computed(() => {
-    const id = this.params()?.get('teamId');
-    return id ? Number(id) : null;
+    const inp = this.teamIdInput();
+    if (inp) return Number(inp);
+    return Number(this.params()?.get('teamId')) || null;
   });
 
   readonly players = this.playerService.players;

@@ -1,6 +1,19 @@
 <div class="animate-fade-in">
   <div class="max-w-7xl mx-auto">
-    <app-match-filters (filterChange)="onFilterChange($event)" />
+
+    <!-- Compact toolbar: filters + new match -->
+    <div class="flex items-center gap-2 my-5 flex-wrap">
+      <div class="flex-1 min-w-0 ml-2">
+        <app-match-filters (filterChange)="onFilterChange($event)" />
+      </div>
+      @if (isAdmin()) {
+        <button type="button" (click)="onCreateMatch()"
+          class="shrink-0 flex items-center gap-1.5 px-3 py-1.5 mr-12 text-sm font-medium bg-gray-900 text-white rounded-lg hover:bg-gray-700 transition-colors">
+          <i class="fas fa-plus text-xs"></i>
+          Nuevo Partido
+        </button>
+      }
+    </div>
 
     @if (selectedMatchForDetails(); as selectedMatch) {
       <app-match-details-modal
@@ -19,52 +32,51 @@
       <div class="flex justify-center items-center py-20">
         <div class="text-center">
           <div class="spinner mx-auto mb-6"></div>
-          <p class="text-gray-500 font-medium">Loading matches...</p>
-        </div>
-      </div>
-    } @else if (!hasSearched()) {
-      <div class="card p-16">
-        <div class="empty-state">
-          <i class="fas fa-filter empty-state-icon"></i>
-          <h3 class="empty-state-title">Select a filter</h3>
-          <p class="empty-state-description">
-            Use filters to search matches by status, specific date, or date range.
-          </p>
+          <p class="text-gray-500 font-medium">Cargando partidos...</p>
         </div>
       </div>
     } @else if (matches().length === 0) {
       <div class="card p-16">
         <div class="empty-state">
           <i class="fas fa-calendar-times empty-state-icon"></i>
-          <h3 class="empty-state-title">No matches found</h3>
-          <p class="empty-state-description">
-            No matches found with the selected filters.
-          </p>
+          <h3 class="empty-state-title">Sin partidos</h3>
+          <p class="empty-state-description">No hay partidos con los filtros seleccionados.</p>
         </div>
       </div>
     } @else {
       <div class="card overflow-hidden mb-6">
-        <table class="w-full">
-          <thead>
-            <tr>
-              <th class="table-header text-left">Home</th>
-              <th class="table-header text-center">Score</th>
-              <th class="table-header text-left">Away</th>
-              <th class="table-header text-left hidden md:table-cell">Date</th>
-              <th class="table-header text-left hidden sm:table-cell">Status</th>
-            </tr>
-          </thead>
-          <tbody>
-            @for (match of matches(); track match.id) {
-              <app-match-card
-                [match]="match"
-                [homeTeamName]="getTeamName(match.homeTeamId)"
-                [awayTeamName]="getTeamName(match.awayTeamId)"
-                (cardClick)="onMatchClick($event)"
-              />
-            }
-          </tbody>
-        </table>
+        <div class="divide-y divide-gray-100">
+          @for (group of matchdayGroups(); track group.matchday) {
+            <div>
+              <div class="px-6 py-3 bg-gray-50">
+                <h3 class="text-sm font-semibold text-gray-700 uppercase tracking-wide">
+                  <i class="fas fa-calendar-week mr-2 text-gray-400"></i>{{ group.label }}
+                </h3>
+              </div>
+              <table class="w-full">
+                <thead>
+                  <tr>
+                    <th class="table-header text-left">Local</th>
+                    <th class="table-header text-center">Resultado</th>
+                    <th class="table-header text-left">Visitante</th>
+                    <th class="table-header text-left hidden md:table-cell">Fecha</th>
+                    <th class="table-header text-left hidden sm:table-cell">Estado</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @for (match of group.matches; track match.id) {
+                    <app-match-card
+                      [match]="match"
+                      [homeTeamName]="getTeamName(match.homeTeamId)"
+                      [awayTeamName]="getTeamName(match.awayTeamId)"
+                      (cardClick)="onMatchClick($event)"
+                    />
+                  }
+                </tbody>
+              </table>
+            </div>
+          }
+        </div>
       </div>
 
       @if (pagination(); as p) {

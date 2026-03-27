@@ -1,91 +1,85 @@
-<div class="card p-5 mb-6">
-  <div class="flex flex-wrap items-center gap-4">
-    <!-- Status Filter -->
-    <div class="flex items-center gap-3">
-      <i class="fas fa-filter text-gray-400"></i>
-      <select
-        [value]="status()"
-        (change)="status.set($any($event.target).value)"
-        class="select text-sm"
-      >
-        @for (option of statusOptions; track option.value) {
-          <option [value]="option.value">{{ option.label }}</option>
-        }
-      </select>
-    </div>
+<div class="flex flex-wrap items-center gap-2">
 
-    <!-- Date Type Toggle -->
-    <div class="flex items-center gap-1 p-1 rounded-xl bg-gray-100">
-      <button
-        (click)="toggleDateRange(false)"
-        class="px-4 py-2 rounded-lg text-xs font-medium transition-all duration-300"
-        [class.bg-gray-900]="!useDateRange()"
-        [class.text-white]="!useDateRange()"
-        [class.text-gray-500]="useDateRange()"
-      >
-        <i class="fas fa-calendar-day mr-1"></i>
-        Fecha
-      </button>
-      <button
-        (click)="toggleDateRange(true)"
-        class="px-4 py-2 rounded-lg text-xs font-medium transition-all duration-300"
-        [class.bg-gray-900]="useDateRange()"
-        [class.text-white]="useDateRange()"
-        [class.text-gray-500]="!useDateRange()"
-      >
-        <i class="fas fa-calendar-week mr-1"></i>
-        Rango
-      </button>
-    </div>
-
-    <!-- Specific Date -->
-    @if (!useDateRange()) {
-      <input
-        type="date"
-        [value]="specificDate()"
-        (change)="specificDate.set($any($event.target).value)"
-        class="input text-sm"
-      />
+  <!-- Status -->
+  <select
+    [value]="status()"
+    (change)="status.set($any($event.target).value)"
+    class="text-sm border border-gray-200 rounded-lg px-3 py-1.5 bg-white text-gray-700 focus:outline-none focus:ring-1 focus:ring-gray-400"
+  >
+    @for (option of statusOptions; track option.value) {
+      <option [value]="option.value">{{ option.label }}</option>
     }
+  </select>
 
-    <!-- Date Range -->
-    @if (useDateRange()) {
-      <div class="flex items-center gap-2">
-        <input
-          type="date"
-          [value]="dateFrom()"
-          (change)="dateFrom.set($any($event.target).value)"
-          placeholder="Desde"
-          class="input text-sm"
-        />
-        <span class="text-gray-300">&mdash;</span>
-        <input
-          type="date"
-          [value]="dateTo()"
-          (change)="dateTo.set($any($event.target).value)"
-          placeholder="Hasta"
-          class="input text-sm"
-        />
-      </div>
-    }
-
-    <!-- Search Button -->
+  <!-- Date Type Toggle -->
+  <div class="flex rounded-lg border border-gray-200 overflow-hidden text-xs font-medium">
     <button
-      (click)="onFilterChange()"
-      class="btn-primary"
+      (click)="toggleDateRange(false)"
+      class="px-3 py-1.5 transition-colors"
+      [class.bg-gray-900]="!useDateRange()"
+      [class.text-white]="!useDateRange()"
+      [class.bg-white]="useDateRange()"
+      [class.text-gray-500]="useDateRange()"
     >
-      <i class="fas fa-search mr-2"></i>
-      Buscar
+      <i class="fas fa-calendar-day mr-1"></i>Fecha
     </button>
-
-    <!-- Clear Filters -->
-    @if (status() || specificDate() || dateFrom() || dateTo()) {
-      <button
-        (click)="clearFilters()"
-        class="btn-icon"
-      >
-        <i class="fas fa-times"></i>
-      </button>
-    }
+    <button
+      (click)="toggleDateRange(true)"
+      class="px-3 py-1.5 border-l border-gray-200 transition-colors"
+      [class.bg-gray-900]="useDateRange()"
+      [class.text-white]="useDateRange()"
+      [class.bg-white]="!useDateRange()"
+      [class.text-gray-500]="!useDateRange()"
+    >
+      <i class="fas fa-calendar-week mr-1"></i>Rango
+    </button>
   </div>
+
+  <!-- Specific Date -->
+  @if (!useDateRange()) {
+    <input
+      type="date"
+      [value]="specificDate()"
+      (change)="specificDate.set($any($event.target).value)"
+      class="text-sm border border-gray-200 rounded-lg px-3 py-1.5 focus:outline-none focus:ring-1 focus:ring-gray-400"
+    />
+  }
+
+  <!-- Date Range -->
+  @if (useDateRange()) {
+    <input
+      type="date"
+      [value]="dateFrom()"
+      (change)="dateFrom.set($any($event.target).value)"
+      class="text-sm border border-gray-200 rounded-lg px-3 py-1.5 focus:outline-none focus:ring-1 focus:ring-gray-400"
+    />
+    <span class="text-gray-300 text-sm">&mdash;</span>
+    <input
+      type="date"
+      [value]="dateTo()"
+      (change)="dateTo.set($any($event.target).value)"
+      class="text-sm border border-gray-200 rounded-lg px-3 py-1.5 focus:outline-none focus:ring-1 focus:ring-gray-400"
+    />
+  }
+
+  <!-- Search -->
+  <button
+    (click)="onFilterChange()"
+    class="p-1.5 rounded-lg border border-gray-200 text-gray-500 hover:text-gray-900 hover:border-gray-400 transition-colors"
+    title="Buscar"
+  >
+    <i class="fas fa-search text-sm"></i>
+  </button>
+
+  <!-- Clear -->
+  @if (status() || specificDate() || dateFrom() || dateTo()) {
+    <button
+      (click)="clearFilters()"
+      class="p-1.5 rounded-lg text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors"
+      title="Limpiar filtros"
+    >
+      <i class="fas fa-times text-sm"></i>
+    </button>
+  }
+
 </div>

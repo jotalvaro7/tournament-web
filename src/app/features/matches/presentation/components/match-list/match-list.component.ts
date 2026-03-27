@@ -3,6 +3,7 @@ import { MatchService } from '../../../application/services';
 import { TeamService } from '@app/features/teams/application/services';
 import { AuthService } from '@app/features/auth/application/services';
 import { Match, MatchRequest, FinishMatchRequest, MatchFilterParams, MatchStatus } from '../../../domain/models';
+import { MatchdayGroup } from '../../models/matchday-group.model';
 import { MatchCardComponent } from '../match-card/match-card.component';
 import { MatchFormModalComponent } from '../match-form-modal/match-form-modal.component';
 import { MatchResultModalComponent } from '../match-result-modal/match-result-modal.component';
@@ -38,7 +39,6 @@ export class MatchListComponent {
   readonly showResultModal = signal(false);
   readonly selectedMatch = signal<Match | null>(null);
   readonly currentFilters = signal<MatchFilterParams | undefined>(undefined);
-  readonly hasSearched = signal(false);
 
   private readonly teamsListResource = this.teamService.loadTeamsByTournament(this.tournamentId);
   private readonly matchesResource = this.matchService.loadMatchesByTournament(
@@ -57,14 +57,32 @@ export class MatchListComponent {
     return meta;
   });
 
-  onFilterChange(filters: { status?: MatchStatus; specificDate?: string; dateFrom?: string; dateTo?: string } | null): void {
-    if (filters === null) {
-      this.hasSearched.set(false);
-      this.currentFilters.set(undefined);
-      return;
+  readonly matchdayGroups = computed((): MatchdayGroup[] => {
+    const grouped = new Map<number, Match[]>();
+    const noMatchday: Match[] = [];
+
+    for (const match of this.matches()) {
+      if (match.matchday !== null) {
+        const list = grouped.get(match.matchday) ?? [];
+        grouped.set(match.matchday, [...list, match]);
+      } else {
+        noMatchday.push(match);
+      }
     }
-    this.hasSearched.set(true);
-    this.currentFilters.set(filters);
+
+    const groups: MatchdayGroup[] = Array.from(grouped.entries())
+      .sort(([a], [b]) => a - b)
+      .map(([matchday, matches]) => ({ matchday, label: `Fecha ${matchday}`, matches }));
+
+    if (noMatchday.length > 0) {
+      groups.push({ matchday: null, label: 'Sin fecha asignada', matches: noMatchday });
+    }
+
+    return groups;
+  });
+
+  onFilterChange(filters: { status?: MatchStatus; specificDate?: string; dateFrom?: string; dateTo?: string } | null): void {
+    this.currentFilters.set(filters ?? undefined);
   }
 
   onPageChange(page: number): void {

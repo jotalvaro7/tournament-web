@@ -36,5 +36,12 @@ export const TOURNAMENT_ROUTES: Routes = [
     loadComponent: () =>
       import('../matches/presentation/components/match-list/match-list.component')
         .then(c => c.MatchListComponent)
+  },
+  {
+    path: ':id/panel',
+    canActivate: [adminGuard],
+    loadComponent: () =>
+      import('./presentation/pages/admin-panel/admin-panel-page.component')
+        .then(c => c.AdminPanelPageComponent)
   }
 ];
