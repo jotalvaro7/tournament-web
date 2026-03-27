@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { adminGuard } from '../auth/application/guards/admin.guard';
 
 export const TOURNAMENT_ROUTES: Routes = [
   {
@@ -31,6 +32,7 @@ export const TOURNAMENT_ROUTES: Routes = [
   },
   {
     path: ':id/matches',
+    canActivate: [adminGuard],
     loadComponent: () =>
       import('../matches/presentation/components/match-list/match-list.component')
         .then(c => c.MatchListComponent)
