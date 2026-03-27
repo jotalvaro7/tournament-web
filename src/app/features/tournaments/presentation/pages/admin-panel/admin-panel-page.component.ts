@@ -1,4 +1,4 @@
-import { Component, inject, input, signal, computed } from '@angular/core';
+import { Component, inject, input, signal, computed, viewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { TeamListComponent } from '@app/features/teams/presentation/components/team-list/team-list.component';
 import { PlayerListComponent } from '@app/features/players/presentation/components/player-list/player-list.component';
@@ -25,8 +25,14 @@ export class AdminPanelPageComponent {
   readonly activeTab = signal<PanelTab>('teams');
   readonly selectedTeamId = signal<string>('');
 
+  private readonly playerList = viewChild(PlayerListComponent);
+
   setTab(tab: PanelTab): void {
     this.activeTab.set(tab);
     this.selectedTeamId.set('');
+  }
+
+  addPlayer(): void {
+    this.playerList()?.onAddPlayer();
   }
 }

@@ -5,29 +5,29 @@
 }
 
 @if (!isLoading()) {
-  <div class="space-y-4">
+  <div class="space-y-4 my-4">
 
     @if (players().length > 0) {
       <div class="card overflow-hidden">
         <table class="w-full">
           <thead>
             <tr>
-              <th class="table-header text-center">#</th>
-              <th class="table-header text-center">Jugador</th>
-              <th class="table-header text-center">Identificacion</th>
+              <th class="table-header !bg-gray-200 !text-gray-700 text-center py-2">#</th>
+              <th class="table-header !bg-gray-200 !text-gray-700 text-center py-2">Jugador</th>
+              <th class="table-header !bg-gray-200 !text-gray-700 text-center py-2">Identificacion</th>
               @if (isAdmin()) {
-                <th class="table-header text-center">Acciones</th>
+                <th class="table-header !bg-gray-200 !text-gray-700 text-center py-2">Acciones</th>
               }
             </tr>
           </thead>
           <tbody>
             @for (player of players(); track player.id; let idx = $index) {
               <tr class="table-row">
-                <td class="table-cell text-center font-medium text-gray-500 w-12">{{ idx + 1 }}</td>
-                <td class="table-cell text-center font-semibold text-gray-900">{{ helper.getFullName(player) }}</td>
-                <td class="table-cell text-center text-gray-600">{{ player.identificationNumber }}</td>
+                <td class="table-cell py-2 text-center font-medium text-gray-500 w-12">{{ idx + 1 }}</td>
+                <td class="table-cell py-2 text-center font-semibold text-gray-900">{{ helper.getFullName(player) }}</td>
+                <td class="table-cell py-2 text-center text-gray-600">{{ player.identificationNumber }}</td>
                 @if (isAdmin()) {
-                  <td class="table-cell text-center">
+                  <td class="table-cell py-2 text-center">
                     <div class="flex items-center justify-center gap-2">
                       <button
                         type="button"
@@ -60,9 +60,6 @@
         <div class="empty-state">
           <i class="fas fa-user-friends empty-state-icon"></i>
           <h2 class="empty-state-title">No hay Jugadores registrados</h2>
-          <p class="empty-state-description">
-            Comienza registrando el primer jugador de este equipo.
-          </p>
         </div>
       </div>
     }

@@ -8,16 +8,17 @@
     <p class="text-sm text-gray-500">No hay resultados disponibles aún.</p>
   </div>
 } @else {
+  <div class="my-4 px-4">
   <div class="divide-y divide-gray-100">
     @for (group of matchdayGroups(); track group.matchday) {
       <div>
-        <div class="px-6 py-3 bg-gray-50">
+        <div class="px-6 py-3 bg-gray-200">
           <h3 class="text-sm font-semibold text-gray-700 uppercase tracking-wide">
             <i class="fas fa-calendar-week mr-2 text-gray-400"></i>{{ group.label }}
           </h3>
         </div>
-        <table class="w-full">
-          <tbody>
+        <table class="w-full border border-gray-200">
+          <tbody class="divide-y divide-gray-200">
             @for (match of group.matches; track match.id) {
               <tr class="table-row">
                 <td class="table-cell font-medium text-gray-900 text-right">
@@ -53,5 +54,6 @@
         </table>
       </div>
     }
+  </div>
   </div>
 }

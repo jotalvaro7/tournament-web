@@ -22,11 +22,6 @@
           <p class="text-sm text-gray-500">DT: {{ team()!.coach }}</p>
         </div>
       </div>
-      @if (isAdmin() && activeTab() === 'players') {
-      <button type="button" (click)="addPlayer()" class="btn-primary">
-        <i class="fas fa-plus mr-2"></i> Agregar Jugador
-      </button>
-      }
     </div>
   </div>
 

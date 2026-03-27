@@ -1,5 +1,5 @@
 <div class="animate-fade-in">
-  <div class="max-w-7xl mx-auto">
+  <div class="max-w-7xl mx-auto px-4">
 
     <!-- Compact toolbar: filters + new match -->
     <div class="flex items-center gap-2 my-5 flex-wrap">
@@ -48,7 +48,7 @@
         <div class="divide-y divide-gray-100">
           @for (group of matchdayGroups(); track group.matchday) {
             <div>
-              <div class="px-6 py-3 bg-gray-50">
+              <div class="px-6 py-3 bg-gray-200">
                 <h3 class="text-sm font-semibold text-gray-700 uppercase tracking-wide">
                   <i class="fas fa-calendar-week mr-2 text-gray-400"></i>{{ group.label }}
                 </h3>
@@ -59,8 +59,8 @@
                     <th class="table-header text-left">Local</th>
                     <th class="table-header text-center">Resultado</th>
                     <th class="table-header text-left">Visitante</th>
-                    <th class="table-header text-left hidden md:table-cell">Fecha</th>
-                    <th class="table-header text-left hidden sm:table-cell">Estado</th>
+                    <th class="table-header text-left">Fecha</th>
+                    <th class="table-header text-left">Estado</th>
                   </tr>
                 </thead>
                 <tbody>

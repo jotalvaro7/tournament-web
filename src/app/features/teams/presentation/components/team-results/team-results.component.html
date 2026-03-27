@@ -8,14 +8,15 @@
     <p class="text-sm text-gray-500">No hay partidos registrados aún.</p>
   </div>
 } @else {
-  <table class="w-full">
+  <div class="my-4 px-4">
+  <table class="w-full border border-gray-200">
     <thead>
       <tr>
-        <th class="table-header text-center">#</th>
-        <th class="table-header text-center">Local</th>
-        <th class="table-header text-center">Resultado</th>
-        <th class="table-header text-center">Visitante</th>
-        <th class="table-header text-center">Fecha / Estado</th>
+        <th class="table-header !bg-gray-200 !text-gray-700 text-center">#</th>
+        <th class="table-header !bg-gray-200 !text-gray-700 text-center">Local</th>
+        <th class="table-header !bg-gray-200 !text-gray-700 text-center">Resultado</th>
+        <th class="table-header !bg-gray-200 !text-gray-700 text-center">Visitante</th>
+        <th class="table-header !bg-gray-200 !text-gray-700 text-center">Fecha / Estado</th>
       </tr>
     </thead>
     <tbody>
@@ -47,4 +48,5 @@
       }
     </tbody>
   </table>
+  </div>
 }

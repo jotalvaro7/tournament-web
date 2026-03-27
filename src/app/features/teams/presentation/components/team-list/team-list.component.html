@@ -3,28 +3,37 @@
     <div class="spinner"></div>
   </div>
 } @else {
-  <div class="animate-fade-in">
+  <div class="animate-fade-in my-4 px-4">
+    @if (isAdmin()) {
+      <div class="flex justify-start mb-4 ml-4">
+        <button type="button" (click)="onAddTeam()"
+          class="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium bg-gray-900 text-white rounded-lg hover:bg-gray-700 transition-colors">
+          <i class="fas fa-plus text-xs"></i>
+          Agregar Equipo
+        </button>
+      </div>
+    }
     @if (teams().length > 0) {
       <div class="card overflow-hidden">
         <table class="w-full">
           <thead>
             <tr>
-              <th class="table-header text-center">#</th>
-              <th class="table-header text-left">Equipo</th>
-              <th class="table-header text-left">Técnico</th>
+              <th class="table-header !bg-gray-200 !text-gray-700 text-center py-2">#</th>
+              <th class="table-header !bg-gray-200 !text-gray-700 text-left py-2">Equipo</th>
+              <th class="table-header !bg-gray-200 !text-gray-700 text-left py-2">Técnico</th>
               @if (isAdmin()) {
-                <th class="table-header text-center">Acciones</th>
+                <th class="table-header !bg-gray-200 !text-gray-700 text-center py-2">Acciones</th>
               }
             </tr>
           </thead>
           <tbody>
             @for (team of teams(); track team.id; let idx = $index) {
               <tr class="table-row">
-                <td class="table-cell text-center font-medium text-gray-500 w-12">{{ idx + 1 }}</td>
-                <td class="table-cell font-semibold text-gray-900">{{ team.name }}</td>
-                <td class="table-cell text-gray-600">{{ team.coach }}</td>
+                <td class="table-cell py-2 text-center font-medium text-gray-500 w-12">{{ idx + 1 }}</td>
+                <td class="table-cell py-2 font-semibold text-gray-900">{{ team.name }}</td>
+                <td class="table-cell py-2 text-gray-600">{{ team.coach }}</td>
                 @if (isAdmin()) {
-                  <td class="table-cell text-center">
+                  <td class="table-cell py-2 text-center">
                     <div class="flex items-center justify-center gap-2">
                       <button type="button" (click)="onEditTeam(team)" class="btn-icon" title="Editar equipo">
                         <i class="fas fa-edit"></i>
