@@ -34,15 +34,6 @@ export class PlayerApiService {
   }
 
   /**
-   * Gets a player by ID
-   */
-  getById(tournamentId: number, teamId: number, playerId: number): Observable<Player> {
-    return this.http
-      .get<PlayerResponseDto>(`${this.buildUrl(tournamentId, teamId)}/${playerId}`)
-      .pipe(map(this.mapToModel));
-  }
-
-  /**
    * Creates a new player in a team
    */
   create(tournamentId: number, teamId: number, request: PlayerRequestDto): Observable<Player> {

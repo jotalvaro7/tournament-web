@@ -39,13 +39,6 @@ export class TeamService {
   }
 
   /**
-   * Gets a team by ID
-   */
-  getById(tournamentId: number, teamId: number): Observable<Team> {
-    return this.api.getById(tournamentId, teamId);
-  }
-
-  /**
    * Loads a team by ID as a reactive resource
    */
   loadTeam(tournamentId: Signal<number | null>, teamId: Signal<number | null>) {
@@ -58,7 +51,7 @@ export class TeamService {
   create(tournamentId: number, request: TeamRequestDto): Observable<Team> {
     return this.api.create(tournamentId, request).pipe(
       tap((team) => {
-        this.alert.success(`Team "${team.name}" created successfully!`);
+        this.alert.success(`Equipo "${team.name}" creado con éxito!`);
       })
     );
   }
@@ -69,7 +62,7 @@ export class TeamService {
   update(tournamentId: number, teamId: number, request: TeamRequestDto): Observable<Team> {
     return this.api.update(tournamentId, teamId, request).pipe(
       tap((team) => {
-        this.alert.success(`Team "${team.name}" updated successfully!`);
+        this.alert.success(`Equipo "${team.name}" actualizado con éxito!`);
       })
     );
   }
@@ -81,16 +74,16 @@ export class TeamService {
   
   async delete(tournamentId: number, team: Team): Promise<boolean> {
     const confirmed = await this.alert.confirm({
-      title: 'Delete Team?',
-      text: `Are you sure you want to delete "${team.name}"? This action cannot be undone.`,
-      confirmButtonText: 'Yes, delete it',
-      cancelButtonText: 'Cancel'
+      title: 'Eliminar Equipo?',
+      text: `Esta seguro que desea eliminar "${team.name}"?.`,
+      confirmButtonText: 'Si, eliminar',
+      cancelButtonText: 'Cancelar'
     });
 
     if (!confirmed) return false;
 
     await firstValueFrom(this.api.delete(tournamentId, team.id));
-    this.alert.success(`Team "${team.name}" deleted successfully!`);
+    this.alert.success(`Equipo "${team.name}" eliminado con éxito!`);
     return true;
   }
 

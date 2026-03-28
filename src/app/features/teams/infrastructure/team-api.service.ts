@@ -34,15 +34,6 @@ export class TeamApiService {
   }
 
   /**
-   * Gets a team by ID within a tournament
-   */
-  getById(tournamentId: number, teamId: number): Observable<Team> {
-    return this.http
-      .get<TeamResponseDto>(`${this.baseUrl}/tournaments/${tournamentId}/teams/${teamId}`)
-      .pipe(map(this.mapToModel));
-  }
-
-  /**
    * Gets a team by ID as a reactive resource
    */
   getByIdResource(tournamentId: Signal<number | null>, teamId: Signal<number | null>) {
