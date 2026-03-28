@@ -74,7 +74,7 @@ export class MatchFormModalComponent {
       const request: MatchRequest = {
         homeTeamId: Number(m.homeTeamId),
         awayTeamId: Number(m.awayTeamId),
-        matchDate: new Date(m.matchDate).toISOString(),
+        matchDate: m.matchDate,
         field: m.field,
         matchday: m.matchday ? Number(m.matchday) : null
       };
