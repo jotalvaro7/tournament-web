@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { TournamentFormModalComponent } from './presentation/components/tournament-form-modal/tournament-form-modal.component';
 import { TournamentManageComponent } from './presentation/components/tournament-manage/tournament-manage.component';
 import { TeamStandingsComponent } from '../teams/presentation/components/team-standings/team-standings.component';
-import { MatchResultsByMatchdayComponent } from '../matches/presentation/components/match-results-by-matchday/match-results-by-matchday.component';
+import { MatchListComponent } from '../matches/presentation/components/match-list/match-list.component';
 import { TournamentService } from './application/services';
 import { TournamentRequestDto } from './domain/models';
 import { AuthService } from '@app/features/auth/application/services';
@@ -11,7 +11,7 @@ import { AuthService } from '@app/features/auth/application/services';
 @Component({
   selector: 'app-tournaments',
   standalone: true,
-  imports: [TournamentFormModalComponent, TournamentManageComponent, TeamStandingsComponent, MatchResultsByMatchdayComponent],
+  imports: [TournamentFormModalComponent, TournamentManageComponent, TeamStandingsComponent, MatchListComponent],
   templateUrl: './tournaments.component.html',
 })
 export class TournamentsComponent {

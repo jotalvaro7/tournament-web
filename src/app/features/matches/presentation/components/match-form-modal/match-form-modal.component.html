@@ -23,7 +23,7 @@
         <div>
           <label for="homeTeamId" class="label">
             <i class="fas fa-shield-alt text-gray-500 mr-2"></i>
-            Home Team <span class="text-red-500">*</span>
+            Equipo Local <span class="text-red-500">*</span>
           </label>
           <select
             id="homeTeamId"
@@ -31,7 +31,7 @@
             class="select"
             [class.input-error]="hasError('homeTeamId')"
           >
-            <option value="">Select a team</option>
+            <option value="">Selecciona un equipo</option>
             @for (team of teams(); track team.id) {
               <option [value]="team.id">{{ team.name }}</option>
             }
@@ -46,7 +46,7 @@
         <div>
           <label for="awayTeamId" class="label">
             <i class="fas fa-shield-alt text-gray-400 mr-2"></i>
-            Away Team <span class="text-red-500">*</span>
+            Equipo Visitante <span class="text-red-500">*</span>
           </label>
           <select
             id="awayTeamId"
@@ -54,7 +54,7 @@
             class="select"
             [class.input-error]="hasError('awayTeamId')"
           >
-            <option value="">Select a team</option>
+            <option value="">Selecciona un equipo</option>
             @for (team of availableAwayTeams(); track team.id) {
               <option [value]="team.id">{{ team.name }}</option>
             }
@@ -69,7 +69,7 @@
         <div>
           <label for="matchDate" class="label">
             <i class="far fa-calendar-alt text-gray-500 mr-2"></i>
-            Date & Time <span class="text-red-500">*</span>
+            Fecha & Hora <span class="text-red-500">*</span>
           </label>
           <input
             id="matchDate"
@@ -88,7 +88,7 @@
         <div>
           <label for="field" class="label">
             <i class="fas fa-map-marker-alt text-gray-500 mr-2"></i>
-            Field / Stadium <span class="text-red-500">*</span>
+            Cancha <span class="text-red-500">*</span>
           </label>
           <input
             id="field"
@@ -96,7 +96,6 @@
             [formField]="matchForm.field"
             class="input"
             [class.input-error]="hasError('field')"
-            placeholder="e.g., Main Stadium"
           />
           @if (hasError('field')) {
             <p class="error-text">
@@ -115,7 +114,6 @@
             type="number"
             [formField]="matchForm.matchday"
             class="input"
-            placeholder="e.g., 1"
           />
         </div>
 

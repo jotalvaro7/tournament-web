@@ -101,6 +101,17 @@ export class Match {
   }
 
   /**
+   * Gets formatted match time (HH:mm)
+   */
+  getFormattedTime(): string {
+    return this.matchDate.toLocaleTimeString('es-ES', {
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: true,
+    });
+  }
+
+  /**
    * Gets match status badge color (subtle, not saturated)
    * For UI styling purposes
    */

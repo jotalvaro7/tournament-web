@@ -53,7 +53,7 @@ export class TournamentService {
    */
   async create(request: TournamentRequestDto): Promise<Tournament> {
     const tournament = await firstValueFrom(this.api.create(request));
-    this.alert.success(`Tournament "${tournament.name}" created successfully!`);
+    this.alert.success(`Torneo "${tournament.name}" creado con éxito!`);
     this.tournamentsResource.reload();
     return tournament;
   }
@@ -63,7 +63,7 @@ export class TournamentService {
    */
   async update(id: number, request: TournamentRequestDto): Promise<Tournament> {
     const tournament = await firstValueFrom(this.api.update(id, request));
-    this.alert.success(`Tournament "${tournament.name}" updated successfully!`);
+    this.alert.success(`Torneo "${tournament.name}" actualizado con éxito!`);
     this.tournamentsResource.reload();
     return tournament;
   }
@@ -74,16 +74,16 @@ export class TournamentService {
    */
   async delete(tournament: Tournament): Promise<void> {
     const confirmed = await this.alert.confirm({
-      title: 'Delete Tournament?',
-      text: `Are you sure you want to delete "${tournament.name}"? This action cannot be undone.`,
-      confirmButtonText: 'Yes, delete it',
-      cancelButtonText: 'Cancel'
+      title: 'Eliminar Torneo?',
+      text: `Esta seguro que desea eliminar el torneo "${tournament.name}"?.`,
+      confirmButtonText: 'Si, confirmar',
+      cancelButtonText: 'Cancelar'
     });
 
     if (!confirmed) return;
 
     await firstValueFrom(this.api.delete(tournament.id));
-    this.alert.success(`Tournament "${tournament.name}" deleted successfully!`);
+    this.alert.success(`Torneo "${tournament.name}" eliminado con éxito!`);
     this.tournamentsResource.reload();
   }
 
@@ -93,16 +93,16 @@ export class TournamentService {
    */
   async start(tournament: Tournament): Promise<void> {
     const confirmed = await this.alert.confirm({
-      title: 'Start Tournament?',
-      text: `Start tournament "${tournament.name}"?`,
-      confirmButtonText: 'Yes, start it',
-      cancelButtonText: 'Cancel'
+      title: 'Iniciar Torneo?',
+      text: `Iniciar torneo "${tournament.name}"?`,
+      confirmButtonText: 'Si, iniciar',
+      cancelButtonText: 'Cancelar'
     });
 
     if (!confirmed) return;
 
     const updated = await firstValueFrom(this.api.start(tournament.id));
-    this.alert.success(`Tournament "${updated.name}" started successfully!`);
+    this.alert.success(`Torneo "${updated.name}" iniciado con éxito!`);
   }
 
   /**
@@ -111,16 +111,16 @@ export class TournamentService {
    */
   async end(tournament: Tournament): Promise<void> {
     const confirmed = await this.alert.confirm({
-      title: 'End Tournament?',
-      text: `End tournament "${tournament.name}"?`,
-      confirmButtonText: 'Yes, end it',
-      cancelButtonText: 'Cancel'
+      title: 'Finalizar Torneo?',
+      text: `Finalizar torneo "${tournament.name}"?`,
+      confirmButtonText: 'Si, finalizar',
+      cancelButtonText: 'Cancelar'
     });
 
     if (!confirmed) return;
 
     const updated = await firstValueFrom(this.api.end(tournament.id));
-    this.alert.success(`Tournament "${updated.name}" completed successfully!`);
+    this.alert.success(`Torneo "${updated.name}" finalizado con éxito!`);
   }
 
   /**
@@ -129,15 +129,15 @@ export class TournamentService {
    */
   async cancel(tournament: Tournament): Promise<void> {
     const confirmed = await this.alert.confirm({
-      title: 'Cancel Tournament?',
-      text: `Are you sure you want to cancel "${tournament.name}"?`,
-      confirmButtonText: 'Yes, cancel it',
-      cancelButtonText: 'No, keep it'
+      title: 'Cancelar Torneo?',
+      text: `Estas seguro que deseas cancelar "${tournament.name}"?`,
+      confirmButtonText: 'Si, confirmar',
+      cancelButtonText: 'No, olvidalo'
     });
 
     if (!confirmed) return;
 
     const updated = await firstValueFrom(this.api.cancel(tournament.id));
-    this.alert.success(`Tournament "${updated.name}" cancelled successfully!`);
+    this.alert.success(`Torneo "${updated.name}" cancelado con éxito!`);
   }
 }

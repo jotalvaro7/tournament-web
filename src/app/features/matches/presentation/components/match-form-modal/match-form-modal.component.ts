@@ -33,7 +33,7 @@ export class MatchFormModalComponent {
 
   readonly isValid = computed(() => this.matchForm().valid());
   readonly isEditMode = computed(() => this.match() !== null);
-  readonly title = computed(() => this.isEditMode() ? 'Edit Match' : 'Create Match');
+  readonly title = computed(() => this.isEditMode() ? 'Editar Partido' : 'Crear Partido');
 
   readonly availableAwayTeams = computed(() => {
     const homeId = this.model().homeTeamId;

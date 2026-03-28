@@ -1,6 +1,6 @@
 <!-- Match Row - Table row rendered inside parent <tbody> -->
 <tr class="table-row cursor-pointer" (click)="onCardClick()">
-  <td class="table-cell font-semibold text-gray-900">{{ homeTeamName() }}</td>
+  <td class="table-cell text-center font-semibold text-gray-900">{{ homeTeamName() }}</td>
   <td class="table-cell text-center font-bold text-gray-900">
     @if (match().isFinished() && match().hasResult()) {
       {{ match().homeTeamScore }} - {{ match().awayTeamScore }}
@@ -8,9 +8,11 @@
       <span class="text-xs text-gray-400 font-medium">VS</span>
     }
   </td>
-  <td class="table-cell font-semibold text-gray-900">{{ awayTeamName() }}</td>
-  <td class="table-cell text-gray-500 text-sm hidden md:table-cell">{{ match().getFormattedDate() }}</td>
-  <td class="table-cell hidden sm:table-cell">
+  <td class="table-cell text-center font-semibold text-gray-900">{{ awayTeamName() }}</td>
+  <td class="table-cell text-center text-xs text-gray-500 hidden md:table-cell">{{ match().getFormattedDate() }}</td>
+  <td class="table-cell text-center text-xs text-gray-400 hidden md:table-cell">{{ match().getFormattedTime() }}</td>
+  <td class="table-cell text-center text-xs text-gray-500 hidden md:table-cell">{{ match().field }}</td>
+  <td class="table-cell text-center hidden sm:table-cell">
     <span class="text-xs font-medium px-2 py-1 rounded-full" [ngClass]="getStatusClasses()">
       {{ match().getStatusLabel() }}
     </span>

@@ -19,8 +19,8 @@
           <thead>
             <tr>
               <th class="table-header !bg-gray-200 !text-gray-700 text-center py-2">#</th>
-              <th class="table-header !bg-gray-200 !text-gray-700 text-left py-2">Equipo</th>
-              <th class="table-header !bg-gray-200 !text-gray-700 text-left py-2">Técnico</th>
+              <th class="table-header !bg-gray-200 !text-gray-700 text-center py-2">Equipo</th>
+              <th class="table-header !bg-gray-200 !text-gray-700 text-center py-2">Técnico</th>
               @if (isAdmin()) {
                 <th class="table-header !bg-gray-200 !text-gray-700 text-center py-2">Acciones</th>
               }
@@ -30,8 +30,8 @@
             @for (team of teams(); track team.id; let idx = $index) {
               <tr class="table-row">
                 <td class="table-cell py-2 text-center font-medium text-gray-500 w-12">{{ idx + 1 }}</td>
-                <td class="table-cell py-2 font-semibold text-gray-900">{{ team.name }}</td>
-                <td class="table-cell py-2 text-gray-600">{{ team.coach }}</td>
+                <td class="table-cell py-2 text-center font-semibold text-gray-900">{{ team.name }}</td>
+                <td class="table-cell py-2 text-center text-gray-600">{{ team.coach }}</td>
                 @if (isAdmin()) {
                   <td class="table-cell py-2 text-center">
                     <div class="flex items-center justify-center gap-2">
