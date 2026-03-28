@@ -38,7 +38,8 @@ export class MatchListComponent {
   readonly showFormModal = signal(false);
   readonly showResultModal = signal(false);
   readonly selectedMatch = signal<Match | null>(null);
-  readonly currentFilters = signal<MatchFilterParams | undefined>(undefined);
+  private readonly DEFAULT_SORT: MatchFilterParams = { sortBy: 'matchday', secondarySortBy: 'matchDate' };
+  readonly currentFilters = signal<MatchFilterParams | undefined>(this.DEFAULT_SORT);
 
   private readonly teamsListResource = this.teamService.loadTeamsByTournament(this.tournamentId);
   private readonly matchesResource = this.matchService.loadMatchesByTournament(
@@ -82,7 +83,7 @@ export class MatchListComponent {
   });
 
   onFilterChange(filters: { status?: MatchStatus; specificDate?: string; dateFrom?: string; dateTo?: string } | null): void {
-    this.currentFilters.set(filters ?? undefined);
+    this.currentFilters.set(filters ? { ...this.DEFAULT_SORT, ...filters } : this.DEFAULT_SORT);
   }
 
   onPageChange(page: number): void {

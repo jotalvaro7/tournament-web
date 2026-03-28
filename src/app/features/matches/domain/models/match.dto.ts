@@ -57,6 +57,7 @@ export interface MatchFilterParams {
   size?: number;                // 1-100, default 15
   sortBy?: string;              // Default: matchDate
   direction?: 'ASC' | 'DESC';   // Default: ASC
+  secondarySortBy?: string
 }
 
 /**

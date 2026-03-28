@@ -44,6 +44,7 @@ export class MatchApiService {
       if (filters.size !== undefined) params = params.set('size', filters.size.toString());
       if (filters.sortBy) params = params.set('sortBy', filters.sortBy);
       if (filters.direction) params = params.set('direction', filters.direction);
+      if (filters.secondarySortBy) params = params.set('secondarySortBy', filters.secondarySortBy);
     }
 
     return this.http.get<PageResponseMatch>(`${this.baseUrl}/${tournamentId}/matches`, { params });
@@ -115,6 +116,7 @@ export class MatchApiService {
       if (f?.size !== undefined)  params['size']         = f.size;
       if (f?.sortBy)              params['sortBy']       = f.sortBy;
       if (f?.direction)           params['direction']    = f.direction;
+      if (f?.secondarySortBy)     params['secondarySortBy'] = f.secondarySortBy;
 
       return { url: `${this.baseUrl}/${tId}/matches`, params };
     }, {
